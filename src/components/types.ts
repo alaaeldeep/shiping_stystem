@@ -123,17 +123,24 @@ export type Product = {
     id?: number | string;
 };
 export type TraderRow = {
-    id: number;
+    id: string;
     userName: string;
     fullName: string;
     phoneNumber: string;
     email: string;
     address: string;
     storeName: string;
-    city: string;
-    state: string;
-    branch: string;
-    rejectionOrderlossRatio: string;
+    city: { cityId: number; name: string };
+    state: { id: number; name: string };
+    branch: { id: number; branch: string };
+    rejectedOrderlossRatio: string;
+    date: string;
+    specialPackages: {
+        city: { cityId: number; name: string };
+        state: { id: number; name: string };
+        shippingCost: number;
+        id: string;
+    }[];
 };
 export type RepresentativeRow = {
     id: number;
@@ -220,8 +227,8 @@ export type HeadCell = {
     label: string;
 };
 export type SpecialPackage = {
-    state: string;
-    city: string;
-    shippingCost: string;
+    city: { cityId: number; name: string };
+    state: { id: number; name: string };
+    shippingCost: number;
     id: string;
 };

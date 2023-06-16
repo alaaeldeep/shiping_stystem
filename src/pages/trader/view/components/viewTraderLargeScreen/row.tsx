@@ -15,7 +15,7 @@ import EditTraderDetails from "../../../components/editTraderDetails";
 
 type ViewTraderLargeScreenProps = {
     index: number;
-    data: any;
+    data: TraderRow;
 };
 const RowInLargeScreen = ({ index, data }: ViewTraderLargeScreenProps) => {
     const [openEditTraderDetails, setOpenEditTraderDetails] = useState(false);
@@ -61,21 +61,15 @@ const RowInLargeScreen = ({ index, data }: ViewTraderLargeScreenProps) => {
                         {index + 1}
                     </TableCell>
                     {/* trader name */}
-                    <TableCell align="center">
-                        {data.traderData.userName}
-                    </TableCell>
+                    <TableCell align="center">{data.userName}</TableCell>
                     {/* storeName */}
-                    <TableCell align="center">
-                        {data.traderData.storeName}
-                    </TableCell>
+                    <TableCell align="center">{data.storeName}</TableCell>
                     {/* email */}
                     {/* <TableCell align="center">{row.email}</TableCell> */}
                     {/* phone */}
                     {/*  <TableCell align="center">{data.phoneNumber}</TableCell> */}
                     {/* branch */}
-                    <TableCell align="center">
-                        {data.traderData.branchId}
-                    </TableCell>
+                    <TableCell align="center">{data.branch.branch}</TableCell>
 
                     {/* status */}
                     <TableCell align="center">

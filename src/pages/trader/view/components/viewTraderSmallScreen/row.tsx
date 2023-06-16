@@ -18,11 +18,12 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import ViewTraderDetails from "../../../components/viewTraderDetail";
 
 /* types */
-import { TraderType } from "../../../../../components/types";
+import { TraderRow } from "../../../../../components/types";
+import EditTraderDetails from "../../../components/editTraderDetails";
 
 type props = {
     index: number;
-    data: TraderType;
+    data: TraderRow;
 };
 const RowInSmallScreen = ({ index, data }: props) => {
     const [expanded, setExpanded] = useState<string | false>(false);
@@ -55,6 +56,12 @@ const RowInSmallScreen = ({ index, data }: props) => {
                 open={openViewTraderDetails}
                 handleClose={handleCloseViewTraderDetails}
             />
+            {/* edit trader details */}
+            <EditTraderDetails
+                data={data}
+                open={openEditTraderDetails}
+                handleClose={handleCloseEditTraderDetails}
+            />
             <Accordion
                 sx={{ px: 5 }}
                 expanded={expanded === index.toString()}
@@ -71,18 +78,14 @@ const RowInSmallScreen = ({ index, data }: props) => {
                     </Typography>
                     {/*  name */}
                     <Typography sx={{ color: "text.secondary" }}>
-                        {data.traderData.userName}
+                        {data.userName}
                     </Typography>
                 </AccordionSummary>
                 <AccordionDetails>
-                    <Typography>الاسم : {data.traderData.userName}</Typography>
-                    <Typography>
-                        اسم المتجر : {data.traderData.storeName}
-                    </Typography>
-                    <Typography>
-                        رقم الهاتف : {data.traderData.phoneNumber}
-                    </Typography>
-                    <Typography>الفرع : {data.traderData.branchId}</Typography>
+                    <Typography>الاسم : {data.userName}</Typography>
+                    <Typography>اسم المتجر : {data.storeName}</Typography>
+                    <Typography>رقم الهاتف : {data.phoneNumber}</Typography>
+                    <Typography>الفرع : {data.branch.branch}</Typography>
 
                     <Typography>الحاله : {"//"}</Typography>
                     <Typography>
@@ -103,7 +106,7 @@ const RowInSmallScreen = ({ index, data }: props) => {
                                 >
                                     <EditIcon
                                         style={{
-                                            color: "#4AA96C",
+                                            color: "#7AA874",
                                         }}
                                     />
                                 </IconButton>

@@ -20,11 +20,11 @@ import CloseIcon from "@mui/icons-material/Close";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 
 /* types */
-import { SpecialPackage, TraderType } from "../../../../components/types";
+import { SpecialPackage, TraderRow } from "../../../../components/types";
 
 type TraderDetailsProps = {
     open: boolean;
-    data: TraderType;
+    data: TraderRow;
 
     handleClose: () => void;
 };
@@ -34,7 +34,7 @@ const ViewTraderDetails = ({ open, handleClose, data }: TraderDetailsProps) => {
     function handelDeleteSpecialPackage(row: SpecialPackage): void {
         throw new Error("Function not implemented.");
     }
-
+    console.log(data.specialPackages);
     return (
         <Dialog
             fullWidth={true}
@@ -45,7 +45,7 @@ const ViewTraderDetails = ({ open, handleClose, data }: TraderDetailsProps) => {
             <div style={{ display: "flex", justifyContent: "space-between" }}>
                 {/* title */}
                 <DialogTitle width={{ xs: "230px", sm: "auto" }}>
-                    عـرض البيانات الخاصــة بالتاجر : {data.traderData.userName}
+                    عـرض البيانات الخاصــة بالتاجر : {data.userName}
                 </DialogTitle>{" "}
                 {/* close btn */}
                 <DialogActions>
@@ -59,49 +59,91 @@ const ViewTraderDetails = ({ open, handleClose, data }: TraderDetailsProps) => {
             <DialogContent>
                 <Box
                     sx={{
-                        paddingX: "2rem",
+                        borderRadius: "25px",
+                        boxShadow:
+                            "rgba(17, 17, 26, 0.1) 0px 1px 0px, rgba(17, 17, 26, 0.1) 0px 8px 24px, rgba(17, 17, 26, 0.1) 0px 16px 48px",
                         display: "flex",
                         flexDirection: "column",
+                        padding: "25px",
                         gap: "1rem",
                     }}
                 >
                     <Typography>
-                        الاسم بالكامل : {data.traderData.fullName}
+                        <span style={{ fontWeight: "600" }}>
+                            الاسم بالكامل :
+                        </span>{" "}
+                        {data.fullName}
+                    </Typography>
+
+                    <Typography>
+                        <span style={{ fontWeight: "600" }}>
+                            اسم المستخدم :
+                        </span>{" "}
+                        {data.userName}
+                    </Typography>
+
+                    <Typography>
+                        <span style={{ fontWeight: "600" }}>
+                            البريد الالكتروني :
+                        </span>{" "}
+                        {data.email}
                     </Typography>
                     <Typography>
-                        اسم المستخدم : {data.traderData.userName}
+                        <span style={{ fontWeight: "600" }}>رقم الهاتف :</span>{" "}
+                        {data.phoneNumber}
+                    </Typography>
+
+                    <Typography>
+                        <span style={{ fontWeight: "600" }}>العنوان</span>{" "}
+                        {data.address}
                     </Typography>
                     <Typography>
-                        اسم المتجر : {data.traderData.storeName}
+                        <span style={{ fontWeight: "600" }}>اسم الفرع :</span>{" "}
+                        {data.branch.branch}{" "}
                     </Typography>
                     <Typography>
-                        البريد الالكتروني : {data.traderData.email}
+                        <span style={{ fontWeight: "600" }}>اسم المتجر :</span>{" "}
+                        {data.storeName}{" "}
                     </Typography>
                     <Typography>
-                        رقم الهاتف : {data.traderData.phoneNumber}
+                        <span style={{ fontWeight: "600" }}>المحافظة :</span>{" "}
+                        {data.state.name}{" "}
                     </Typography>
-                    <Typography> الفرع : {data.traderData.branchId}</Typography>
                     <Typography>
-                        {" "}
-                        المحافظة : {data.traderData.stateId}
+                        <span style={{ fontWeight: "600" }}>اسم المدينة :</span>{" "}
+                        {data.city.name}{" "}
                     </Typography>
-                    <Typography> المدينة : {data.traderData.cityId}</Typography>
-                    <Typography>العنوان : {data.traderData.address}</Typography>
                     <Typography>
-                        نسبة تحمل التاجر من قيمة شحن الطلبات المرفوضة :
-                        {data.traderData.rejectionOrderLossRatio}%
+                        <span style={{ fontWeight: "600" }}>
+                            تاريخ الاضافة :
+                        </span>{" "}
+                        {data.date}{" "}
                     </Typography>
+                    <Typography>
+                        <span style={{ fontWeight: "600" }}>
+                            نسبة تحمل التاجر من قيمة شحن الطلبات المرفوضة :
+                        </span>{" "}
+                        {data.rejectedOrderlossRatio} %{" "}
+                    </Typography>
+
+                    {/* **************************** */}
                 </Box>
 
                 <Typography
                     fontWeight={"bold"}
                     width={"100%"}
                     textAlign={"center"}
-                    p={"12px"}
+                    sx={{
+                        padding: "20px",
+
+                        /*   boxShadow:
+                            "rgba(17, 17, 26, 0.1) 0px 1px 0px, rgba(17, 17, 26, 0.1) 0px 8px 24px, rgba(17, 17, 26, 0.1) 0px 16px 48px",
+                     */
+                    }}
                 >
                     باقات مميزه لبعض المدن
                 </Typography>
-                {data.SpecialPackage.length > 0 ? (
+                {data.specialPackages.length > 0 ? (
                     <TableContainer component={Paper}>
                         <Table aria-label="simple table">
                             <TableHead>
@@ -118,7 +160,7 @@ const ViewTraderDetails = ({ open, handleClose, data }: TraderDetailsProps) => {
                                 </TableRow>
                             </TableHead>
                             <TableBody>
-                                {data.SpecialPackage.map(
+                                {data.specialPackages.map(
                                     (row: SpecialPackage, index: number) => (
                                         <TableRow
                                             key={index}
@@ -134,10 +176,10 @@ const ViewTraderDetails = ({ open, handleClose, data }: TraderDetailsProps) => {
                                                 component="th"
                                                 scope="row"
                                             >
-                                                {row.stateId}
+                                                {row.state.name}
                                             </TableCell>
                                             <TableCell align="center">
-                                                {row.cityId}
+                                                {row.city.name}
                                             </TableCell>
                                             <TableCell align="center">
                                                 {row.shippingCost}

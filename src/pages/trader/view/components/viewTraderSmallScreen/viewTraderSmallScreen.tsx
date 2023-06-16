@@ -26,7 +26,7 @@ export const ViewTraderSmallScreen = ({ rows }: ViewTraderSmallScreenProps) => {
         <Paper sx={{ width: "100%" }}>
             {/* view traders*/}
             {rows.map((row, index) => (
-                <RowInSmallScreen index={index} data={row} />
+                <RowInSmallScreen key={index} index={index} data={row} />
             ))}
         </Paper>
     );

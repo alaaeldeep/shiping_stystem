@@ -49,7 +49,7 @@ const ViewTraders = () => {
     const { data, isLoading, isError } = UseQuery("/traders");
     const matches = useMediaQuery("(min-width:1070px)");
     const navigate = useNavigate();
-
+    console.log(data?.data);
     if (isLoading) {
         return (
             <Stack spacing={1}>

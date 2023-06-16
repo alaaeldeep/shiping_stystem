@@ -156,7 +156,7 @@ const AddTraderPage = () => {
         storeName: z.string().nonempty("برجاء كتابه اسم المتجر"),
         stateId: z.string().nonempty("برجاء اختيار المحافظه"),
         cityId: z.string().nonempty("برجاء اختيار المدينه"),
-        rejectionOrderLossRatio: z.string().nonempty("برجاء كتابه نسبه التحمل"),
+        rejectedOrderlossRatio: z.string().nonempty("برجاء كتابه نسبه التحمل"),
 
         /* step 3 */
         stateSpecialPackage: z.string().optional(),
@@ -489,9 +489,9 @@ const AddTraderPage = () => {
                                         <NumericInputField
                                             register={register}
                                             errors={
-                                                errors.rejectionOrderLossRatio
+                                                errors.rejectedOrderlossRatio
                                             }
-                                            fieldName="rejectionOrderLossRatio"
+                                            fieldName="rejectedOrderlossRatio"
                                             label="نسبه تحمل التاجر لقيمه شحن الطلبات المرفوضه"
                                             largeWidth="90%"
                                             smallWidth="90%"
