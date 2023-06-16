@@ -1,0 +1,15 @@
+.cardContainer {
+    width: 250px;
+    height: 8rem;
+    display: flex;
+    justify-content: center;
+    gap: 0.2rem;
+    align-items: center;
+    cursor: pointer;
+    box-shadow: #00000011 0px 12px 28px 0px, #0000001a 0px 2px 4px 0px,
+        #ffffff0d 0px 0px 0px 1px inset;
+}
+.cardContainer:hover {
+    box-shadow: #00000043 0px 12px 28px 0px, #00000034 0px 2px 4px 0px,
+        #ffffff0d 0px 0px 0px 1px inset;
+}
