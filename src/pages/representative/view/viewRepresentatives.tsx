@@ -12,8 +12,6 @@ import { ViewRepresentativesLargeScreen } from "./components/viewRepresentatives
 import { ViewRepresentativesSmallScreen } from "./components/viewRepresentativesSmallScreen/viewRepresentativesSmallScreen";
 import { TableToolbar } from "../../../components/table/tableToolBar";
 
-/* types */
-
 const headCells = [
     {
         id: "id",
@@ -48,6 +46,7 @@ const headCells = [
 
 const ViewRepresentatives = () => {
     const { data, isLoading, isError } = UseQuery("/representatives");
+    const { data: branches } = UseQuery("/branches");
     const matches = useMediaQuery("(min-width:1070px)");
     const navigate = useNavigate();
 
@@ -90,7 +89,7 @@ const ViewRepresentatives = () => {
                         alignItems: "center",
                     }}
                 >
-                    لم يتم مناديب مدن حتي الان
+                    لم يتم اضافة مناديب حتي الان
                 </Typography>
             )}
         </>

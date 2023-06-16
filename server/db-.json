@@ -1,860 +1,858 @@
 {
-  "employees": [
-    {
-      "fullName": "aaaaaaaaaaaa",
-      "userName": "iiiiiiiiiiiiiiiiii",
-      "email": "alaaeldeepdev@gmail.com",
-      "password": "fffffffffffffff",
-      "branch": {
-        "id": 1,
-        "branch": "branch1"
-      },
-      "phoneNumber": "10912460808",
-      "role": {
-        "id": 8,
-        "role": "role1"
-      },
-      "address": "aaaaaaaaaaaaaaaaaaaaa",
-      "id": 8
-    },
-    {
-      "fullName": "eeeeeeeeee",
-      "userName": "eeeeeeeeeeeee",
-      "email": "alaaeldeepdev@gmail.com",
-      "password": "aaaaaaaaaaaaaaaaaa",
-      "branch": {
-        "id": 2,
-        "branch": "branch2"
-      },
-      "phoneNumber": "10912460810",
-      "role": {
-        "id": 11,
-        "role": "role2"
-      },
-      "address": "s",
-      "id": 9
-    },
-    {
-      "fullName": "aaaaaaaaaaaa",
-      "userName": "aaaaaaaaa",
-      "email": "alaaeldeepdev@gmail.com",
-      "password": "fffffffffffffff",
-      "branch": {
-        "id": 3,
-        "branch": "branch3"
-      },
-      "phoneNumber": "10912460808",
-      "role": {
-        "id": 3,
-        "role": "role3"
-      },
-      "address": "aaaaaaaaaaaaaaaaaaaaa",
-      "id": 10
-    },
-    {
-      "fullName": "aaaaaaaaaaaa",
-      "userName": "aaaaaaaaa",
-      "email": "alaaeldeepdev@gmail.com",
-      "password": "fffffffffffffff",
-      "branch": {
-        "id": 4,
-        "branch": "branch4"
-      },
-      "phoneNumber": "10912460808",
-      "role": {
-        "id": 4,
-        "role": "role4"
-      },
-      "address": "aaaaaaaaaaaaaaaaaaaaa",
-      "id": 11
-    }
-  ],
-  "traders": [
-    {
-      "traderData": {
-        "fullName": "aaaaaaaaaaaa",
-        "userName": "aahghgh",
-        "email": "alaaeldeepdev@gmail.com",
-        "phoneNumber": "10912460810",
-        "password": "fhhhhhhhhh",
-        "address": "aaaaaaaaaaaa",
-        "branchId": 1,
-        "storeName": "aaaaaa",
-        "stateId": 1,
-        "cityId": 1,
-        "rejectionOrderLossRatio": "15"
-      },
-      "SpecialPackage": [
+    "employees": [
         {
-          "stateId": 1,
-          "cityId": 1,
-          "shippingCost": "15"
+            "fullName": "aaaaaaaaaaaa",
+            "userName": "iiiiiiiiiiiiiiiiii",
+            "email": "alaaeldeepdev@gmail.com",
+            "password": "fffffffffffffff",
+            "branchId": {
+                "id": 1,
+                "branch": "branch1"
+            },
+            "phoneNumber": "10912460808",
+            "role": {
+                "id": 8,
+                "role": "role1"
+            },
+            "address": "aaaaaaaaaaaaaaaaaaaaa",
+            "id": 8
         },
         {
-          "stateId": 4,
-          "shippingCost": "78"
+            "fullName": "eeeeeeeeee",
+            "userName": "eeeeeeeeeeeee",
+            "email": "alaaeldeepdev@gmail.com",
+            "password": "aaaaaaaaaaaaaaaaaa",
+            "branchId": {
+                "id": 2,
+                "branch": "branch2"
+            },
+            "phoneNumber": "10912460810",
+            "role": {
+                "id": 11,
+                "role": "role2"
+            },
+            "address": "s",
+            "id": 9
         },
         {
-          "stateId": 2,
-          "shippingCost": "89"
+            "fullName": "aaaaaaaaaaaa",
+            "userName": "aaaaaaaaa",
+            "email": "alaaeldeepdev@gmail.com",
+            "password": "fffffffffffffff",
+            "branch": {
+                "id": 3,
+                "branch": "branch3"
+            },
+            "phoneNumber": "10912460808",
+            "role": {
+                "id": 3,
+                "role": "role3"
+            },
+            "address": "aaaaaaaaaaaaaaaaaaaaa",
+            "id": 10
+        },
+        {
+            "fullName": "aaaaaaaaaaaa",
+            "userName": "aaaaaaaaa",
+            "email": "alaaeldeepdev@gmail.com",
+            "password": "fffffffffffffff",
+            "branch": {
+                "id": 4,
+                "branch": "branch4"
+            },
+            "phoneNumber": "10912460808",
+            "role": {
+                "id": 4,
+                "role": "role4"
+            },
+            "address": "aaaaaaaaaaaaaaaaaaaaa",
+            "id": 11
         }
-      ],
-      "id": 6
-    },
-    {
-      "traderData": {
-        "fullName": "تاجر2",
-        "userName": "مستخدم2",
-        "email": "alaaeldeepdev@gmail.com",
-        "phoneNumber": "10912460806",
-        "password": "aaaaaaaaaaaaaaaaaaaa",
-        "address": "aaaaaaaaaaaa",
-        "branchId": 1,
-        "storeName": "aaaaaa",
-        "stateId": 1,
-        "cityId": 1,
-        "rejectionOrderLossRatio": "78"
-      },
-      "SpecialPackage": [],
-      "id": 7
-    },
-    {
-      "traderData": {
-        "fullName": "تاجر2",
-        "userName": "تاجر1",
-        "email": "alaaeldeepdev@gmail.com",
-        "phoneNumber": "10912460810",
-        "password": "aaaaaaaaaaaaaaaaaaaaaa",
-        "address": "aaaaaaaaaaaa",
-        "branchId": 2,
-        "storeName": "aaaaaa",
-        "stateId": 1,
-        "cityId": 1,
-        "rejectionOrderLossRatio": "0001"
-      },
-      "SpecialPackage": [
+    ],
+    "traders": [
         {
-          "stateId": 1,
-          "cityId": 1,
-          "shippingCost": "14"
+            "traderData": {
+                "fullName": "aaaaaaaaaaaa",
+                "userName": "aahghgh",
+                "email": "alaaeldeepdev@gmail.com",
+                "phoneNumber": "10912460810",
+                "password": "fhhhhhhhhh",
+                "address": "aaaaaaaaaaaa",
+                "branchId": 1,
+                "storeName": "aaaaaa",
+                "stateId": 1,
+                "cityId": 1,
+                "rejectionOrderLossRatio": "15"
+            },
+            "SpecialPackage": [
+                {
+                    "stateId": 1,
+                    "cityId": 1,
+                    "shippingCost": "15"
+                },
+                {
+                    "stateId": 4,
+                    "shippingCost": "78"
+                },
+                {
+                    "stateId": 2,
+                    "shippingCost": "89"
+                }
+            ],
+            "id": 6
         },
         {
-          "stateId": 3,
-          "cityId": 5,
-          "shippingCost": "14"
+            "traderData": {
+                "fullName": "تاجر2",
+                "userName": "مستخدم2",
+                "email": "alaaeldeepdev@gmail.com",
+                "phoneNumber": "10912460806",
+                "password": "aaaaaaaaaaaaaaaaaaaa",
+                "address": "aaaaaaaaaaaa",
+                "branchId": 1,
+                "storeName": "aaaaaa",
+                "stateId": 1,
+                "cityId": 1,
+                "rejectionOrderLossRatio": "78"
+            },
+            "SpecialPackage": [],
+            "id": 7
         },
         {
-          "stateId": 3,
-          "shippingCost": "425"
-        }
-      ],
-      "id": 8
-    },
-    {
-      "traderData": {
-        "fullName": "wwwwwwwwwwwwwwww",
-        "userName": "aaaaa",
-        "email": "alaaeldeepdev@gmail.com",
-        "phoneNumber": "10912460810",
-        "password": "aaaaaaaaaaaaaaaaaa",
-        "address": "aaaaaaaaaaaa",
-        "branchId": 2,
-        "storeName": "aaaaaa",
-        "stateId": 2,
-        "rejectionOrderLossRatio": "1"
-      },
-      "SpecialPackage": [
-        {
-          "stateId": 1,
-          "cityId": 1,
-          "shippingCost": "10"
+            "traderData": {
+                "fullName": "تاجر2",
+                "userName": "تاجر1",
+                "email": "alaaeldeepdev@gmail.com",
+                "phoneNumber": "10912460810",
+                "password": "aaaaaaaaaaaaaaaaaaaaaa",
+                "address": "aaaaaaaaaaaa",
+                "branchId": 2,
+                "storeName": "aaaaaa",
+                "stateId": 1,
+                "cityId": 1,
+                "rejectionOrderLossRatio": "0001"
+            },
+            "SpecialPackage": [
+                {
+                    "stateId": 1,
+                    "cityId": 1,
+                    "shippingCost": "14"
+                },
+                {
+                    "stateId": 3,
+                    "cityId": 5,
+                    "shippingCost": "14"
+                },
+                {
+                    "stateId": 3,
+                    "shippingCost": "425"
+                }
+            ],
+            "id": 8
         },
         {
-          "stateId": 2,
-          "shippingCost": "45"
+            "traderData": {
+                "fullName": "wwwwwwwwwwwwwwww",
+                "userName": "aaaaa",
+                "email": "alaaeldeepdev@gmail.com",
+                "phoneNumber": "10912460810",
+                "password": "aaaaaaaaaaaaaaaaaa",
+                "address": "aaaaaaaaaaaa",
+                "branchId": 2,
+                "storeName": "aaaaaa",
+                "stateId": 2,
+                "rejectionOrderLossRatio": "1"
+            },
+            "SpecialPackage": [
+                {
+                    "stateId": 1,
+                    "cityId": 1,
+                    "shippingCost": "10"
+                },
+                {
+                    "stateId": 2,
+                    "shippingCost": "45"
+                },
+                {
+                    "stateId": 4,
+                    "cityId": 8,
+                    "shippingCost": "78"
+                },
+                {
+                    "stateId": 4,
+                    "cityId": 7,
+                    "shippingCost": "70"
+                }
+            ],
+            "id": 9
         },
         {
-          "stateId": 4,
-          "cityId": 8,
-          "shippingCost": "78"
+            "traderData": {
+                "fullName": "aaaaaaaaaaaa",
+                "userName": "aaaaaaaaa",
+                "email": "alaaeldeepdev@gmail.com",
+                "phoneNumber": "10912460810",
+                "password": "aaaaaaaaaaaaaaaaaaaaaaa",
+                "address": "aaaaaaaaaaaa",
+                "branchId": 2,
+                "storeName": "aaaaaa",
+                "stateId": 1,
+                "cityId": 2,
+                "rejectionOrderLossRatio": "15"
+            },
+            "SpecialPackage": [
+                {
+                    "stateId": 1,
+                    "cityId": 2,
+                    "shippingCost": "15"
+                }
+            ],
+            "id": 10
         },
         {
-          "stateId": 4,
-          "cityId": 7,
-          "shippingCost": "70"
+            "traderData": {
+                "fullName": "qqq",
+                "userName": "qqqqqqqq",
+                "email": "alaaeldeepdev@gmail.com",
+                "phoneNumber": "10912460810",
+                "password": "zzzzzzzzzzzzzzzzzz",
+                "address": "aaaaaaaaaaaa",
+                "branchId": 2,
+                "storeName": "aaaaaa",
+                "stateId": 2,
+                "cityId": 3,
+                "rejectionOrderLossRatio": "000000000"
+            },
+            "SpecialPackage": [
+                {
+                    "stateId": 3,
+                    "cityId": 5,
+                    "shippingCost": "2"
+                },
+                {
+                    "stateId": 2,
+                    "cityId": 3,
+                    "shippingCost": "8"
+                },
+                {
+                    "stateId": 1,
+                    "cityId": 1,
+                    "shippingCost": "2"
+                }
+            ],
+            "id": 11
         }
-      ],
-      "id": 9
-    },
-    {
-      "traderData": {
-        "fullName": "aaaaaaaaaaaa",
-        "userName": "aaaaaaaaa",
-        "email": "alaaeldeepdev@gmail.com",
-        "phoneNumber": "10912460810",
-        "password": "aaaaaaaaaaaaaaaaaaaaaaa",
-        "address": "aaaaaaaaaaaa",
-        "branchId": 2,
-        "storeName": "aaaaaa",
-        "stateId": 1,
-        "cityId": 2,
-        "rejectionOrderLossRatio": "15"
-      },
-      "SpecialPackage": [
+    ],
+    "representatives": [
         {
-          "stateId": 1,
-          "cityId": 2,
-          "shippingCost": "15"
-        }
-      ],
-      "id": 10
-    },
-    {
-      "traderData": {
-        "fullName": "qqq",
-        "userName": "qqqqqqqq",
-        "email": "alaaeldeepdev@gmail.com",
-        "phoneNumber": "10912460810",
-        "password": "zzzzzzzzzzzzzzzzzz",
-        "address": "aaaaaaaaaaaa",
-        "branchId": 2,
-        "storeName": "aaaaaa",
-        "stateId": 2,
-        "cityId": 3,
-        "rejectionOrderLossRatio": "000000000"
-      },
-      "SpecialPackage": [
-        {
-          "stateId": 3,
-          "cityId": 5,
-          "shippingCost": "2"
+            "fullName": "wwwwwwwwwwwww",
+            "userName": "wwwwwwwwwwwww",
+            "email": "alaaeldeepdev@gmail.com",
+            "password": "wwwwwwwwwwwwwwwwwwww",
+            "phoneNumber": "10912460807",
+            "address": "aaaaaaaaaaaa",
+            "discountType": 0,
+            "states": [
+                { "id": 0, "name": "أسوان" },
+                { "id": 1, "name": "أسيوط" }
+            ],
+            "branch": { "id": 1, "name": "branch1" },
+            "companyOrderRatio": 99,
+            "id": 3
         },
         {
-          "stateId": 2,
-          "cityId": 3,
-          "shippingCost": "8"
+            "userName": "eeeeeeeeeeeee",
+            "fullName": "aaaaaaaaaaaa",
+            "email": "alaaeldeepdev@gmail.com",
+            "phoneNumber": "10912460810",
+            "branch": { "id": 2, "name": "branch1" },
+            "states": [{ "id": 0, "name": "أسوان" }],
+            "password": "0000000000000000",
+            "address": "aaaaaaaaaaaa",
+            "discountType": 0,
+            "companyOrderRatio": 14,
+            "id": 4
+        }
+    ],
+    "permissions": [
+        {
+            "roleName": "صلاحية",
+            "rolePrivileges": [
+                {
+                    "privilegeId": 13,
+                    "permissions": [false, false, true, true]
+                }
+            ],
+            "id": 23
         },
         {
-          "stateId": 1,
-          "cityId": 1,
-          "shippingCost": "2"
+            "roleName": "مديرq",
+            "rolePrivileges": [
+                {
+                    "privilegeId": 1,
+                    "permissions": [false, true, true, false]
+                },
+                {
+                    "privilegeId": 9,
+                    "permissions": [false, false, true, false]
+                },
+                {
+                    "privilegeId": 6,
+                    "permissions": [false, true, true, false]
+                },
+                {
+                    "privilegeId": 12,
+                    "permissions": [false, false, false, true]
+                }
+            ],
+            "id": 24
         }
-      ],
-      "id": 11
-    }
-  ],
-  "representatives": [
-    {
-      "fullName": "wwwwwwwwwwwww",
-      "userName": "wwwwwwwwwwwww",
-      "email": "alaaeldeepdev@gmail.com",
-      "password": "wwwwwwwwwwwwwwwwwwww",
-      "phoneNumber": "10912460807",
-      "address": "aaaaaaaaaaaa",
-      "discountType": "0",
-      "states": [
+    ],
+    "permissionsDetails": [
         {
-          "id": 1,
-          "state": "الشرقية"
+            "addedDate": "21 srp 2021 12:25AM",
+            "id": 1,
+            "roleName": "مدير",
+            "rolePrivileges": [
+                {
+                    "id": 1,
+                    "privilegeId": 1,
+                    "permissions": [true, true, true, true]
+                },
+                {
+                    "id": 2,
+                    "privilegeId": 2,
+                    "permissions": [false, true, false, true]
+                },
+                {
+                    "id": 3,
+                    "privilegeId": 6,
+                    "permissions": [false, true, false, true]
+                }
+            ]
         },
         {
-          "state": "الإسماعيلية",
-          "id": 2
-        }
-      ],
-      "branch": {
-        "id": 1,
-        "branch": "فرع 1"
-      },
-      "companyOrderRatio": 99,
-      "id": 3
-    },
-    {
-      "userName": "eeeeeeeeeeeee",
-      "fullName": "aaaaaaaaaaaa",
-      "email": "alaaeldeepdev@gmail.com",
-      "phoneNumber": "10912460810",
-      "branchId": 1,
-      "statesId": [
-        1
-      ],
-      "password": "0000000000000000",
-      "address": "aaaaaaaaaaaa",
-      "discountType": 0,
-      "companyOrderRatio": 14,
-      "id": 4
-    }
-  ],
-  "permissions": [
-    {
-      "roleName": "صلاحية",
-      "rolePrivileges": [
-        {
-          "privilegeId": 13,
-          "permissions": [
-            false,
-            false,
-            true,
-            true
-          ]
-        }
-      ],
-      "id": 23
-    },
-    {
-      "roleName": "مديرq",
-      "rolePrivileges": [
-        {
-          "privilegeId": 1,
-          "permissions": [
-            false,
-            true,
-            true,
-            false
-          ]
+            "addedDate": "21 srp 2021 12:25AM",
+            "id": 2,
+            "roleName": "سيلز",
+            "rolePrivileges": [
+                {
+                    "id": 4,
+                    "privilegeId": 4,
+                    "permissions": [false, true, false, true]
+                }
+            ]
         },
         {
-          "privilegeId": 9,
-          "permissions": [
-            false,
-            false,
-            true,
-            false
-          ]
+            "addedDate": "21 srp 2021 12:25AM",
+            "id": 3,
+            "roleName": "سوبر فايزر",
+            "rolePrivileges": [
+                {
+                    "id": 9,
+                    "privilegeId": 9,
+                    "permissions": [false, true, false, true]
+                }
+            ]
         },
         {
-          "privilegeId": 6,
-          "permissions": [
-            false,
-            true,
-            true,
-            false
-          ]
+            "addedDate": "21 srp 2021 12:25AM",
+            "id": 4,
+            "roleName": "مدير فرع",
+            "rolePrivileges": [
+                {
+                    "id": 5,
+                    "privilegeId": 5,
+                    "permissions": [false, true, false, true]
+                }
+            ]
         },
         {
-          "privilegeId": 12,
-          "permissions": [
-            false,
-            false,
-            false,
-            true
-          ]
-        }
-      ],
-      "id": 24
-    }
-  ],
-  "permissionsDetails": [
-    {
-      "addedDate": "21 srp 2021 12:25AM",
-      "id": 1,
-      "roleName": "مدير",
-      "rolePrivileges": [
-        {
-          "id": 1,
-          "privilegeId": 1,
-          "permissions": [
-            true,
-            true,
-            true,
-            true
-          ]
+            "addedDate": "21 srp 2021 12:25AM",
+            "id": 5,
+            "roleName": "امين مخزن",
+            "rolePrivileges": [
+                {
+                    "id": 4,
+                    "privilegeId": 4,
+                    "permissions": [false, true, false, true]
+                }
+            ]
         },
         {
-          "id": 2,
-          "privilegeId": 2,
-          "permissions": [
-            false,
-            true,
-            false,
-            true
-          ]
+            "addedDate": "21 srp 2021 12:25AM",
+            "id": 6,
+            "roleName": "حسابات",
+            "rolePrivileges": [
+                {
+                    "id": 4,
+                    "privilegeId": 4,
+                    "permissions": [false, true, false, true]
+                }
+            ]
+        }
+    ],
+    "homeReport": [
+        {
+            "title": "جديد",
+            "number": 11
         },
         {
-          "id": 3,
-          "privilegeId": 6,
-          "permissions": [
-            false,
-            true,
-            false,
-            true
-          ]
-        }
-      ]
-    },
-    {
-      "addedDate": "21 srp 2021 12:25AM",
-      "id": 2,
-      "roleName": "سيلز",
-      "rolePrivileges": [
-        {
-          "id": 4,
-          "privilegeId": 4,
-          "permissions": [
-            false,
-            true,
-            false,
-            true
-          ]
-        }
-      ]
-    },
-    {
-      "addedDate": "21 srp 2021 12:25AM",
-      "id": 3,
-      "roleName": "سوبر فايزر",
-      "rolePrivileges": [
-        {
-          "id": 9,
-          "privilegeId": 9,
-          "permissions": [
-            false,
-            true,
-            false,
-            true
-          ]
-        }
-      ]
-    },
-    {
-      "addedDate": "21 srp 2021 12:25AM",
-      "id": 4,
-      "roleName": "مدير فرع",
-      "rolePrivileges": [
-        {
-          "id": 5,
-          "privilegeId": 5,
-          "permissions": [
-            false,
-            true,
-            false,
-            true
-          ]
-        }
-      ]
-    },
-    {
-      "addedDate": "21 srp 2021 12:25AM",
-      "id": 5,
-      "roleName": "امين مخزن",
-      "rolePrivileges": [
-        {
-          "id": 4,
-          "privilegeId": 4,
-          "permissions": [
-            false,
-            true,
-            false,
-            true
-          ]
-        }
-      ]
-    },
-    {
-      "addedDate": "21 srp 2021 12:25AM",
-      "id": 6,
-      "roleName": "حسابات",
-      "rolePrivileges": [
-        {
-          "id": 4,
-          "privilegeId": 4,
-          "permissions": [
-            false,
-            true,
-            false,
-            true
-          ]
-        }
-      ]
-    }
-  ],
-  "homeReport": [
-    {
-      "title": "جديد",
-      "number": 11
-    },
-    {
-      "title": "قيد الانتظار",
-      "number": 9
-    },
-    {
-      "title": "تم التسليم للمندوب",
-      "number": 6
-    },
-    {
-      "title": "تم التسليم",
-      "number": 16
-    },
-    {
-      "title": "لا يمكن الوصول",
-      "number": 33
-    },
-    {
-      "title": "تم التاجيل",
-      "number": 0
-    },
-    {
-      "title": "تم التسليم جزئيا",
-      "number": 41
-    },
-    {
-      "title": "تم الاغاء من قبل المستلم",
-      "number": 8
-    },
-    {
-      "title": "تم الرفض مع الدفع",
-      "number": 13
-    },
-    {
-      "title": "رفض مع سداد الجزاء",
-      "number": 12
-    },
-    {
-      "title": "رفض ولم يتم الدفع",
-      "number": 9
-    }
-  ],
-  "states": [
-    {
-      "id": 1,
-      "name": "الشرقية"
-    },
-    {
-      "name": "الإسماعيلية",
-      "id": 2
-    },
-    {
-      "name": "الأقصر",
-      "id": 3
-    },
-    {
-      "name": "المنوفية",
-      "id": 4
-    },
-    {
-      "name": "أسوان",
-      "id": 5
-    },
-    {
-      "name": "أسيوط",
-      "id": 6
-    },
-    {
-      "id": 7,
-      "name": "الإسكندرية"
-    }
-  ],
-  "statesTest": [
-    {
-      "id": 1,
-      "cities": [
-        {
-          "city": "مدينة1",
-          "shippingCost": "40",
-          "id": 1
+            "title": "قيد الانتظار",
+            "number": 9
         },
         {
-          "city": "مدينة2",
-          "shippingCost": "40",
-          "id": 2
-        }
-      ]
-    },
-    {
-      "id": 2,
-      "cities": [
-        {
-          "city": "مدينة3",
-          "shippingCost": "40",
-          "id": 3
+            "title": "تم التسليم للمندوب",
+            "number": 6
         },
         {
-          "city": "4مدينة",
-          "shippingCost": "40",
-          "id": 4
-        }
-      ]
-    },
-    {
-      "id": 3,
-      "cities": [
-        {
-          "city": "مدينة5",
-          "shippingCost": "40",
-          "id": 5
+            "title": "تم التسليم",
+            "number": 16
         },
         {
-          "city": "6مدينة",
-          "shippingCost": "40",
-          "id": 6
-        }
-      ]
-    },
-    {
-      "id": 4,
-      "cities": [
-        {
-          "city": "مدينة7",
-          "shippingCost": "40",
-          "id": 7
+            "title": "لا يمكن الوصول",
+            "number": 33
         },
         {
-          "city": "8مدينة",
-          "shippingCost": "40",
-          "id": 8
-        }
-      ]
-    }
-  ],
-  "cities": [
-    {
-      "state": "qqqqq",
-      "city": "qqq",
-      "shippingCost": "1",
-      "id": 9
-    },
-    {
-      "name": "القناطر",
-      "shippingCost": 40,
-      "stateId": 1,
-      "id": 10
-    }
-  ],
-  "branches": [
-    {
-      "branch": "فرع 1",
-      "id": 1
-    },
-    {
-      "branch": "فرع 2",
-      "id": 2
-    }
-  ],
-  "typeOfShipping": [
-    {
-      "type": "شحن عادي",
-      "id": 1
-    },
-    {
-      "type": "شحن في 24 ساعة",
-      "id": 2
-    },
-    {
-      "type": "شحن في 15 يوم",
-      "id": 3
-    }
-  ],
-  "orders": [
-    {
-      "ClientName": "ptfhdfbdxs",
-      "Phone1": "00000000000",
-      "Phone2": "00000000000",
-      "Email": "alaaeldeepdev@gmail.com",
-      "OrderType": 1,
-      "PaymentType": 0,
-      "StateId": 1,
-      "CityId": 1,
-      "AdressDetails": "ccccsssaaaaa",
-      "IsVillage": true,
-      "BranchId": 1,
-      "ShippingTypeId": 1,
-      "OrderCost": 20,
-      "comments": "AAAAAA AAAAAAAAAAA\n\n\n",
-      "OrderItem": [
-        {
-          "productName": "aaa",
-          "productWeight": 1.2,
-          "productQuantity": 12
+            "title": "تم التاجيل",
+            "number": 0
         },
         {
-          "productName": "aa",
-          "productWeight": 5,
-          "productQuantity": 5
-        }
-      ],
-      "id": 7
-    }
-  ],
-  "GETorders": [
-    {
-      "ClientName": "عميل1",
-      "Phone1": "00000000000",
-      "Phone2": "00000000000",
-      "Email": "alaaeldeepdev@gmail.com",
-      "OrderType": 0,
-      "OrderStatus": 4,
-      "PaymentType": 0,
-      "StateId": {
-        "id": 0,
-        "state": "الشرقية"
-      },
-      "CityId": {
-        "id": 0,
-        "city": "مدينة 1"
-      },
-      "AdressDetails": "ccccsssaaaaa",
-      "IsVillage": true,
-      "BranchId": {
-        "id": 0,
-        "branch": "فرع 1"
-      },
-      "ShippingTypeId": {
-        "id": 0,
-        "type": "شحن عادي"
-      },
-      "OrderCost": 20,
-      "comments": "AAAAAA AAAAAAAAAAA",
-      "OrderItem": [
-        {
-          "id": 0,
-          "productName": "aaa",
-          "productWeight": 1.2,
-          "productQuantity": 12
+            "title": "تم التسليم جزئيا",
+            "number": 41
         },
         {
-          "id": 1,
-          "productName": "aa",
-          "productWeight": 5,
-          "productQuantity": 5
-        }
-      ],
-      "id": 1,
-      "addedDate": "21 srp 2021 12:25AM"
-    },
-    {
-      "addedDate": "21 srp 2021 12:25AM",
-      "ClientName": "عميل2",
-      "OrderStatus": 2,
-      "Phone1": "00000000000",
-      "Phone2": "00000000000",
-      "Email": "alaaeldeepdev2@gmail.com",
-      "OrderType": 0,
-      "PaymentType": 0,
-      "StateId": {
-        "id": 0,
-        "state": "الشرقية"
-      },
-      "CityId": {
-        "id": 0,
-        "city": "مدينة 1"
-      },
-      "AdressDetails": "ccccsssaaaaa",
-      "IsVillage": true,
-      "BranchId": {
-        "id": 0,
-        "branch": "فرع 1"
-      },
-      "ShippingTypeId": {
-        "id": 0,
-        "type": "شحن عادي"
-      },
-      "OrderCost": 20,
-      "comments": "AAAAAA AAAAAAAAAAA",
-      "OrderItem": [
-        {
-          "id": 0,
-          "productName": "aaa",
-          "productWeight": 1.2,
-          "productQuantity": 12
+            "title": "تم الاغاء من قبل المستلم",
+            "number": 8
         },
         {
-          "id": 1,
-          "productName": "aa",
-          "productWeight": 5,
-          "productQuantity": 5
-        }
-      ],
-      "id": 2
-    },
-    {
-      "addedDate": "21 srp 2021 12:25AM",
-      "ClientName": "عميل3",
-      "OrderStatus ": 3,
-      "Phone1": "00000000000",
-      "Phone2": "00000000000",
-      "Email": "alaaeldeepdev2@gmail.com",
-      "OrderType": 0,
-      "PaymentType": 0,
-      "StateId": {
-        "id": 0,
-        "state": "الشرقية"
-      },
-      "CityId": {
-        "id": 0,
-        "city": "مدينة 1"
-      },
-      "AdressDetails": "ccccsssaaaaa",
-      "IsVillage": true,
-      "BranchId": {
-        "id": 0,
-        "branch": "فرع 1"
-      },
-      "ShippingTypeId": {
-        "id": 0,
-        "type": "شحن عادي"
-      },
-      "OrderCost": 20,
-      "comments": "AAAAAA AAAAAAAAAAA",
-      "OrderItem": [
-        {
-          "id": 0,
-          "productName": "aaa",
-          "productWeight": 1.2,
-          "productQuantity": 12
+            "title": "تم الرفض مع الدفع",
+            "number": 13
         },
         {
-          "id": 1,
-          "productName": "aa",
-          "productWeight": 5,
-          "productQuantity": 5
-        }
-      ],
-      "id": 3
-    },
-    {
-      "addedDate": "21 srp 2021 12:25AM",
-      "ClientName": "4",
-      "OrderStatus": 4,
-      "Phone1": "00000000000",
-      "Phone2": "00000000000",
-      "Email": "alaaeldeepdev2@gmail.com",
-      "OrderType": 0,
-      "PaymentType": 0,
-      "StateId": {
-        "id": 0,
-        "state": "الشرقية"
-      },
-      "CityId": {
-        "id": 0,
-        "city": "مدينة 1"
-      },
-      "AdressDetails": "ccccsssaaaaa",
-      "IsVillage": true,
-      "BranchId": {
-        "id": 0,
-        "branch": "فرع 1"
-      },
-      "ShippingTypeId": {
-        "id": 0,
-        "type": "شحن عادي"
-      },
-      "OrderCost": 20,
-      "comments": "AAAAAA AAAAAAAAAAA",
-      "OrderItem": [
-        {
-          "id": 0,
-          "productName": "aaa",
-          "productWeight": 1.2,
-          "productQuantity": 12
+            "title": "رفض مع سداد الجزاء",
+            "number": 12
         },
         {
-          "id": 1,
-          "productName": "aa",
-          "productWeight": 5,
-          "productQuantity": 5
+            "title": "رفض ولم يتم الدفع",
+            "number": 9
         }
-      ],
-      "id": 4
-    }
-  ]
+    ],
+    "states": [
+        {
+            "id": 1,
+            "name": "الشرقية"
+        },
+        {
+            "name": "الإسماعيلية",
+            "id": 2
+        },
+        {
+            "name": "الأقصر",
+            "id": 3
+        },
+        {
+            "name": "المنوفية",
+            "id": 4
+        },
+        {
+            "name": "أسوان",
+            "id": 5
+        },
+        {
+            "name": "أسيوط",
+            "id": 6
+        },
+        {
+            "id": 7,
+            "name": "الإسكندرية"
+        }
+    ],
+    "statesTest": [
+        {
+            "id": 1,
+            "cities": [
+                {
+                    "city": "مدينة1",
+                    "shippingCost": "40",
+                    "id": 1
+                },
+                {
+                    "city": "مدينة2",
+                    "shippingCost": "40",
+                    "id": 2
+                }
+            ]
+        },
+        {
+            "id": 2,
+            "cities": [
+                {
+                    "city": "مدينة3",
+                    "shippingCost": "40",
+                    "id": 3
+                },
+                {
+                    "city": "4مدينة",
+                    "shippingCost": "40",
+                    "id": 4
+                }
+            ]
+        },
+        {
+            "id": 3,
+            "cities": [
+                {
+                    "city": "مدينة5",
+                    "shippingCost": "40",
+                    "id": 5
+                },
+                {
+                    "city": "6مدينة",
+                    "shippingCost": "40",
+                    "id": 6
+                }
+            ]
+        },
+        {
+            "id": 4,
+            "cities": [
+                {
+                    "city": "مدينة7",
+                    "shippingCost": "40",
+                    "id": 7
+                },
+                {
+                    "city": "8مدينة",
+                    "shippingCost": "40",
+                    "id": 8
+                }
+            ]
+        }
+    ],
+    "testStateCity": [
+        {
+            "id": 1,
+            "cities": [
+                {
+                    "city": "مدينة1",
+                    "shippingCost": "40",
+                    "id": 1
+                },
+                {
+                    "city": "مدينة2",
+                    "shippingCost": "40",
+                    "id": 2
+                }
+            ]
+        },
+        {
+            "id": 2,
+            "cities": [
+                {
+                    "city": "مدينة3",
+                    "shippingCost": "40",
+                    "id": 3
+                },
+                {
+                    "city": "4مدينة",
+                    "shippingCost": "40",
+                    "id": 4
+                }
+            ]
+        },
+        {
+            "id": 3,
+            "cities": [
+                {
+                    "city": "مدينة5",
+                    "shippingCost": "40",
+                    "id": 5
+                },
+                {
+                    "city": "6مدينة",
+                    "shippingCost": "40",
+                    "id": 6
+                }
+            ]
+        },
+        {
+            "id": 4,
+            "cities": [
+                {
+                    "city": "مدينة7",
+                    "shippingCost": "40",
+                    "id": 7
+                },
+                {
+                    "city": "8مدينة",
+                    "shippingCost": "40",
+                    "id": 8
+                }
+            ]
+        }
+    ],
+    "citiesToRepresentative": [
+        { "cityId": 1, "name": "مدينة1", "stateId": 1 },
+        { "cityId": 2, "name": "مدينة2", "stateId": 1 },
+        { "cityId": 3, "name": "مدينة3", "stateId": 2 },
+        { "cityId": 4, "name": "مدينة4", "stateId": 3 },
+        { "cityId": 5, "name": "مدينة5", "stateId": 3 },
+        { "cityId": 6, "name": "مدينة6", "stateId": 3 },
+        { "cityId": 7, "name": "مدينة7", "stateId": 4 },
+        { "cityId": 8, "name": "مدينة8", "stateId": 5 },
+        { "cityId": 9, "name": "مدينة9", "stateId": 6 },
+        { "cityId": 10, "name": "مدينة10", "stateId": 7 }
+    ],
+    "cities": [
+        {
+            "state": "qqqqq",
+            "city": "qqq",
+            "shippingCost": "1",
+            "id": 9
+        },
+        {
+            "name": "القناطر",
+            "shippingCost": 40,
+            "stateId": 1,
+            "id": 10
+        }
+    ],
+    "branches": [
+        {
+            "branch": "فرع 1",
+            "id": 1
+        },
+        {
+            "branch": "فرع 2",
+            "id": 2
+        }
+    ],
+    "typeOfShipping": [
+        {
+            "type": "شحن عادي",
+            "id": 1
+        },
+        {
+            "type": "شحن في 24 ساعة",
+            "id": 2
+        },
+        {
+            "type": "شحن في 15 يوم",
+            "id": 3
+        }
+    ],
+    "orders": [
+        {
+            "ClientName": "ptfhdfbdxs",
+            "Phone1": "00000000000",
+            "Phone2": "00000000000",
+            "Email": "alaaeldeepdev@gmail.com",
+            "OrderType": 1,
+            "PaymentType": 0,
+            "StateId": 1,
+            "CityId": 1,
+            "AdressDetails": "ccccsssaaaaa",
+            "IsVillage": true,
+            "BranchId": 1,
+            "ShippingTypeId": 1,
+            "OrderCost": 20,
+            "comments": "AAAAAA AAAAAAAAAAA\n\n\n",
+            "OrderItem": [
+                {
+                    "productName": "aaa",
+                    "productWeight": 1.2,
+                    "productQuantity": 12
+                },
+                {
+                    "productName": "aa",
+                    "productWeight": 5,
+                    "productQuantity": 5
+                }
+            ],
+            "id": 7
+        }
+    ],
+    "GETorders": [
+        {
+            "ClientName": "عميل1",
+            "Phone1": "00000000000",
+            "Phone2": "00000000000",
+            "Email": "alaaeldeepdev@gmail.com",
+            "OrderType": 0,
+            "OrderStatus": 4,
+            "PaymentType": 0,
+            "StateId": {
+                "id": 0,
+                "state": "الشرقية"
+            },
+            "CityId": {
+                "id": 0,
+                "city": "مدينة 1"
+            },
+            "AdressDetails": "ccccsssaaaaa",
+            "IsVillage": true,
+            "BranchId": {
+                "id": 0,
+                "branch": "فرع 1"
+            },
+            "ShippingTypeId": {
+                "id": 0,
+                "type": "شحن عادي"
+            },
+            "OrderCost": 20,
+            "comments": "AAAAAA AAAAAAAAAAA",
+            "OrderItem": [
+                {
+                    "id": 0,
+                    "productName": "aaa",
+                    "productWeight": 1.2,
+                    "productQuantity": 12
+                },
+                {
+                    "id": 1,
+                    "productName": "aa",
+                    "productWeight": 5,
+                    "productQuantity": 5
+                }
+            ],
+            "id": 1,
+            "addedDate": "21 srp 2021 12:25AM"
+        },
+        {
+            "addedDate": "21 srp 2021 12:25AM",
+            "ClientName": "عميل2",
+            "OrderStatus": 2,
+            "Phone1": "00000000000",
+            "Phone2": "00000000000",
+            "Email": "alaaeldeepdev2@gmail.com",
+            "OrderType": 0,
+            "PaymentType": 0,
+            "StateId": {
+                "id": 0,
+                "state": "الشرقية"
+            },
+            "CityId": {
+                "id": 0,
+                "city": "مدينة 1"
+            },
+            "AdressDetails": "ccccsssaaaaa",
+            "IsVillage": true,
+            "BranchId": {
+                "id": 0,
+                "branch": "فرع 1"
+            },
+            "ShippingTypeId": {
+                "id": 0,
+                "type": "شحن عادي"
+            },
+            "OrderCost": 20,
+            "comments": "AAAAAA AAAAAAAAAAA",
+            "OrderItem": [
+                {
+                    "id": 0,
+                    "productName": "aaa",
+                    "productWeight": 1.2,
+                    "productQuantity": 12
+                },
+                {
+                    "id": 1,
+                    "productName": "aa",
+                    "productWeight": 5,
+                    "productQuantity": 5
+                }
+            ],
+            "id": 2
+        },
+        {
+            "addedDate": "21 srp 2021 12:25AM",
+            "ClientName": "عميل3",
+            "OrderStatus ": 3,
+            "Phone1": "00000000000",
+            "Phone2": "00000000000",
+            "Email": "alaaeldeepdev2@gmail.com",
+            "OrderType": 0,
+            "PaymentType": 0,
+            "StateId": {
+                "id": 0,
+                "state": "الشرقية"
+            },
+            "CityId": {
+                "id": 0,
+                "city": "مدينة 1"
+            },
+            "AdressDetails": "ccccsssaaaaa",
+            "IsVillage": true,
+            "BranchId": {
+                "id": 0,
+                "branch": "فرع 1"
+            },
+            "ShippingTypeId": {
+                "id": 0,
+                "type": "شحن عادي"
+            },
+            "OrderCost": 20,
+            "comments": "AAAAAA AAAAAAAAAAA",
+            "OrderItem": [
+                {
+                    "id": 0,
+                    "productName": "aaa",
+                    "productWeight": 1.2,
+                    "productQuantity": 12
+                },
+                {
+                    "id": 1,
+                    "productName": "aa",
+                    "productWeight": 5,
+                    "productQuantity": 5
+                }
+            ],
+            "id": 3
+        },
+        {
+            "addedDate": "21 srp 2021 12:25AM",
+            "ClientName": "4",
+            "OrderStatus": 4,
+            "Phone1": "00000000000",
+            "Phone2": "00000000000",
+            "Email": "alaaeldeepdev2@gmail.com",
+            "OrderType": 0,
+            "PaymentType": 0,
+            "StateId": {
+                "id": 0,
+                "state": "الشرقية"
+            },
+            "CityId": {
+                "id": 0,
+                "city": "مدينة 1"
+            },
+            "AdressDetails": "ccccsssaaaaa",
+            "IsVillage": true,
+            "BranchId": {
+                "id": 0,
+                "branch": "فرع 1"
+            },
+            "ShippingTypeId": {
+                "id": 0,
+                "type": "شحن عادي"
+            },
+            "OrderCost": 20,
+            "comments": "AAAAAA AAAAAAAAAAA",
+            "OrderItem": [
+                {
+                    "id": 0,
+                    "productName": "aaa",
+                    "productWeight": 1.2,
+                    "productQuantity": 12
+                },
+                {
+                    "id": 1,
+                    "productName": "aa",
+                    "productWeight": 5,
+                    "productQuantity": 5
+                }
+            ],
+            "id": 4
+        }
+    ]
 }

@@ -160,6 +160,19 @@ export type RepresentativeType = {
     discountType: number;
     companyOrderRatio: number;
 };
+export type RepresentativeGET = {
+    userName: string;
+    fullName: string;
+    email: string;
+    password: string;
+    phoneNumber: string;
+    address: string;
+    branch: { id: number; name: string };
+    states: { id: number; name: string }[];
+    discountType: number;
+    companyOrderRatio: number;
+    id: number;
+};
 export type TraderType = {
     traderData: {
         userName: string;

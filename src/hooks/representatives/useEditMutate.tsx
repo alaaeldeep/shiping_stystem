@@ -5,12 +5,12 @@ import { request } from "../../lib/axios.utls";
 import { useMutation, useQueryClient } from "react-query";
 
 /* types */
-import { RepresentativeType } from "../../components/types";
+import { RepresentativeGET } from "../../components/types";
 
 type RepresentativeID = {
     id: number;
 };
-const updateRepresentative = (data: RepresentativeType & RepresentativeID) => {
+const updateRepresentative = (data: RepresentativeGET & RepresentativeID) => {
     return request({
         url: `/representatives/${data.id}`,
         method: "put",

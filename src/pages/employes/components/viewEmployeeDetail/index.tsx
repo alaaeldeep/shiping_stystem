@@ -54,9 +54,11 @@ const ViewEmployeeDetails = ({
                         display: "flex",
                         flexDirection: "column",
                         gap: "1rem",
-                        border: "1px solid #9ba4b5b7",
+                        /*     border: "1px solid #9ba4b5b7", */
                         padding: "25px",
                         borderRadius: "25px",
+                        boxShadow:
+                            "rgba(17, 17, 26, 0.1) 0px 1px 0px, rgba(17, 17, 26, 0.1) 0px 8px 24px, rgba(17, 17, 26, 0.1) 0px 16px 48px",
                     }}
                 >
                     <Typography>

@@ -11,12 +11,12 @@ import ViewRepresentativeDetails from "../../../components/viewPersentativeDetai
 
 /* react staff */
 import { useState } from "react";
-import { RepresentativeRow } from "../../../../../components/types";
+import { RepresentativeGET } from "../../../../../components/types";
 
 /* types */
 type props = {
     index: number;
-    data: RepresentativeRow;
+    data: RepresentativeGET;
 };
 const RowInLargeScreen = ({ index, data }: props) => {
     const [openViewRepresentativeDetails, setOpenViewRepresentativeDetails] =
@@ -76,7 +76,7 @@ const RowInLargeScreen = ({ index, data }: props) => {
                     <TableCell align="center">{data.phoneNumber}</TableCell>
 
                     {/* branch */}
-                    <TableCell align="center">{data.branch.branch}</TableCell>
+                    <TableCell align="center">{data.branch.name}</TableCell>
 
                     {/* status */}
                     <TableCell align="center">

@@ -5,18 +5,17 @@ import {
     DialogActions,
     Dialog,
     IconButton,
-    useMediaQuery,
     Box,
     Typography,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 
 /* types */
-import { RepresentativeRow } from "../../../../components/types";
+import { RepresentativeGET } from "../../../../components/types";
 
 type RepresentativeDetailsProps = {
     open: boolean;
-    data: RepresentativeRow;
+    data: RepresentativeGET;
 
     handleClose: () => void;
 };
@@ -25,8 +24,6 @@ const ViewRepresentativeDetails = ({
     handleClose,
     data,
 }: RepresentativeDetailsProps) => {
-    const matches = useMediaQuery("(min-width:1070px)");
-
     return (
         <Dialog
             fullWidth={true}
@@ -51,38 +48,74 @@ const ViewRepresentativeDetails = ({
             <DialogContent>
                 <Box
                     sx={{
-                        paddingX: "2rem",
                         display: "flex",
                         flexDirection: "column",
                         gap: "1rem",
+                        /* border: "1px solid #9ba4b5b7", */
+                        padding: "25px",
+                        borderRadius: "25px",
+                        boxShadow:
+                            "rgba(17, 17, 26, 0.1) 0px 1px 0px, rgba(17, 17, 26, 0.1) 0px 8px 24px, rgba(17, 17, 26, 0.1) 0px 16px 48px",
                     }}
                 >
-                    <Typography>الاسم بالكامل : {data.fullName}</Typography>
-                    <Typography>اسم المستخدم : {data.userName}</Typography>
+                    <Typography>
+                        <span style={{ fontWeight: "600" }}>
+                            الاسم بالكامل :
+                        </span>{" "}
+                        {data.fullName}
+                    </Typography>
+                    <Typography>
+                        <span style={{ fontWeight: "600" }}>
+                            اسم المستخدم :
+                        </span>{" "}
+                        {data.userName}
+                    </Typography>
+                    <Typography>
+                        <span style={{ fontWeight: "600" }}>
+                            البريد الالكتروني :
+                        </span>{" "}
+                        {data.email}
+                    </Typography>
+                    <Typography>
+                        <span style={{ fontWeight: "600" }}>رقم الهاتف :</span>{" "}
+                        {data.phoneNumber}
+                    </Typography>
 
-                    <Typography>البريد الالكتروني : {data.email}</Typography>
-                    <Typography>رقم الهاتف : {data.phoneNumber}</Typography>
+                    <Typography>
+                        <span style={{ fontWeight: "600" }}>العنوان</span>{" "}
+                        {data.address}
+                    </Typography>
+                    <Typography>
+                        <span style={{ fontWeight: "600" }}>اسم الفرع :</span>{" "}
+                        {data.branch.name}
+                    </Typography>
 
-                    <Typography>العنوان : {data.address}</Typography>
-                    <Typography>اسم المستخدم : {data.userName}</Typography>
-                    <Typography> الفرع : {data.branch.branch}</Typography>
+                    <Typography>
+                        <span style={{ fontWeight: "600" }}>
+                            نسبة الشركة من الطلب :
+                        </span>{" "}
+                        {data.companyOrderRatio} %
+                    </Typography>
+                    <Typography>
+                        <span style={{ fontWeight: "600" }}> نوع الخصم :</span>{" "}
+                        {data.discountType.toString() === "0"
+                            ? "رقم ثابت"
+                            : "نسبة مئوية"}
+                    </Typography>
+
                     <div>
                         {" "}
-                        المحافظات :{" "}
-                        <ul style={{ listStyle: "none", marginRight: "5rem" }}>
-                            {data.states.map((state) => (
-                                <li key={state.id}> 📌 {state.state}</li>
+                        <span style={{ fontWeight: "600" }}>
+                            المحافظات :
+                        </span>{" "}
+                        <ul
+                            style={{ listStyle: "none", marginRight: "5.5rem" }}
+                        >
+                            {data.states.map((state, index) => (
+                                <li key={index}> 📌 {state.name}</li>
                             ))}
                         </ul>
                     </div>
-
-                    <Typography>
-                        نسبة الشركه من الطلب : {data.companyOrderRatio} %
-                    </Typography>
-                    <Typography>
-                        نوع الخصم :{" "}
-                        {data.discountType === "0" ? "رقم ثابت" : "نسبة مئوية"}
-                    </Typography>
                 </Box>
             </DialogContent>
         </Dialog>

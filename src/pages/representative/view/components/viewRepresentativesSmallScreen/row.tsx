@@ -8,24 +8,24 @@ import {
     AccordionSummary,
     Box,
     IconButton,
-    Paper,
     Typography,
 } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import ZoomOutMapIcon from "@mui/icons-material/ZoomOutMap";
-
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 
-/* types */
-import { RepresentativeRow, Data } from "../../../../../components/types";
-import ViewRepresentativeDetails from "../../../components/viewPersentativeDetail";
+/* components */
 import EditRepresentativeDetail from "../../../components/editRepresentativeDetail";
 import DeleteHandler from "../../../components/deleteHandeler";
 
+/* types */
+import { RepresentativeGET } from "../../../../../components/types";
+import ViewRepresentativeDetails from "../../../components/viewPersentativeDetail";
+
 type props = {
     index: number;
-    data: RepresentativeRow;
+    data: RepresentativeGET;
 };
 
 const RowInSmallScreen = ({ index, data }: props) => {
@@ -102,7 +102,7 @@ const RowInSmallScreen = ({ index, data }: props) => {
                 <AccordionDetails>
                     <Typography>الاسم : {data.userName}</Typography>
                     <Typography>رقم الهاتف : {data.phoneNumber}</Typography>
-                    <Typography>الفرع : {data.branch.branch}</Typography>
+                    <Typography>الفرع : {data.branch.name}</Typography>
 
                     <Typography>الحاله : {"//"}</Typography>
                     <Box>

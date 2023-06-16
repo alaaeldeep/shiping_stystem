@@ -55,11 +55,9 @@ const SpecialPackageInLargeScreen = ({
                                     component="th"
                                     scope="row"
                                 >
-                                    {row.stateId}
+                                    {row.state}
                                 </TableCell>
-                                <TableCell align="center">
-                                    {row.cityId}
-                                </TableCell>
+                                <TableCell align="center">{row.city}</TableCell>
                                 <TableCell align="center">
                                     {row.shippingCost}
                                 </TableCell>

@@ -1,5 +1,5 @@
 /* react staff */
-import { useState, SyntheticEvent, useEffect } from "react";
+import { useState, useRef } from "react";
 
 /* router */
 import { useNavigate } from "react-router";
@@ -12,14 +12,14 @@ import {
     StepLabel,
     Stepper,
     Typography,
-    Backdrop,
-    Modal,
-    Fade,
-    Autocomplete,
-    TextField,
     FormHelperText,
+    SelectChangeEvent,
+    FormControl,
+    InputLabel,
+    Select,
+    MenuItem,
+    useMediaQuery,
 } from "@mui/material";
-import { useMediaQuery } from "@mui/material";
 
 /* hooks form */
 import { useForm } from "react-hook-form";
@@ -29,34 +29,24 @@ import { DevTool } from "@hookform/devtools";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 
-/* uuid */
-import { v4 as uuidv4 } from "uuid";
-
 /* components */
 import { TableToolbar } from "../../../components/table/tableToolBar";
 import InputField from "../../../components/inputFields/textInputField/inputfield";
 import NumericInputField from "../../../components/inputFields/numericInputField";
 import SpecialPackageInLargeScreen from "./components/specialPackageInLargeScreen";
-import SpecialPackageInSmallScreen from "./components/specialPackageInSmallScreen";
 
 /* react query */
-import UseQuery, { UseQuery2 } from "../../../hooks/serverState/useQuery";
+import UseQuery from "../../../hooks/serverState/useQuery";
 import UseMutate from "../../../hooks/traders/useAddMutate";
+
+/* toast */
+import { toast } from "react-toastify";
 
 /* types */
 import { SpecialPackage } from "../../../components/types";
+import SpecialPackageForm from "./components/specialPackageForm";
+import SpecialPackageInSmallScreen from "./components/specialPackageInSmallScreen";
 
-const modalFormstyle = {
-    position: "absolute",
-    top: "50%",
-    left: "50%",
-    transform: "translate(-50%, -50%)",
-    width: 400,
-    bgcolor: "background.paper",
-    borderRadius: "25px",
-    boxShadow: 24,
-    p: 4,
-};
 /*  */
 const steps = [
     "تسجيل البيانات الاساسيه",
@@ -65,19 +55,59 @@ const steps = [
 ];
 
 const AddTraderPage = () => {
+    const matches = useMediaQuery("(min-width:1070px)");
+
     const navigate = useNavigate();
     /*  */
-    const [stateId, setStateId] = useState<number>();
-    /* mui */
-    const matches = useMediaQuery("(min-width:1070px)");
+
     /* fetch data */
     const { mutate } = UseMutate();
     const { data: branches } = UseQuery("/branches");
     const { data: states } = UseQuery("/states");
-    const { data: cities, refetch } = UseQuery2(`/statesTest/${stateId}`);
-    const { data: cities2 } = UseQuery(`/cities`);
-    const [avalCities, setAvalCities] = useState([]);
+    const { data: citiesToRepresentative } = UseQuery(
+        "/citiesToRepresentative"
+    );
 
+    /* state& city state */
+    const stateRef = useRef("");
+    const [availableCities, setAvailableCities] = useState<
+        {
+            cityId: number;
+            stateId: number;
+            name: string;
+        }[]
+    >();
+
+    const [state, setState] = useState<string>("");
+    const handelStateChange = (event: SelectChangeEvent) => {
+        stateRef.current = event.target.value as string;
+        setState(event.target.value as string);
+        setAvailableCities(handelCity(stateRef.current));
+    };
+
+    const handelCity = (stateId: string) => {
+        return citiesToRepresentative?.data.filter((city: any) => {
+            if (city.stateId.toString() === stateId) return city;
+        });
+    };
+    /* branch state */
+    const [branch, setBranch] = useState<string>();
+    const handelBranchChange = (event: SelectChangeEvent) => {
+        setBranch(event.target.value as string);
+    };
+    /* city state */
+    const [city, setCity] = useState<string>();
+    const handelCityChange = (event: SelectChangeEvent) => {
+        setCity(event.target.value as string);
+    };
+    /* modal special package */
+    const [openSpecialPackageForm, setOpenSpecialPackageForm] = useState(false);
+    const handleOpenSpecialPackageForm = () => {
+        setOpenSpecialPackageForm(true);
+    };
+    const handleCloseSpecialPackageForm = () => {
+        setOpenSpecialPackageForm(false);
+    };
     /* steps form */
     const [activeStep, setActiveStep] = useState(0);
     const handleNext = () => {
@@ -85,9 +115,6 @@ const AddTraderPage = () => {
     };
     const handleBack = () => {
         setActiveStep((prevActiveStep) => prevActiveStep - 1);
-    };
-    const handleReset = () => {
-        setActiveStep(0);
     };
     /* end-steps form */
 
@@ -124,193 +151,56 @@ const AddTraderPage = () => {
 
         address: z.string().nonempty("برجاء كتابة العنوان"),
 
-        branch: z.string().nonempty("برجاء اختيار الفرع"),
-
         /* step 2 */
-
+        branchId: z.string().nonempty("برجاء اختيار الفرع"),
         storeName: z.string().nonempty("برجاء كتابه اسم المتجر"),
-        state: z.string().nonempty("برجاء اختيار المحافظه"),
-        city: z.string().nonempty("برجاء اختيار المدينه"),
-
+        stateId: z.string().nonempty("برجاء اختيار المحافظه"),
+        cityId: z.string().nonempty("برجاء اختيار المدينه"),
         rejectionOrderLossRatio: z.string().nonempty("برجاء كتابه نسبه التحمل"),
 
         /* step 3 */
-        stateSpecialPackage: z.string().nonempty("برجاء اختيار المحافظه"),
-        citySpecialPackage: z.string().nonempty("برجاء اختيار المدينه"),
-        shippingCostSpecialPackage: z
-            .string()
-            .nonempty("برجاء ادخال تكلفه الشحن"),
+        stateSpecialPackage: z.string().optional(),
+        citySpecialPackage: z.string().optional(),
+        shippingCostSpecialPackage: z.string().optional(),
     });
+
     type FormValue = z.infer<typeof schema>;
     /* hooks form */
-    const {
-        register,
-        control,
-        resetField,
-        formState,
-        getValues,
-        getFieldState,
-    } = useForm<FormValue>({
-        defaultValues: {},
-        mode: "onTouched",
-        resolver: zodResolver(schema),
-    });
+    const { register, control, formState, setError, handleSubmit } =
+        useForm<FormValue>({
+            defaultValues: {},
+            mode: "onTouched",
+            resolver: zodResolver(schema),
+        });
     const { errors } = formState;
 
-    const onSubmit = (e: SyntheticEvent) => {
-        e.preventDefault();
-        const data = {
-            traderData: {
-                fullName: getValues().fullName,
-                userName: getValues().userName,
-                email: getValues().email,
-                phoneNumber: getValues().phoneNumber,
-                password: getValues().password,
-                address: getValues().address,
-                branchId: convertBranchToID(getValues().branch),
-                storeName: getValues().storeName,
-                stateId: convertStateToID(getValues().state),
-                cityId: convertCityToID(getValues().city),
-                rejectionOrderLossRatio: getValues().rejectionOrderLossRatio,
-            },
-            SpecialPackage: convertSpecialPackage(SpecialPackage),
-        };
+    const onSubmit = (data: FormValue) => {
         if (
-            (getFieldState("fullName").isTouched &&
-                getFieldState("fullName").error) ||
-            (getFieldState("userName").isTouched &&
-                getFieldState("userName").error) ||
-            (getFieldState("email").isTouched &&
-                getFieldState("email").error) ||
-            (getFieldState("password").isTouched &&
-                getFieldState("password").error) ||
-            (getFieldState("phoneNumber").isTouched &&
-                getFieldState("phoneNumber").error) ||
-            (getFieldState("address").isTouched &&
-                getFieldState("address").error)
+            handelCity(data.stateId).some(
+                (city: { cityId: string; stateId: string }) =>
+                    city.cityId == data.cityId
+            )
         ) {
-            handleReset();
+            console.log({ ...data, specialPackages: SpecialPackage });
         } else {
-            setActiveStep(1);
-        }
-        if (
-            getFieldState("fullName").isTouched &&
-            !getFieldState("fullName").error &&
-            getFieldState("userName").isTouched &&
-            !getFieldState("userName").error &&
-            getFieldState("email").isTouched &&
-            !getFieldState("email").error &&
-            getFieldState("phoneNumber").isTouched &&
-            !getFieldState("phoneNumber").error &&
-            getFieldState("address").isTouched &&
-            !getFieldState("address").error &&
-            getFieldState("branch").isTouched &&
-            !getFieldState("branch").error &&
-            getFieldState("state").isTouched &&
-            !getFieldState("state").error &&
-            getFieldState("storeName").isTouched &&
-            !getFieldState("storeName").error &&
-            getFieldState("city").isTouched &&
-            !getFieldState("city").error
-        ) {
-            /* make the request 🚀 🚀 */
-            mutate(data, {
-                onSuccess: () => {
-                    navigate("/traders");
-                },
+            setError("cityId", { message: "برجاء اختيار مدينة" });
+            toast.warn("برجاء   اختيار مدينة ", {
+                position: toast.POSITION.BOTTOM_LEFT,
+                autoClose: 2000,
+                theme: "dark",
             });
         }
     };
-    /* control cities option */
-    const handelAvailableCities = (state: string) => {
-        resetField("city");
-        resetField("citySpecialPackage");
-        setStateId(convertStateToID(state));
-    };
-    useEffect(() => {
-        refetch().then((res) => setAvalCities(res?.data.data.cities));
-    }, [stateId]);
-
-    const convertStateToID = (state: string) => {
-        let stateId!: number;
-        states?.data.forEach((stateObj: { id: number; state: string }) => {
-            if (stateObj.state === state) {
-                stateId = stateObj.id;
-            }
-        });
-        return stateId;
-    };
-    const convertCityToID = (city: string) => {
-        let cityId!: number;
-        cities2?.data.forEach((cityObj: { id: number; city: string }) => {
-            if (cityObj.city === city) {
-                cityId = cityObj.id;
-            }
-        });
-        return cityId;
-    };
-    const convertBranchToID = (branch: string) => {
-        let branchId!: number;
-        branches?.data.forEach((branchObj: { id: number; branch: string }) => {
-            if (branchObj.branch === branch) {
-                branchId = branchObj.id;
-            }
-        });
-        return branchId;
-    };
-    const convertSpecialPackage = (SpecialPackage: SpecialPackage[]) => {
-        return SpecialPackage.map((SpecialPackage) => {
-            convertStateToID(SpecialPackage.state);
-            convertBranchToID(SpecialPackage.city);
-            SpecialPackage.shippingCost;
-            return {
-                stateId: convertStateToID(SpecialPackage.state),
-                cityId: convertCityToID(SpecialPackage.city),
-                shippingCost: SpecialPackage.shippingCost,
-            };
+    const onError = () => {
+        toast.warn("برجاء اكمال الحقول الفارغة ", {
+            position: toast.POSITION.BOTTOM_LEFT,
+            autoClose: 2000,
+            theme: "dark",
         });
     };
-
-    /* step form 3 staff */
 
     /* modal form*/
     const [SpecialPackage, setSpecialPackage] = useState<SpecialPackage[]>([]);
-    const [openModal, setOpenModal] = useState(false);
-    const handleOpenModal = () => setOpenModal(true);
-    const handleCloseModal = () => setOpenModal(false);
-    const handleAddSpecialPackage = (newPackage: SpecialPackage) => {
-        setSpecialPackage((prev) => [...prev, { ...newPackage }]);
-    };
-
-    /* modal */
-    const modalSubmit = () => {
-        if (
-            getFieldState("stateSpecialPackage").isTouched &&
-            !getFieldState("stateSpecialPackage").error &&
-            getFieldState("citySpecialPackage").isTouched &&
-            !getFieldState("citySpecialPackage").error &&
-            getFieldState("shippingCostSpecialPackage").isTouched &&
-            !getFieldState("shippingCostSpecialPackage").error
-        ) {
-            handleAddSpecialPackage({
-                state: getValues("stateSpecialPackage"),
-                city: getValues("citySpecialPackage"),
-                shippingCost: getValues("shippingCostSpecialPackage"),
-                id: uuidv4(),
-            });
-            resetField("citySpecialPackage");
-            resetField("shippingCostSpecialPackage");
-            resetField("stateSpecialPackage");
-            handleCloseModal();
-        } else {
-            // console.log("no");
-        }
-
-        /* if (formState.isValid) {
-            resetForm();
-          
-        } */
-    };
 
     return (
         <>
@@ -342,7 +232,7 @@ const AddTraderPage = () => {
                 </Stepper>
 
                 {/* form */}
-                <form onSubmit={(e) => onSubmit(e)}>
+                <form onSubmit={handleSubmit(onSubmit, onError)}>
                     <Box sx={{ mt: 2, mb: 1 }}>
                         <Box
                             sx={{
@@ -451,144 +341,149 @@ const AddTraderPage = () => {
                                             smallWidth="90%"
                                         />
                                     </div>
+
                                     {/* state name */}
                                     <div style={{ margin: "20px 0" }}>
-                                        <Autocomplete
-                                            onChange={(_e, value) => {
-                                                handelAvailableCities(
-                                                    value as string
-                                                );
+                                        <FormControl
+                                            sx={{
+                                                width: "90%",
                                             }}
-                                            noOptionsText="هذه المحافظة غير متاحة حاليا"
-                                            id="state"
-                                            disablePortal
-                                            options={states?.data.map(
-                                                (option: {
-                                                    id: number;
-                                                    state: string;
-                                                }) => option.state
-                                            )}
-                                            renderInput={(params) => (
-                                                <>
-                                                    <TextField
-                                                        color="info"
-                                                        {...register("state")}
-                                                        error={!!errors.state}
-                                                        sx={{
-                                                            width: "90%",
-                                                        }}
-                                                        {...params}
-                                                        label="المحافظة"
-                                                        InputProps={{
-                                                            ...params.InputProps,
-                                                            type: "text",
-                                                        }}
-                                                    />
-                                                    <FormHelperText
-                                                        error={!!errors.state}
-                                                        sx={{
-                                                            fontWeight: "bold",
-                                                            letterSpacing:
-                                                                "0.1rem",
-                                                        }}
-                                                        id="component-helper-text"
-                                                    >
-                                                        {errors?.state?.message}
-                                                    </FormHelperText>
-                                                </>
-                                            )}
-                                        />
+                                        >
+                                            <InputLabel
+                                                error={!!errors.stateId}
+                                                color="info"
+                                                id="demo-simple-select-helper-label"
+                                            >
+                                                اسم المحافظة
+                                            </InputLabel>
+                                            <Select
+                                                {...register("stateId")}
+                                                labelId="demo-simple-select-helper-label"
+                                                id="demo-simple-select-helper"
+                                                value={state}
+                                                label="اسم المحافظة"
+                                                color="info"
+                                                onChange={handelStateChange}
+                                            >
+                                                {states?.data.map(
+                                                    (state: {
+                                                        id: number;
+                                                        name: string;
+                                                    }) => (
+                                                        <MenuItem
+                                                            key={state.id}
+                                                            value={state.id.toString()}
+                                                        >
+                                                            {state.name}
+                                                        </MenuItem>
+                                                    )
+                                                )}
+                                            </Select>
+                                            <FormHelperText
+                                                error={!!errors.stateId}
+                                            >
+                                                {errors?.stateId?.message}
+                                            </FormHelperText>
+                                        </FormControl>
                                     </div>
+
                                     {/* branch name */}
                                     <div style={{ margin: "20px 0" }}>
-                                        <Autocomplete
-                                            noOptionsText="هذا الفرع غير متاح حاليا"
-                                            id="state"
-                                            disablePortal
-                                            options={branches?.data.map(
-                                                (option: {
-                                                    id: number;
-                                                    branch: string;
-                                                }) => option.branch
-                                            )}
-                                            renderInput={(params) => (
-                                                <>
-                                                    <TextField
-                                                        color="info"
-                                                        {...register("branch")}
-                                                        error={!!errors.branch}
-                                                        sx={{
-                                                            width: "90%",
-                                                        }}
-                                                        {...params}
-                                                        label="اسم الفرع"
-                                                        InputProps={{
-                                                            ...params.InputProps,
-                                                            type: "text",
-                                                        }}
-                                                    />
-                                                    <FormHelperText
-                                                        error={!!errors.branch}
-                                                        sx={{
-                                                            fontWeight: "bold",
-                                                            letterSpacing:
-                                                                "0.1rem",
-                                                        }}
-                                                        id="component-helper-text"
-                                                    >
-                                                        {
-                                                            errors?.branch
-                                                                ?.message
-                                                        }
-                                                    </FormHelperText>
-                                                </>
-                                            )}
-                                        />
+                                        <FormControl
+                                            sx={{
+                                                width: "90%",
+                                            }}
+                                        >
+                                            <InputLabel
+                                                error={!!errors.branchId}
+                                                color="info"
+                                                id="demo-simple-select-helper-label"
+                                            >
+                                                اسم الفرع
+                                            </InputLabel>
+                                            <Select
+                                                {...register("branchId")}
+                                                labelId="demo-simple-select-helper-label"
+                                                id="demo-simple-select-helper"
+                                                value={branch}
+                                                label="اسم الفرع"
+                                                color="info"
+                                                onChange={handelBranchChange}
+                                            >
+                                                {branches?.data.map(
+                                                    (branch: {
+                                                        id: number;
+                                                        branch: string;
+                                                    }) => (
+                                                        <MenuItem
+                                                            key={branch.id}
+                                                            defaultChecked
+                                                            value={branch.id.toString()}
+                                                        >
+                                                            {branch.branch}
+                                                        </MenuItem>
+                                                    )
+                                                )}
+                                            </Select>
+                                            <FormHelperText
+                                                error={!!errors.branchId}
+                                            >
+                                                {errors?.branchId?.message}
+                                            </FormHelperText>
+                                        </FormControl>
                                     </div>
+
                                     {/* city name */}
-                                    <div style={{ margin: "20px 0" }}>
-                                        <Autocomplete
-                                            disabled={!cities?.data}
-                                            noOptionsText="هذه المدينة غير متاحة حاليا"
-                                            id="city"
-                                            disablePortal
-                                            options={avalCities.map(
-                                                (option: {
-                                                    id: number;
-                                                    city: string;
-                                                }) => option.city
-                                            )}
-                                            renderInput={(params) => (
-                                                <>
-                                                    <TextField
-                                                        color="info"
-                                                        {...register("city")}
-                                                        error={!!errors.city}
-                                                        sx={{
-                                                            width: "90%",
-                                                        }}
-                                                        {...params}
-                                                        label="اسم المدينة"
-                                                        InputProps={{
-                                                            ...params.InputProps,
-                                                            type: "text",
-                                                        }}
-                                                    />
-                                                    <FormHelperText
-                                                        error={!!errors.city}
-                                                        sx={{
-                                                            fontWeight: "bold",
-                                                            letterSpacing:
-                                                                "0.1rem",
-                                                        }}
-                                                        id="component-helper-text"
-                                                    >
-                                                        {errors?.city?.message}
-                                                    </FormHelperText>
-                                                </>
-                                            )}
-                                        />
-                                    </div>
+                                    {
+                                        <div style={{ margin: "20px 0" }}>
+                                            <FormControl
+                                                sx={{
+                                                    width: "90%",
+                                                }}
+                                                disabled={!availableCities}
+                                            >
+                                                <InputLabel
+                                                    error={!!errors.cityId}
+                                                    color="info"
+                                                    id="demo-simple-select-helper-label"
+                                                >
+                                                    اسم المدينة
+                                                </InputLabel>
+                                                <Select
+                                                    {...register("cityId")}
+                                                    labelId="demo-simple-select-helper-label"
+                                                    id="demo-simple-select-helper"
+                                                    value={city}
+                                                    label="اسم المدينة"
+                                                    color="info"
+                                                    onChange={handelCityChange}
+                                                >
+                                                    {availableCities?.map(
+                                                        (city: {
+                                                            cityId: number;
+                                                            name: string;
+                                                        }) => (
+                                                            <MenuItem
+                                                                key={
+                                                                    city.cityId
+                                                                }
+                                                                defaultChecked
+                                                                value={city?.cityId.toString()}
+                                                            >
+                                                                {city?.name}
+                                                            </MenuItem>
+                                                        )
+                                                    )}
+                                                </Select>
+                                                <FormHelperText
+                                                    error={!!errors.cityId}
+                                                >
+                                                    {errors?.cityId?.message}
+                                                </FormHelperText>
+                                            </FormControl>
+                                        </div>
+                                    }
+
                                     {/* rejection ratio */}
                                     <div style={{ margin: "20px 0" }}>
                                         <NumericInputField
@@ -625,201 +520,42 @@ const AddTraderPage = () => {
                                         </Typography>
                                         <Button
                                             color="info"
-                                            onClick={handleOpenModal}
+                                            onClick={
+                                                handleOpenSpecialPackageForm
+                                            }
                                         >
                                             اضافه باقة
                                         </Button>
                                     </Box>
                                     {/* show Special Package */}
-                                    {SpecialPackage.length > 0 && (
+                                    {SpecialPackage.length > 0 && matches ? (
                                         <SpecialPackageInLargeScreen
                                             SpecialPackage={SpecialPackage}
                                             setSpecialPackage={
                                                 setSpecialPackage
                                             }
                                         />
+                                    ) : (
+                                        <SpecialPackageInSmallScreen
+                                            SpecialPackage={SpecialPackage}
+                                            setSpecialPackage={
+                                                setSpecialPackage
+                                            }
+                                        />
                                     )}
-                                    {/* modal */}
-                                    <Modal
-                                        aria-labelledby="transition-modal-title"
-                                        aria-describedby="transition-modal-description"
-                                        open={openModal}
-                                        onClose={handleCloseModal}
-                                        closeAfterTransition
-                                        slots={{ backdrop: Backdrop }}
-                                        slotProps={{
-                                            backdrop: {
-                                                timeout: 500,
-                                            },
-                                        }}
-                                    >
-                                        <Fade in={openModal}>
-                                            <Box sx={modalFormstyle}>
-                                                <Typography
-                                                    id="transition-modal-title"
-                                                    variant="h6"
-                                                    component="h2"
-                                                >
-                                                    اضافه باقه مميزه
-                                                </Typography>
-                                                {/* state name */}
-                                                <div
-                                                    style={{
-                                                        margin: "20px 0",
-                                                    }}
-                                                >
-                                                    <Autocomplete
-                                                        onChange={(
-                                                            _e,
-                                                            value
-                                                        ) => {
-                                                            handelAvailableCities(
-                                                                value as string
-                                                            );
-                                                        }}
-                                                        noOptionsText="هذه المحافظة غير متاحة حاليا"
-                                                        id="stateSpecialPackage"
-                                                        disablePortal
-                                                        options={states?.data.map(
-                                                            (option: {
-                                                                id: number;
-                                                                state: string;
-                                                            }) => option.state
-                                                        )}
-                                                        renderInput={(
-                                                            params
-                                                        ) => (
-                                                            <>
-                                                                <TextField
-                                                                    color="info"
-                                                                    {...register(
-                                                                        "stateSpecialPackage"
-                                                                    )}
-                                                                    error={
-                                                                        !!errors.stateSpecialPackage
-                                                                    }
-                                                                    {...params}
-                                                                    label="المحافظة"
-                                                                    InputProps={{
-                                                                        ...params.InputProps,
-                                                                        type: "text",
-                                                                    }}
-                                                                />
-                                                                <FormHelperText
-                                                                    error={
-                                                                        !!errors.stateSpecialPackage
-                                                                    }
-                                                                    sx={{
-                                                                        fontWeight:
-                                                                            "bold",
-                                                                        letterSpacing:
-                                                                            "0.1rem",
-                                                                    }}
-                                                                    id="component-helper-text"
-                                                                >
-                                                                    {
-                                                                        errors
-                                                                            ?.stateSpecialPackage
-                                                                            ?.message
-                                                                    }
-                                                                </FormHelperText>
-                                                            </>
-                                                        )}
-                                                    />
-                                                </div>
-                                                {/* city name */}
-                                                <div
-                                                    style={{
-                                                        margin: "20px 0",
-                                                    }}
-                                                >
-                                                    <Autocomplete
-                                                        disabled={!cities?.data}
-                                                        noOptionsText="هذه المدينة غير متاحة حاليا"
-                                                        id="citySpecialPackage"
-                                                        disablePortal
-                                                        options={avalCities.map(
-                                                            (option: {
-                                                                id: number;
-                                                                city: string;
-                                                            }) => option.city
-                                                        )}
-                                                        renderInput={(
-                                                            params
-                                                        ) => (
-                                                            <>
-                                                                <TextField
-                                                                    color="info"
-                                                                    {...register(
-                                                                        "citySpecialPackage"
-                                                                    )}
-                                                                    error={
-                                                                        !!errors.citySpecialPackage
-                                                                    }
-                                                                    {...params}
-                                                                    label="اسم المدينة"
-                                                                    InputProps={{
-                                                                        ...params.InputProps,
-                                                                        type: "text",
-                                                                    }}
-                                                                />
-                                                                <FormHelperText
-                                                                    error={
-                                                                        !!errors.citySpecialPackage
-                                                                    }
-                                                                    sx={{
-                                                                        fontWeight:
-                                                                            "bold",
-                                                                        letterSpacing:
-                                                                            "0.1rem",
-                                                                    }}
-                                                                    id="component-helper-text"
-                                                                >
-                                                                    {
-                                                                        errors
-                                                                            ?.citySpecialPackage
-                                                                            ?.message
-                                                                    }
-                                                                </FormHelperText>
-                                                            </>
-                                                        )}
-                                                    />
-                                                </div>
-                                                {/* shiping cost */}
-                                                <div
-                                                    style={{
-                                                        margin: "20px 0",
-                                                    }}
-                                                >
-                                                    <NumericInputField
-                                                        register={register}
-                                                        errors={
-                                                            errors.shippingCostSpecialPackage
-                                                        }
-                                                        fieldName="shippingCostSpecialPackage"
-                                                        label="سعر الشحن"
-                                                        largeWidth="100%"
-                                                        smallWidth="100%"
-                                                    />
-                                                </div>
-                                                {/* add special pakage */}
-                                                <Button
-                                                    onClick={modalSubmit}
-                                                    sx={{
-                                                        width: "100%",
-                                                        marginX: "auto",
-                                                        height: "40px",
-                                                        fontWeight: "bold",
-                                                    }}
-                                                    variant="contained"
-                                                >
-                                                    اضافة
-                                                </Button>
 
-                                                <DevTool control={control} />
-                                            </Box>
-                                        </Fade>
-                                    </Modal>{" "}
+                                    {/* modal */}
+                                    <SpecialPackageForm
+                                        setSpecialPackage={setSpecialPackage}
+                                        open={openSpecialPackageForm}
+                                        states={states}
+                                        handleCloseSpecialPackageForm={
+                                            handleCloseSpecialPackageForm
+                                        }
+                                        citiesToRepresentative={
+                                            citiesToRepresentative
+                                        }
+                                    />
                                 </Box>
                             )}
                         </Box>

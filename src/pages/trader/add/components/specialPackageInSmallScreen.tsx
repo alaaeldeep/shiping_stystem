@@ -13,9 +13,9 @@ import {
 } from "@mui/material";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import { SpecialPackage } from "../../../../components/types";
 
 /* components */
-import { SpecialPackage } from "./specialPackageInLargeScreen";
 
 /* modal props */
 

@@ -66,8 +66,7 @@ const EditEmployeeDetails = ({
     const handelRoleChange = (event: SelectChangeEvent) => {
         setRole(event.target.value as string);
     };
-    console.log(role);
-    console.log(branch);
+
     const schema = z.object({
         fullName: z.string().nonempty("برجاء كتابة اسم الموظف بالكامل"),
 
@@ -140,227 +139,219 @@ const EditEmployeeDetails = ({
     };
 
     return (
-        <>
-            <Dialog
-                fullWidth={true}
-                maxWidth={"xl"}
-                open={open}
-                onClose={handleClose}
-            >
-                <div
-                    style={{ display: "flex", justifyContent: "space-between" }}
+        <Dialog
+            fullWidth={true}
+            maxWidth={"xl"}
+            open={open}
+            onClose={handleClose}
+        >
+            <div style={{ display: "flex", justifyContent: "space-between" }}>
+                <DialogTitle width={{ xs: "230px", sm: "auto" }}>
+                    تعــديــل بيانات الخاصــة بــــ : {data.userName}
+                </DialogTitle>
+                <DialogActions>
+                    <IconButton onClick={handleClose}>
+                        <CloseIcon sx={{ color: "red", fontSize: "1.7rem" }} />
+                    </IconButton>
+                </DialogActions>
+            </div>
+
+            <DialogContent>
+                <form
+                    onSubmit={handleSubmit(onSubmit, onError)}
+                    style={{
+                        display: "flex",
+                        justifyContent: "center",
+                        /*  padding: "50px", */
+                    }}
+                    noValidate
                 >
-                    <DialogTitle width={{ xs: "230px", sm: "auto" }}>
-                        تعــديــل بيانات الخاصــة بــــ : {data.userName}
-                    </DialogTitle>
-                    <DialogActions>
-                        <IconButton onClick={handleClose}>
-                            <CloseIcon
-                                sx={{ color: "red", fontSize: "1.7rem" }}
-                            />
-                        </IconButton>
-                    </DialogActions>
-                </div>
-
-                <DialogContent>
-                    <form
-                        onSubmit={handleSubmit(onSubmit, onError)}
-                        style={{
+                    <Box
+                        sx={{
+                            width: "100%",
+                            /*    backgroundColor: "secondary.main", */
+                            padding: "10px 0px",
+                            borderRadius: "25px",
                             display: "flex",
+                            flexDirection: "column",
+                            border: "1px solid #9ba4b5b7",
                             justifyContent: "center",
-                            /*  padding: "50px", */
+                            mb: 3,
                         }}
-                        noValidate
                     >
-                        <Box
-                            sx={{
-                                width: "100%",
-                                /*    backgroundColor: "secondary.main", */
-                                padding: "10px 0px",
-                                borderRadius: "25px",
-                                display: "flex",
-                                flexDirection: "column",
-                                border: "1px solid #9ba4b5b7",
-                                justifyContent: "center",
-                                mb: 3,
-                            }}
-                        >
-                            <Box sx={{ marginX: "auto", width: "90%" }}>
-                                {/* full name */}
-                                <div style={{ margin: "20px 0" }}>
-                                    <InputField
-                                        register={register}
-                                        errors={errors.fullName}
-                                        fieldName="fullName"
-                                        label=" الاسم بالكامل  "
-                                        largeWidth="90%"
-                                        smallWidth="90%"
-                                    />
-                                </div>
-                                {/* userName name */}
-                                <div style={{ margin: "20px 0" }}>
-                                    <InputField
-                                        register={register}
-                                        errors={errors.userName}
-                                        fieldName="userName"
-                                        label="  اسم المستخدم"
-                                        largeWidth="90%"
-                                        smallWidth="90%"
-                                    />
-                                </div>
-                                {/* email */}
-                                <div style={{ margin: "20px 0" }}>
-                                    <InputField
-                                        register={register}
-                                        errors={errors.email}
-                                        fieldName="email"
-                                        label="البريد الالكتروني"
-                                        largeWidth="90%"
-                                        smallWidth="90%"
-                                    />
-                                </div>
-                                {/* password */}
-                                <div style={{ margin: "20px 0" }}>
-                                    <InputField
-                                        register={register}
-                                        errors={errors.password}
-                                        fieldName="password"
-                                        label="كلمة السر"
-                                        largeWidth="90%"
-                                        smallWidth="90%"
-                                    />
-                                </div>
-                                {/* phoneNumber */}
+                        <Box sx={{ marginX: "auto", width: "90%" }}>
+                            {/* full name */}
+                            <div style={{ margin: "20px 0" }}>
+                                <InputField
+                                    register={register}
+                                    errors={errors.fullName}
+                                    fieldName="fullName"
+                                    label=" الاسم بالكامل  "
+                                    largeWidth="90%"
+                                    smallWidth="90%"
+                                />
+                            </div>
+                            {/* userName name */}
+                            <div style={{ margin: "20px 0" }}>
+                                <InputField
+                                    register={register}
+                                    errors={errors.userName}
+                                    fieldName="userName"
+                                    label="  اسم المستخدم"
+                                    largeWidth="90%"
+                                    smallWidth="90%"
+                                />
+                            </div>
+                            {/* email */}
+                            <div style={{ margin: "20px 0" }}>
+                                <InputField
+                                    register={register}
+                                    errors={errors.email}
+                                    fieldName="email"
+                                    label="البريد الالكتروني"
+                                    largeWidth="90%"
+                                    smallWidth="90%"
+                                />
+                            </div>
+                            {/* password */}
+                            <div style={{ margin: "20px 0" }}>
+                                <InputField
+                                    register={register}
+                                    errors={errors.password}
+                                    fieldName="password"
+                                    label="كلمة السر"
+                                    largeWidth="90%"
+                                    smallWidth="90%"
+                                />
+                            </div>
+                            {/* phoneNumber */}
 
-                                <div style={{ margin: "20px 0" }}>
-                                    <NumericInputField
-                                        register={register}
-                                        errors={errors.phoneNumber}
-                                        fieldName="phoneNumber"
-                                        label="رقم الهاتف"
-                                        largeWidth="90%"
-                                        smallWidth="90%"
-                                    />
-                                </div>
+                            <div style={{ margin: "20px 0" }}>
+                                <NumericInputField
+                                    register={register}
+                                    errors={errors.phoneNumber}
+                                    fieldName="phoneNumber"
+                                    label="رقم الهاتف"
+                                    largeWidth="90%"
+                                    smallWidth="90%"
+                                />
+                            </div>
 
-                                {/* branch name */}
-                                <div style={{ margin: "20px 0" }}>
-                                    <FormControl
-                                        sx={{
-                                            width: "90%",
-                                        }}
+                            {/* branch name */}
+                            <div style={{ margin: "20px 0" }}>
+                                <FormControl
+                                    sx={{
+                                        width: "90%",
+                                    }}
+                                >
+                                    <InputLabel
+                                        error={!!errors.branchId}
+                                        color="info"
+                                        id="demo-simple-select-helper-label"
                                     >
-                                        <InputLabel
-                                            error={!!errors.branchId}
-                                            color="info"
-                                            id="demo-simple-select-helper-label"
-                                        >
-                                            اسم الفرع
-                                        </InputLabel>
-                                        <Select
-                                            {...register("branchId")}
-                                            labelId="demo-simple-select-helper-label"
-                                            id="demo-simple-select-helper"
-                                            value={branch}
-                                            label="اسم الفرع"
-                                            color="info"
-                                            onChange={handelBranchChange}
-                                        >
-                                            {branches?.data.map(
-                                                (branch: {
-                                                    id: number;
-                                                    branch: string;
-                                                }) => (
-                                                    <MenuItem
-                                                        defaultChecked
-                                                        value={branch.id.toString()}
-                                                    >
-                                                        {branch.branch}
-                                                    </MenuItem>
-                                                )
-                                            )}
-                                        </Select>
-                                        <FormHelperText
-                                            error={!!errors.branchId}
-                                        >
-                                            {errors?.branchId?.message}
-                                        </FormHelperText>
-                                    </FormControl>
-                                </div>
-
-                                {/* roles */}
-                                <div style={{ margin: "20px 0" }}>
-                                    <FormControl
-                                        sx={{
-                                            width: "90%",
-                                        }}
+                                        اسم الفرع
+                                    </InputLabel>
+                                    <Select
+                                        {...register("branchId")}
+                                        labelId="demo-simple-select-helper-label"
+                                        id="demo-simple-select-helper"
+                                        value={branch}
+                                        label="اسم الفرع"
+                                        color="info"
+                                        onChange={handelBranchChange}
                                     >
-                                        <InputLabel
-                                            error={!!errors.roleId}
-                                            color="info"
-                                            id="demo-simple-select-helper-label"
-                                        >
-                                            اسم الصلاحية
-                                        </InputLabel>
-                                        <Select
-                                            {...register("roleId")}
-                                            labelId="demo-simple-select-helper-label"
-                                            id="demo-simple-select-helper"
-                                            value={role}
-                                            label="اسم الصلاحية"
-                                            color="info"
-                                            onChange={handelRoleChange}
-                                        >
-                                            {roles?.data.map(
-                                                (role: {
-                                                    id: number;
-                                                    roleName: string;
-                                                }) => (
-                                                    <MenuItem
-                                                        value={role.id.toString()}
-                                                    >
-                                                        {role.roleName}
-                                                    </MenuItem>
-                                                )
-                                            )}
-                                        </Select>
-                                        <FormHelperText error={!!errors.roleId}>
-                                            {errors?.roleId?.message}
-                                        </FormHelperText>
-                                    </FormControl>
-                                </div>
+                                        {branches?.data.map(
+                                            (branch: {
+                                                id: number;
+                                                branch: string;
+                                            }) => (
+                                                <MenuItem
+                                                    defaultChecked
+                                                    value={branch.id.toString()}
+                                                >
+                                                    {branch.branch}
+                                                </MenuItem>
+                                            )
+                                        )}
+                                    </Select>
+                                    <FormHelperText error={!!errors.branchId}>
+                                        {errors?.branchId?.message}
+                                    </FormHelperText>
+                                </FormControl>
+                            </div>
 
-                                {/* address */}
-                                <div style={{ margin: "20px 0" }}>
-                                    <InputField
-                                        register={register}
-                                        errors={errors.address}
-                                        fieldName="address"
-                                        label="العنوان"
-                                        largeWidth="90%"
-                                        smallWidth="90%"
-                                    />
-                                </div>
-                            </Box>
+                            {/* roles */}
+                            <div style={{ margin: "20px 0" }}>
+                                <FormControl
+                                    sx={{
+                                        width: "90%",
+                                    }}
+                                >
+                                    <InputLabel
+                                        error={!!errors.roleId}
+                                        color="info"
+                                        id="demo-simple-select-helper-label"
+                                    >
+                                        اسم الصلاحية
+                                    </InputLabel>
+                                    <Select
+                                        {...register("roleId")}
+                                        labelId="demo-simple-select-helper-label"
+                                        id="demo-simple-select-helper"
+                                        value={role}
+                                        label="اسم الصلاحية"
+                                        color="info"
+                                        onChange={handelRoleChange}
+                                    >
+                                        {roles?.data.map(
+                                            (role: {
+                                                id: number;
+                                                roleName: string;
+                                            }) => (
+                                                <MenuItem
+                                                    value={role.id.toString()}
+                                                >
+                                                    {role.roleName}
+                                                </MenuItem>
+                                            )
+                                        )}
+                                    </Select>
+                                    <FormHelperText error={!!errors.roleId}>
+                                        {errors?.roleId?.message}
+                                    </FormHelperText>
+                                </FormControl>
+                            </div>
 
-                            <Button
-                                type="submit"
-                                sx={{
-                                    width: "80%",
-                                    marginX: "auto",
-                                    height: "40px",
-                                    fontWeight: "bold",
-                                }}
-                                variant="contained"
-                            >
-                                تحديث
-                            </Button>
+                            {/* address */}
+                            <div style={{ margin: "20px 0" }}>
+                                <InputField
+                                    register={register}
+                                    errors={errors.address}
+                                    fieldName="address"
+                                    label="العنوان"
+                                    largeWidth="90%"
+                                    smallWidth="90%"
+                                />
+                            </div>
                         </Box>
-                        <DevTool control={control} />
-                    </form>
-                </DialogContent>
-            </Dialog>
-        </>
+
+                        <Button
+                            type="submit"
+                            sx={{
+                                width: "80%",
+                                marginX: "auto",
+                                height: "40px",
+                                fontWeight: "bold",
+                            }}
+                            variant="contained"
+                        >
+                            تحديث
+                        </Button>
+                    </Box>
+                    <DevTool control={control} />
+                </form>
+            </DialogContent>
+        </Dialog>
     );
 };
 

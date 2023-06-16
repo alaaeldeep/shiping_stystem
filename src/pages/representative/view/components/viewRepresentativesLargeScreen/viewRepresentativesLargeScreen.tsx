@@ -6,9 +6,10 @@ import CustomTableHead from "../../../../../components/table/tableHead";
 import RowInLargeScreen from "./row";
 
 /* types */
-import { RepresentativeRow } from "../../../../../components/types";
+import { RepresentativeGET } from "../../../../../components/types";
+
 type ViewEmployeeLargeScreenProps = {
-    rows: RepresentativeRow[];
+    rows: RepresentativeGET[];
     headCell: any;
 };
 

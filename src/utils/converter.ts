@@ -124,3 +124,21 @@ export const convertPermissionToID = (privilege: string) => {
     );
     return privilegeId;
 };
+export const convertIDToCities = (cities: any, citiesId: string) => {
+    let privilegeName!: string;
+    cities?.data.forEach((cityObj: { cityId: number; name: string }) => {
+        if (cityObj.cityId === +citiesId) {
+            privilegeName = cityObj.name;
+        }
+    });
+    return privilegeName;
+};
+export const convertIDToStates = (states: any, stateId: string) => {
+    let stateName!: string;
+    states?.data.forEach((cityObj: { id: number; name: string }) => {
+        if (cityObj.id === +stateId) {
+            stateName = cityObj.name;
+        }
+    });
+    return stateName;
+};

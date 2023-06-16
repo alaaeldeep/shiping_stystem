@@ -10,7 +10,6 @@ import {
     Step,
     StepLabel,
     Stepper,
-    Stack,
     Autocomplete,
     TextField,
     FormHelperText,
@@ -23,10 +22,7 @@ import { SelectChangeEvent } from "@mui/material/Select";
 import CloseIcon from "@mui/icons-material/Close";
 
 /* react staff */
-import { SyntheticEvent, useRef, useState } from "react";
-
-/* router */
-import { useNavigate } from "react-router";
+import { useRef, useState } from "react";
 
 /* hooks form */
 import { useForm } from "react-hook-form";
@@ -40,33 +36,47 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import InputField from "../../../../components/inputFields/textInputField/inputfield";
 import NumericInputField from "../../../../components/inputFields/numericInputField";
 
+/* toast */
+import { toast } from "react-toastify";
+
 /* react query */
 import UseQuery from "../../../../hooks/serverState/useQuery";
 
 /* types */
-import { RepresentativeRow } from "../../../../components/types";
+import { RepresentativeGET } from "../../../../components/types";
 import UseMutate from "../../../../hooks/representatives/useEditMutate";
+import { convertStateToID } from "../../../../utils/converter";
 /*import UseMutate from "../../../hooks/representatives/useAddMutate"; */
 
 const steps = ["تسجيل البيانات الاساسيه", " حفظ ومتابعه"];
 
 type prop = {
     open: boolean;
-    data: RepresentativeRow;
+    data: RepresentativeGET;
     handleClose: () => void;
 };
 const EditRepresentativeDetail = ({ open, handleClose, data }: prop) => {
-    const selectedStates = useRef<string[]>(
-        data.states.map((state) => state.state)
-    );
     /* fetch data */
     const { data: branches } = UseQuery("/branches");
     const { data: states } = UseQuery("/states");
-
-    const navigate = useNavigate();
-
     /* post data */
     const { mutate } = UseMutate();
+
+    /* state state */
+    const selectedStates = useRef<string[]>(
+        data.states.map((state) => state.name)
+    );
+    /* branch state */
+    const [branch, setBranch] = useState<string>(data.branch.id.toString());
+    const handelBranchChange = (event: SelectChangeEvent) => {
+        setBranch(event.target.value as string);
+    };
+    /* select input */
+    const [discount, setDiscount] = useState(data.discountType.toString());
+    const handleChange = (event: SelectChangeEvent) => {
+        setDiscount(event.target.value);
+    };
+
     /* steps form */
     const [activeStep, setActiveStep] = useState(0);
     const handleNext = () => {
@@ -77,12 +87,6 @@ const EditRepresentativeDetail = ({ open, handleClose, data }: prop) => {
     };
     /* end-steps form */
 
-    /* select input */
-    const [discount, setDiscount] = useState(data.discountType);
-    const handleChange = (event: SelectChangeEvent) => {
-        setDiscount(event.target.value as "0" | "1");
-    };
-    /* zod validation */
     const schema = z.object({
         /* step 1 */
         userName: z
@@ -137,111 +141,67 @@ const EditRepresentativeDetail = ({ open, handleClose, data }: prop) => {
     });
     type FormValue = z.infer<typeof schema>;
     /* hooks form */
-    const { register, control, formState, getValues, getFieldState, setError } =
+    const { register, control, formState, handleSubmit, setError } =
         useForm<FormValue>({
             defaultValues: {
                 userName: data.userName,
                 fullName: data.fullName,
                 email: data.email,
-                branchId: data.branch.branch,
+                branchId: data.branch.id.toString(),
                 phoneNumber: data.phoneNumber,
                 address: data.address,
-                companyOrderRatio: data.companyOrderRatio,
+                companyOrderRatio: data.companyOrderRatio.toString(),
             },
             mode: "onTouched",
             resolver: zodResolver(schema),
         });
     const { errors } = formState;
-    let statesId: number[] = [];
-    const onSubmit = (e: SyntheticEvent) => {
-        e.preventDefault();
 
-        if (
-            getFieldState("fullName").error ||
-            getFieldState("userName").error ||
-            getFieldState("password").error ||
-            !getFieldState("password").isTouched ||
-            getFieldState("address").error ||
-            getFieldState("email").error ||
-            getFieldState("phoneNumber").error
-        ) {
-            handleBack();
-        }
-
-        statesId = [];
-        selectedStates.current.forEach((state) => convertStatesToIDS(state));
-        const requestData = {
-            ...getValues(),
-            statesId: statesId,
-            companyOrderRatio: Number(getValues("companyOrderRatio")),
-            branchId: Number(convertBranchToID(getValues().branchId)),
-        };
-        if (selectedStates.current.length < 1) {
-            setError("statesId", { message: "برجاء اختيار المحافظه" });
-        }
-        if (!getFieldState("password").isTouched) {
-            setError("password", { message: "برجاء كتابة كلمة السر " });
-        }
-        /* check form valid */
-        if (
-            !getFieldState("userName").error &&
-            !getFieldState("fullName").error &&
-            !getFieldState("email").error &&
-            getFieldState("password").isTouched &&
-            !getFieldState("password").error &&
-            !getFieldState("phoneNumber").error &&
-            !getFieldState("address").error &&
-            !getFieldState("branchId").error &&
-            !getFieldState("discountType").error &&
-            !getFieldState("companyOrderRatio").error &&
-            selectedStates.current.length > 0
-        ) {
-            /*🚀 make the request 🚀  */
-            mutate(
-                { ...requestData, id: data.id },
-                {
-                    onSuccess: () => {
-                        navigate("/representatives");
-                    },
-                }
+    const onSubmit = (data: FormValue) => {
+        if (selectedStates.current.length > 0) {
+            const statesId = selectedStates.current.map((state) =>
+                convertStateToID(states, state)
             );
-            console.log({ ...requestData, id: data.id });
+
+            const requstData = {
+                userName: data.userName,
+                fullName: data.fullName,
+                email: data.email,
+                phoneNumber: data.phoneNumber,
+                branchId: +data.branchId,
+                statesId: statesId,
+                password: data.password,
+                address: data.address,
+                discountType: +data.discountType,
+                companyOrderRatio: +data.companyOrderRatio,
+                /* id: data.id, */
+            };
+            /*    🚀 make the request 🚀  */
+            console.log(requstData);
+            mutate(requstData, {
+                onSuccess: () => {
+                    handleClose();
+                },
+            });
         } else {
-            console.log("no");
+            setError("statesId", {
+                message: "برجاء اختيار المحافظه من الخيارات المتاحة",
+            });
+            toast.warn("برجاء اختيار المحافظه من الخيارات المتاحة", {
+                position: toast.POSITION.BOTTOM_LEFT,
+                autoClose: 2000,
+                theme: "dark",
+            });
         }
     };
-    const onSubmitError = () => {
-        if (
-            getFieldState("fullName").error ||
-            getFieldState("userName").error ||
-            getFieldState("password").error ||
-            getFieldState("address").error ||
-            getFieldState("branchId").error ||
-            getFieldState("email").error ||
-            getFieldState("phoneNumber").error
-        ) {
-            handleBack();
-        }
-    };
-    const convertBranchToID = (branch: string) => {
-        let branchId;
-        branches?.data.forEach((branchObj: { id: number; branch: string }) => {
-            if (branchObj.branch === branch) {
-                branchId = branchObj.id;
-            }
+    const onError = () => {
+        toast.warn("برجاء اكمال الحقول الفارغة ", {
+            position: toast.POSITION.BOTTOM_LEFT,
+            autoClose: 2000,
+            theme: "dark",
         });
-        return branchId;
     };
-    const convertStatesToIDS = (state: string) => {
-        states?.data.forEach((stateObj: { id: number; state: string }) => {
-            if (stateObj.state === state) {
-                if (!statesId.includes(stateObj.id)) {
-                    statesId.push(stateObj.id);
-                }
-            }
-        });
-        return;
-    };
+
     return (
         <Dialog
             fullWidth={true}
@@ -289,7 +249,7 @@ const EditRepresentativeDetail = ({ open, handleClose, data }: prop) => {
 
                     <>
                         {/* form */}
-                        <form onSubmit={onSubmit}>
+                        <form onSubmit={handleSubmit(onSubmit, onError)}>
                             <Box sx={{ mt: 2, mb: 1 }}>
                                 <Box
                                     sx={{
@@ -391,7 +351,7 @@ const EditRepresentativeDetail = ({ open, handleClose, data }: prop) => {
                                             <div style={{ margin: "20px 0" }}>
                                                 <Autocomplete
                                                     defaultValue={data.states.map(
-                                                        (state) => state.state
+                                                        (state) => state.name
                                                     )}
                                                     onChange={(
                                                         _e,
@@ -406,8 +366,8 @@ const EditRepresentativeDetail = ({ open, handleClose, data }: prop) => {
                                                     options={states?.data.map(
                                                         (option: {
                                                             id: number;
-                                                            state: string;
-                                                        }) => option.state
+                                                            name: string;
+                                                        }) => option.name
                                                     )}
                                                     filterSelectedOptions
                                                     renderInput={(params) => (
@@ -452,60 +412,60 @@ const EditRepresentativeDetail = ({ open, handleClose, data }: prop) => {
 
                                             {/* branch name */}
                                             <div style={{ margin: "20px 0" }}>
-                                                <Autocomplete
-                                                    defaultValue={
-                                                        data.branch.branch
-                                                    }
-                                                    noOptionsText="هذا الفرع غير متاح حاليا"
-                                                    id="branch"
-                                                    disablePortal
-                                                    options={branches?.data.map(
-                                                        (option: {
-                                                            id: string;
-                                                            branch: string;
-                                                        }) => option.branch
-                                                    )}
-                                                    renderInput={(params) => (
-                                                        <>
-                                                            <TextField
-                                                                color="info"
-                                                                {...register(
-                                                                    "branchId"
-                                                                )}
-                                                                error={
-                                                                    !!errors.branchId
-                                                                }
-                                                                sx={{
-                                                                    width: "90%",
-                                                                }}
-                                                                {...params}
-                                                                label="اسم الفرع"
-                                                                InputProps={{
-                                                                    ...params.InputProps,
-                                                                    type: "text",
-                                                                }}
-                                                            />
-                                                            <FormHelperText
-                                                                error={
-                                                                    !!errors.branchId
-                                                                }
-                                                                sx={{
-                                                                    fontWeight:
-                                                                        "bold",
-                                                                    letterSpacing:
-                                                                        "0.1rem",
-                                                                }}
-                                                                id="component-helper-text"
-                                                            >
-                                                                {
-                                                                    errors
-                                                                        ?.branchId
-                                                                        ?.message
-                                                                }
-                                                            </FormHelperText>
-                                                        </>
-                                                    )}
-                                                />
+                                                <FormControl
+                                                    sx={{
+                                                        width: "90%",
+                                                    }}
+                                                >
+                                                    <InputLabel
+                                                        error={
+                                                            !!errors.branchId
+                                                        }
+                                                        color="info"
+                                                        id="demo-simple-select-helper-label"
+                                                    >
+                                                        اسم الفرع
+                                                    </InputLabel>
+                                                    <Select
+                                                        {...register(
+                                                            "branchId"
+                                                        )}
+                                                        labelId="demo-simple-select-helper-label"
+                                                        id="demo-simple-select-helper"
+                                                        value={branch}
+                                                        label="اسم الفرع"
+                                                        color="info"
+                                                        onChange={
+                                                            handelBranchChange
+                                                        }
+                                                    >
+                                                        {branches?.data.map(
+                                                            (branch: {
+                                                                id: number;
+                                                                branch: string;
+                                                            }) => (
+                                                                <MenuItem
+                                                                    defaultChecked
+                                                                    value={branch.id.toString()}
+                                                                >
+                                                                    {
+                                                                        branch.branch
+                                                                    }
+                                                                </MenuItem>
+                                                            )
+                                                        )}
+                                                    </Select>
+                                                    <FormHelperText
+                                                        error={
+                                                            !!errors.branchId
+                                                        }
+                                                    >
+                                                        {
+                                                            errors?.branchId
+                                                                ?.message
+                                                        }
+                                                    </FormHelperText>
+                                                </FormControl>
                                             </div>
 
                                             {/* discountType */}

@@ -64,6 +64,11 @@ const AddRepresentativesPage = () => {
     const handelBranchChange = (event: SelectChangeEvent) => {
         setBranch(event.target.value as string);
     };
+    /* select input */
+    const [discount, setDiscount] = useState("");
+    const handleChange = (event: SelectChangeEvent) => {
+        setDiscount(event.target.value);
+    };
 
     /* steps form */
     const [activeStep, setActiveStep] = useState(0);
@@ -75,11 +80,6 @@ const AddRepresentativesPage = () => {
     };
     /* end-steps form */
 
-    /* select input */
-    const [discount, setDiscount] = useState("");
-    const handleChange = (event: SelectChangeEvent) => {
-        setDiscount(event.target.value);
-    };
     /* zod validation */
     const schema = z.object({
         /* step 1 */
@@ -135,19 +135,12 @@ const AddRepresentativesPage = () => {
     });
     type FormValue = z.infer<typeof schema>;
     /* hooks form */
-    const {
-        register,
-        control,
-        handleSubmit,
-        formState,
-        getValues,
-        getFieldState,
-        setError,
-    } = useForm<FormValue>({
-        defaultValues: {},
-        mode: "onTouched",
-        resolver: zodResolver(schema),
-    });
+    const { register, control, handleSubmit, formState, setError } =
+        useForm<FormValue>({
+            defaultValues: {},
+            mode: "onTouched",
+            resolver: zodResolver(schema),
+        });
     const { errors } = formState;
     /*   let statesId: number[] = []; */
     const onSubmit = (data: FormValue) => {
