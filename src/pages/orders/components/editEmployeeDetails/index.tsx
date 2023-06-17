@@ -48,7 +48,7 @@ import { v4 as uuidv4 } from "uuid";
 /* components */
 import InputField from "../../../../components/inputFields/textInputField/inputfield";
 import NumericInputField from "../../../../components/inputFields/numericInputField";
-import ProductsInLargeScreen from "../../add/components/addedProduct";
+import ProductsInLargeScreen from "../../add/components/ProductsLargeScreesn";
 
 /* react query */
 import UseMutate from "../../../../hooks/orders/useEditMutate";

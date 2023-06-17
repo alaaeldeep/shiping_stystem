@@ -13,11 +13,9 @@ import {
 } from "@mui/material";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+
+/* types */
 import { SpecialPackage } from "../../../../components/types";
-
-/* components */
-
-/* modal props */
 
 type Props = {
     SpecialPackage: SpecialPackage[];
@@ -36,7 +34,7 @@ export default function SpecialPackageInSmallScreen({
         };
 
     const handelDeleteSpecialPackage = (row: SpecialPackage) => {
-        setSpecialPackage((prev: SpecialPackage) =>
+        setSpecialPackage((prev: SpecialPackage[]) =>
             prev.filter(
                 (oldPackage: SpecialPackage) => oldPackage.id !== row.id
             )

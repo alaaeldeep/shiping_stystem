@@ -14,6 +14,7 @@ type props = {
     errors: FieldError | undefined | any;
     fieldName:
         | "password"
+        | "productPrice"
         | "phoneNumber"
         | "phoneNumber2"
         | "stateSpecialPackage"

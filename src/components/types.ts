@@ -120,6 +120,7 @@ export type Product = {
     productName: string;
     productQuantity: number;
     productWeight: number;
+    productPrice: number;
     id?: number | string;
 };
 export type TraderRow = {

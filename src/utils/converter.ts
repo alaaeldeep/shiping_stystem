@@ -14,6 +14,52 @@ export const permissions = [
     { privilegeId: 12, name: "الحسابات" },
     { privilegeId: 13, name: "تقارير الطلبات" },
 ];
+export const statuses = [
+    {
+        status: "جديد",
+        id: 0,
+    },
+    {
+        status: "قيد الانتظار",
+        id: 1,
+    },
+    {
+        status: "تم التسليم للمندوب",
+        id: 2,
+    },
+    {
+        status: "تم التسليم",
+        id: 3,
+    },
+    {
+        status: "لا يمكن الوصول",
+        id: 4,
+    },
+    {
+        status: "تم التاجيل",
+        id: 5,
+    },
+    {
+        status: "تم التسليم جزئيا",
+        id: 6,
+    },
+    {
+        status: "تم الالغاء من قبل المستلم",
+        id: 7,
+    },
+    {
+        status: "تم الرفض مع الدفع",
+        id: 8,
+    },
+    {
+        status: "رفض مع سداد الجزاء",
+        id: 9,
+    },
+    {
+        status: "رفض ولم يتم الدفع",
+        id: 10,
+    },
+];
 export const states: string[] = [
     "أسوان",
     "أسيوط",

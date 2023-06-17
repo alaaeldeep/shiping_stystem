@@ -45,7 +45,6 @@ import {
 
 type props = {
     open: boolean;
-
     citiesToRepresentative: any;
     states: any;
     setSpecialPackage: any;

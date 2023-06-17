@@ -1,20 +1,19 @@
+/* react staff */
+import { useRef, useState } from "react";
+
 /* react router */
 import { useNavigate } from "react-router";
 
 /* MUI */
 import {
-    Autocomplete,
-    Backdrop,
     Box,
     Button,
-    Fade,
     FormControl,
     FormControlLabel,
     FormHelperText,
     FormLabel,
     InputLabel,
     MenuItem,
-    Modal,
     OutlinedInput,
     Radio,
     RadioGroup,
@@ -23,10 +22,12 @@ import {
     Step,
     StepLabel,
     Stepper,
-    TextField,
     Typography,
 } from "@mui/material";
 import { useMediaQuery } from "@mui/material";
+
+/* toast */
+import { toast } from "react-toastify";
 
 /* hooks form */
 import { useForm } from "react-hook-form";
@@ -36,24 +37,20 @@ import { DevTool } from "@hookform/devtools";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 
-/* uuid */
-import { v4 as uuidv4 } from "uuid";
-
 /* components */
 import InputField from "../../../components/inputFields/textInputField/inputfield";
 import NumericInputField from "../../../components/inputFields/numericInputField";
 import { TableToolbar } from "../../../components/table/tableToolBar";
-import ProductsInLargeScreen from "./components/addedProduct";
+import ProductsInLargeScreen from "./components/ProductsLargeScreesn";
+import AddProductForm from "./components/addProductForm";
 
 /* react query */
 import UseMutate from "../../../hooks/orders/useAddMutate";
-import UseQuery, { UseQuery2 } from "../../../hooks/serverState/useQuery";
-
-/* react staff */
-import { SyntheticEvent, useEffect, useState } from "react";
+import UseQuery from "../../../hooks/serverState/useQuery";
 
 /* types */
 import { Product } from "../../../components/types";
+import ProductsInSmallScreen from "./components/ProductsSmallScreesn";
 
 /*  */
 const steps = [
@@ -61,20 +58,19 @@ const steps = [
     "تسجيل البيانات الاضافيه",
     " حفظ ومتابعه",
 ];
-/*  */
-const modalFormstyle = {
-    position: "absolute",
-    top: "50%",
-    left: "50%",
-    transform: "translate(-50%, -50%)",
-    width: 400,
-    bgcolor: "background.paper",
-    borderRadius: "25px",
-    boxShadow: 24,
-    p: 4,
-};
 
 const AddOrderPage = () => {
+    /* API */
+    const { data: branches } = UseQuery("/branches");
+    const { data: typesOfShipping } = UseQuery("/typeOfShipping");
+    const { mutate } = UseMutate();
+    const { data: states } = UseQuery("/states");
+    const { data: citiesToRepresentative } = UseQuery(
+        "/citiesToRepresentative"
+    );
+
+    const navigate = useNavigate();
+
     /* steps form */
     const [activeStep, setActiveStep] = useState(0);
     const handleNext = () => {
@@ -87,44 +83,76 @@ const AddOrderPage = () => {
         setActiveStep(0);
     };
     /* end-steps form */
-    const navigate = useNavigate();
-    const [stateId, setStateId] = useState<number>();
-    const { data: branches } = UseQuery("/branches");
 
-    const { data: typesOfShipping } = UseQuery("/typeOfShipping");
-    const { data: states } = UseQuery("/states");
-    const { data: cities, refetch } = UseQuery2(`/statesTest/${stateId}`);
-    const { data: cities2 } = UseQuery(`/cities`);
-    const [avalCities, setAvalCities] = useState([]);
-    const { mutate } = UseMutate();
+    /* state& city state */
+    const stateRef = useRef("");
+    const [availableCities, setAvailableCities] = useState<
+        {
+            cityId: number;
+            stateId: number;
+            name: string;
+        }[]
+    >();
+
+    const [state, setState] = useState<string>("");
+    const handelStateChange = (event: SelectChangeEvent) => {
+        stateRef.current = event.target.value as string;
+        setState(event.target.value as string);
+        setAvailableCities(handelCity(stateRef.current));
+    };
+
+    const handelCity = (stateId: string) => {
+        return citiesToRepresentative?.data.filter((city: any) => {
+            if (city.stateId.toString() === stateId) return city;
+        });
+    }; /* branch state */
+    const [branch, setBranch] = useState<string>();
+    const handelBranchChange = (event: SelectChangeEvent) => {
+        setBranch(event.target.value as string);
+    };
+    /* city state */
+    const [city, setCity] = useState<string>();
+    const handelCityChange = (event: SelectChangeEvent) => {
+        setCity(event.target.value as string);
+    };
 
     /* select delivery input */
     const [delivery, setDelivery] = useState("");
     const handleDeliveryChange = (event: SelectChangeEvent) => {
-        setDelivery(event.target.value as "0" | "1");
+        setDelivery(event.target.value as string);
+    };
+    /* isVillage  input */
+    const [isVillage, setIsVillage] = useState("");
+    const handleIsVillage = (event: SelectChangeEvent) => {
+        setIsVillage(event.target.value as string);
     };
     /* select payment input */
     const [payment, setPayment] = useState("");
     const handlePaymentChange = (event: SelectChangeEvent) => {
-        setPayment(event.target.value as "0" | "1" | "2");
+        setPayment(event.target.value as string);
+    };
+
+    /* modal special package */
+    const [products, setProducts] = useState<Product[]>([]);
+    const [openProductForm, setOpenProductForm] = useState(false);
+    const handleOpenProductForm = () => {
+        setOpenProductForm(true);
+    };
+    const handleCloseProductForm = () => {
+        setOpenProductForm(false);
     };
 
     const schema = z.object({
         /* step 1 */
-        OrderType: z.enum(["0", "1"], {
+        /*  OrderType: z.enum(["0", "1"], {
             errorMap: (issue, _ctx) => {
                 switch (issue.code) {
                     default:
                         return { message: "برجاء اختيار نوع التسليم" };
                 }
             },
-        }),
-        ClientName: z.string().nonempty("برجاء كتابة اسم العميل بالكامل"),
-
-        Email: z
-            .string()
-            .nonempty("برجاء كتابة البريد الالكتروني")
-            .email("برجاء كتابة بريد الالكتروني صالح"),
+        }), */
+        clientName: z.string().nonempty("برجاء كتابة اسم العميل بالكامل"),
 
         Phone1: z
             .string()
@@ -132,259 +160,128 @@ const AddOrderPage = () => {
             .length(11, " تاكد من كتابه رقم صحيح مكون من 11 رقم"),
         Phone2: z.string().optional(),
 
-        AdressDetails: z
+        email: z
             .string()
-            .nonempty(
-                "برجاء كتابه  تفاصيل العنوان مثل اسم القرية, ورقم الشارع .."
-            )
-            .min(10, { message: "برجاء كتابة العنوان بتفاصيل اكتر " }),
+            .nonempty("برجاء كتابة البريد الالكتروني")
+            .email("برجاء كتابة بريد الالكتروني صالح"),
 
-        PaymentType: z.enum(["0", "1", "2"], {
+        OrderType: z.string().nonempty("برجاء اختيار نوع التسليم"),
+
+        paymentType: z.string().nonempty("برجاء اختيار نوع الدفع"),
+        /*  paymentType: z.enum(["0", "1", "2"], {
             errorMap: (issue, _ctx) => {
                 switch (issue.code) {
                     default:
                         return { message: "برجاء اختيار نوع الدفع" };
                 }
             },
-        }),
+        }), */
+        stateId: z.string().nonempty("برجاء اختيار المحافظه"),
+        cityId: z.string().nonempty("برجاء اختيار المدينه"),
 
-        BranchId: z.string().nonempty("برجاء اختيار الفرع"),
+        adressDetails: z
+            .string()
+            .nonempty(
+                "برجاء كتابه  تفاصيل العنوان مثل اسم القرية, ورقم الشارع .."
+            )
+            .min(20, { message: "برجاء كتابة العنوان بتفاصيل اكتر " }),
 
-        ShippingTypeId: z.string().nonempty("برجاء اختيار طريقة الشحن"),
+        isVillage: z
+            .string({
+                errorMap: (issue, _ctx) => {
+                    switch (issue.code) {
+                        default:
+                            return { message: "برجاء تحديد نوع مكان التوصيل" };
+                    }
+                },
+            })
+            .nonempty("برجاء تحديد نوع مكان التوصيل"),
 
-        StateId: z.string().nonempty("برجاء اختيار المحافظه"),
-        CityId: z.string().nonempty("برجاء اختيار المدينه"),
+        branchId: z
+            .string({
+                errorMap: (issue, _ctx) => {
+                    switch (issue.code) {
+                        default:
+                            return { message: "برجاء اختيار الفرع " };
+                    }
+                },
+            })
+            .nonempty("برجاء اختيار الفرع"),
 
-        IsVillage: z.enum(["0", "1"], {
+        shippingTypeId: z
+            .string({
+                errorMap: (issue, _ctx) => {
+                    switch (issue.code) {
+                        default:
+                            return { message: "برجاء اختيار طريقة الشحن " };
+                    }
+                },
+            })
+            .nonempty("برجاء اختيار طريقة الشحن"),
+
+        /* isVillage: z.enum(["0", "1"], {
             errorMap: (issue, _ctx) => {
                 switch (issue.code) {
                     default:
                         return { message: "برجاء تحديد نوع مكان التوصيل" };
                 }
             },
-        }),
-
-        /* step 2 */
-        productName: z.string().nonempty("برجاء كتابة اسم المنتج"),
-        productQuantity: z.string().nonempty("برجاء ادخال الكمية  "),
-        productWeight: z.string().nonempty("برجاء ادخال الوزن بالكيلوجـرام "),
+        }), */
 
         /* step 3 */
-        OrderCost: z.string().nonempty("برجاء كتابة تكلفة الطلب"),
+        //  OrderCost: z.string().nonempty("برجاء كتابة تكلفة الطلب"),
         comments: z.string().optional(),
     });
     type FormValue = z.infer<typeof schema>;
-    const {
-        register,
-        control,
-        formState,
-        getValues,
-        resetField,
-        getFieldState,
-    } = useForm<FormValue>({
-        defaultValues: {},
-        mode: "onTouched",
-        resolver: zodResolver(schema),
-    });
+    const { register, control, formState, handleSubmit, setError } =
+        useForm<FormValue>({
+            defaultValues: {},
+            mode: "onTouched",
+            resolver: zodResolver(schema),
+        });
     const { errors } = formState;
     const matches = useMediaQuery("(min-width:1070px)");
-    const onSubmit = (e: SyntheticEvent) => {
-        e.preventDefault();
 
-        const data = {
-            ClientName: getValues("ClientName"),
-            Phone1: getValues("Phone1"),
-            Phone2: getValues("Phone2"),
-            Email: getValues("Email"),
-            OrderType: Number(getValues("OrderType")),
-            PaymentType: Number(getValues("PaymentType")),
-            StateId: convertStateToID(getValues("StateId")),
-            CityId: convertCityToID(getValues("CityId")),
-            AdressDetails: getValues("AdressDetails"),
-            IsVillage: Number(getValues("IsVillage")) === 0 ? true : false,
-            BranchId: convertBranchToID(getValues("BranchId")),
-            ShippingTypeId: convertShippingTypeToID(
-                getValues("ShippingTypeId")
-            ),
-            OrderCost: Number(getValues("OrderCost")),
-            comments: getValues("comments"),
-            OrderItem: convertOrderItems(products),
-            OrderStatus: 0,
-        };
+    const onSubmit = (requestData: FormValue) => {
         if (
-            (getFieldState("ClientName").isTouched &&
-                getFieldState("ClientName").error) ||
-            !getFieldState("ClientName").isTouched ||
-            (getFieldState("Phone1").isTouched &&
-                getFieldState("Phone1").error) ||
-            !getFieldState("Phone1").isTouched ||
-            (getFieldState("Email").isTouched &&
-                getFieldState("Email").error) ||
-            !getFieldState("Email").isTouched ||
-            (getFieldState("OrderType").isTouched &&
-                getFieldState("OrderType").error) ||
-            !getFieldState("OrderType").isTouched ||
-            (getFieldState("PaymentType").isTouched &&
-                getFieldState("PaymentType").error) ||
-            !getFieldState("PaymentType").isTouched ||
-            (getFieldState("StateId").isTouched &&
-                getFieldState("StateId").error) ||
-            !getFieldState("StateId").isTouched ||
-            (getFieldState("CityId").isTouched &&
-                getFieldState("CityId").error) ||
-            !getFieldState("ClientName").isTouched ||
-            (getFieldState("AdressDetails").isTouched &&
-                getFieldState("AdressDetails").error) ||
-            !getFieldState("AdressDetails").isTouched ||
-            (getFieldState("IsVillage").isTouched &&
-                getFieldState("IsVillage").error) ||
-            !getFieldState("IsVillage").isTouched ||
-            (getFieldState("BranchId").isTouched &&
-                getFieldState("BranchId").error) ||
-            !getFieldState("BranchId").isTouched ||
-            (getFieldState("ShippingTypeId").isTouched &&
-                getFieldState("ShippingTypeId").error) ||
-            !getFieldState("ShippingTypeId").isTouched
+            handelCity(requestData.stateId).some(
+                (city: { cityId: string; stateId: string }) =>
+                    city.cityId == requestData.cityId
+            )
         ) {
-            handleReset();
-        } else if (products.length === 0) {
-            setActiveStep(1);
-        } else {
-            setActiveStep(2);
-        }
-
-        /*  🚀 make the request 🚀 */
-        if (
-            getFieldState("ClientName").isTouched &&
-            !getFieldState("ClientName").error &&
-            getFieldState("Phone1").isTouched &&
-            !getFieldState("Phone1").error &&
-            getFieldState("Email").isTouched &&
-            !getFieldState("Email").error &&
-            getFieldState("OrderType").isTouched &&
-            !getFieldState("OrderType").error &&
-            getFieldState("PaymentType").isTouched &&
-            !getFieldState("PaymentType").error &&
-            getFieldState("StateId").isTouched &&
-            !getFieldState("StateId").error &&
-            getFieldState("CityId").isTouched &&
-            !getFieldState("CityId").error &&
-            getFieldState("AdressDetails").isTouched &&
-            !getFieldState("AdressDetails").error &&
-            getFieldState("IsVillage").isTouched &&
-            !getFieldState("IsVillage").error &&
-            getFieldState("BranchId").isTouched &&
-            !getFieldState("BranchId").error &&
-            getFieldState("ShippingTypeId").isTouched &&
-            !getFieldState("ShippingTypeId").error &&
-            products.length > 0 &&
-            getFieldState("OrderCost").isTouched &&
-            !getFieldState("OrderCost").error
-        ) {
-            mutate(data, {
-                onSuccess: () => {
-                    {
-                        navigate("/orders");
-                    }
-                },
-            });
-        }
-    };
-
-    /* control cities option */
-    const handelAvailableCities = (state: string) => {
-        resetField("CityId");
-        setStateId(convertStateToID(state));
-    };
-    useEffect(() => {
-        refetch().then((res) => setAvalCities(res?.data.data.cities));
-    }, [stateId]);
-
-    const convertBranchToID = (branch: string) => {
-        let BranchId!: number;
-        branches?.data.forEach((branchObj: { id: number; branch: string }) => {
-            if (branchObj.branch === branch) {
-                BranchId = branchObj.id;
-            }
-        });
-        return BranchId;
-    };
-
-    const convertStateToID = (state: string) => {
-        let stateId!: number;
-        states?.data.forEach((stateObj: { id: number; state: string }) => {
-            if (stateObj.state === state) {
-                stateId = stateObj.id;
-            }
-        });
-        return stateId;
-    };
-    const convertShippingTypeToID = (type: string) => {
-        let shippingTypeId!: number;
-        typesOfShipping?.data.forEach(
-            (shippingTypeObj: { id: number; type: string }) => {
-                if (shippingTypeObj.type === type) {
-                    shippingTypeId = shippingTypeObj.id;
-                }
-            }
-        );
-        return shippingTypeId;
-    };
-    const convertCityToID = (city: string) => {
-        let cityId!: number;
-        cities2?.data.forEach((cityObj: { id: number; city: string }) => {
-            if (cityObj.city === city) {
-                cityId = cityObj.id;
-            }
-        });
-        return cityId;
-    };
-    const convertOrderItems = (products: Product[]) => {
-        return products.map((product: Product) => {
-            return {
-                productName: product.productName,
-                productWeight: Number(product.productWeight),
-                productQuantity: Number(product.productQuantity),
+            /*🚀 make request 🚀*/
+            const dta = {
+                ...requestData,
+                orderType: +requestData.OrderType,
+                shippingTypeId: +requestData.shippingTypeId,
+                cityId: +requestData.cityId,
+                stateId: +requestData.stateId,
+                paymentType: +requestData.paymentType,
+                branchId: +requestData.branchId,
+                orderStatus: 0,
+                isVillage: requestData.isVillage === "0" ? true : false,
+                orderItems: products,
             };
+            console.log(dta);
+        } else {
+            setError("cityId", { message: "برجاء اختيار مدينة" });
+            toast.warn("برجاء   اختيار مدينة ", {
+                position: toast.POSITION.BOTTOM_LEFT,
+                autoClose: 2000,
+                theme: "dark",
+            });
+        }
+    };
+    const onError = () => {
+        toast.warn("برجاء اكمال الحقول الفارغة ", {
+            position: toast.POSITION.BOTTOM_LEFT,
+            autoClose: 2000,
+            theme: "dark",
         });
     };
-    /* modal form*/
-    const [products, setProducts] = useState<Product[]>([]);
-    const [openModal, setOpenModal] = useState(false);
-    const handleOpenModal = () => setOpenModal(true);
-    const handleCloseModal = () => setOpenModal(false);
-    const handleAddProduct = (newProduct: Product) => {
-        setProducts((prev) => [...prev, { ...newProduct }]);
-    };
-    /* modal */
-    const modalSubmit = () => {
-        if (
-            getFieldState("productName").isTouched &&
-            !getFieldState("productName").error &&
-            getFieldState("productQuantity").isTouched &&
-            !getFieldState("productQuantity").error &&
-            getFieldState("productWeight").isTouched &&
-            !getFieldState("productWeight").error
-        ) {
-            handleAddProduct({
-                productName: getValues("productName"),
-                productQuantity: Number(getValues("productQuantity")),
-                productWeight: Number(getValues("productWeight")),
-                id: uuidv4(),
-            });
-            resetField("productName");
-            resetField("productQuantity");
-            resetField("productWeight");
-            handleCloseModal();
-        } else {
-            // console.log("no");
-        }
 
-        /* if (formState.isValid) {
-            resetForm();
-          
-        } */
-    };
+    /* modal form*/
+
     return (
         <>
             <TableToolbar
@@ -408,7 +305,7 @@ const AddOrderPage = () => {
                     );
                 })}
             </Stepper>
-            <form onSubmit={(e) => onSubmit(e)} noValidate>
+            <form onSubmit={handleSubmit(onSubmit, onError)} noValidate>
                 {/* form step 1 */}
                 {activeStep === 0 && (
                     <Box
@@ -428,8 +325,8 @@ const AddOrderPage = () => {
                             <div style={{ margin: "20px 0" }}>
                                 <InputField
                                     register={register}
-                                    errors={errors.ClientName}
-                                    fieldName="ClientName"
+                                    errors={errors.clientName}
+                                    fieldName="clientName"
                                     label="اسم العميل"
                                     largeWidth="90%"
                                     smallWidth="90%"
@@ -467,19 +364,19 @@ const AddOrderPage = () => {
                                 />
                             </Box>
 
-                            {/* Email */}
+                            {/* email */}
                             <div style={{ margin: "20px 0" }}>
                                 <InputField
                                     register={register}
-                                    errors={errors.Email}
-                                    fieldName="Email"
+                                    errors={errors.email}
+                                    fieldName="email"
                                     label="البريد الالكتروني"
                                     largeWidth="90%"
                                     smallWidth="90%"
                                 />
                             </div>
 
-                            {/* OrderType && PaymentType*/}
+                            {/* OrderType && paymentType*/}
                             <Box
                                 sx={{
                                     margin: "20px 0",
@@ -524,21 +421,21 @@ const AddOrderPage = () => {
                                         {errors?.OrderType?.message}
                                     </FormHelperText>
                                 </FormControl>
-                                {/* PaymentType */}
+                                {/* paymentType */}
                                 <FormControl
                                     sx={{
                                         width: { xs: "100%", md: "49%" },
                                     }}
                                 >
                                     <InputLabel
-                                        error={!!errors.PaymentType}
+                                        error={!!errors.paymentType}
                                         color="info"
                                         id="demo-simple-select-helper-label"
                                     >
                                         نوع الدفع
                                     </InputLabel>
                                     <Select
-                                        {...register("PaymentType")}
+                                        {...register("paymentType")}
                                         labelId="demo-simple-select-helper-label"
                                         id="demo-simple-select-helper"
                                         value={payment}
@@ -558,111 +455,115 @@ const AddOrderPage = () => {
                                         </MenuItem>
                                     </Select>
                                     <FormHelperText
-                                        error={!!errors.PaymentType}
+                                        error={!!errors.paymentType}
                                     >
-                                        {errors?.PaymentType?.message}
+                                        {errors?.paymentType?.message}
                                     </FormHelperText>
                                 </FormControl>
                             </Box>
-
-                            {/* state name */}
-                            <div
-                                style={{
+                            {/* stateName & cityName*/}
+                            <Box
+                                sx={{
                                     margin: "20px 0",
+                                    display: "flex",
+                                    flexWrap: "wrap",
+                                    width: "90%",
+                                    justifyContent: "space-between",
+                                    gap: { xs: "20px", md: 0 },
                                 }}
                             >
-                                <Autocomplete
-                                    onChange={(_e, value) => {
-                                        handelAvailableCities(value as string);
+                                <FormControl
+                                    sx={{
+                                        width: { xs: "100%", md: "49%" },
                                     }}
-                                    noOptionsText="هذه المحافظة غير متاحة حاليا"
-                                    id="StateId"
-                                    disablePortal
-                                    options={states?.data.map(
-                                        (option: {
-                                            id: number;
-                                            state: string;
-                                        }) => option.state
-                                    )}
-                                    renderInput={(params) => (
-                                        <>
-                                            <TextField
-                                                color="info"
-                                                {...register("StateId")}
-                                                error={!!errors.StateId}
-                                                sx={{
-                                                    width: "90%",
-                                                }}
-                                                {...params}
-                                                label="المحافظة"
-                                                InputProps={{
-                                                    ...params.InputProps,
-                                                    type: "text",
-                                                }}
-                                            />
-                                            <FormHelperText
-                                                error={!!errors.StateId}
-                                                sx={{
-                                                    fontWeight: "bold",
-                                                    letterSpacing: "0.1rem",
-                                                }}
-                                                id="component-helper-text"
-                                            >
-                                                {errors?.StateId?.message}
-                                            </FormHelperText>
-                                        </>
-                                    )}
-                                />{" "}
-                            </div>
+                                >
+                                    <InputLabel
+                                        error={!!errors.stateId}
+                                        color="info"
+                                        id="demo-simple-select-helper-label"
+                                    >
+                                        اسم المحافظة
+                                    </InputLabel>
+                                    <Select
+                                        {...register("stateId")}
+                                        labelId="demo-simple-select-helper-label"
+                                        id="demo-simple-select-helper"
+                                        value={state}
+                                        label="اسم المحافظة"
+                                        color="info"
+                                        onChange={handelStateChange}
+                                    >
+                                        {states?.data.map(
+                                            (state: {
+                                                id: number;
+                                                name: string;
+                                            }) => (
+                                                <MenuItem
+                                                    key={state.id}
+                                                    value={state.id.toString()}
+                                                >
+                                                    {state.name}
+                                                </MenuItem>
+                                            )
+                                        )}
+                                    </Select>
+                                    <FormHelperText error={!!errors.stateId}>
+                                        {errors?.stateId?.message}
+                                    </FormHelperText>
+                                </FormControl>
 
-                            {/* city name */}
-                            <div style={{ margin: "20px 0" }}>
-                                <Autocomplete
-                                    disabled={!cities?.data}
-                                    noOptionsText="هذه المدينة غير متاحة حاليا"
-                                    id="CityId"
-                                    disablePortal
-                                    options={avalCities.map(
-                                        (option: {
-                                            id: number;
-                                            city: string;
-                                        }) => option.city
-                                    )}
-                                    renderInput={(params) => (
-                                        <>
-                                            <TextField
-                                                color="info"
-                                                {...register("CityId")}
-                                                error={!!errors.CityId}
-                                                sx={{
-                                                    width: "90%",
-                                                }}
-                                                {...params}
-                                                label="اسم المدينة"
-                                                InputProps={{
-                                                    ...params.InputProps,
-                                                    type: "text",
-                                                }}
-                                            />
-                                            <FormHelperText
-                                                error={!!errors.CityId}
-                                                sx={{
-                                                    fontWeight: "bold",
-                                                    letterSpacing: "0.1rem",
-                                                }}
-                                                id="component-helper-text"
-                                            >
-                                                {errors?.CityId?.message}
-                                            </FormHelperText>
-                                        </>
-                                    )}
-                                />
-                            </div>
+                                {
+                                    <FormControl
+                                        sx={{
+                                            width: {
+                                                xs: "100%",
+                                                md: "49%",
+                                            },
+                                        }}
+                                        disabled={!availableCities}
+                                    >
+                                        <InputLabel
+                                            error={!!errors.cityId}
+                                            color="info"
+                                            id="demo-simple-select-helper-label"
+                                        >
+                                            اسم المدينة
+                                        </InputLabel>
+                                        <Select
+                                            {...register("cityId")}
+                                            labelId="demo-simple-select-helper-label"
+                                            id="demo-simple-select-helper"
+                                            value={city}
+                                            label="اسم المدينة"
+                                            color="info"
+                                            onChange={handelCityChange}
+                                        >
+                                            {availableCities?.map(
+                                                (city: {
+                                                    cityId: number;
+                                                    name: string;
+                                                }) => (
+                                                    <MenuItem
+                                                        key={city.cityId}
+                                                        defaultChecked
+                                                        value={city?.cityId.toString()}
+                                                    >
+                                                        {city?.name}
+                                                    </MenuItem>
+                                                )
+                                            )}
+                                        </Select>
+                                        <FormHelperText error={!!errors.cityId}>
+                                            {errors?.cityId?.message}
+                                        </FormHelperText>
+                                    </FormControl>
+                                }
+                            </Box>
 
                             {/* address details */}
                             <div style={{ margin: "20px 0" }}>
                                 <FormControl
-                                    error={!!errors.AdressDetails}
+                                    error={!!errors.adressDetails}
                                     fullWidth
                                     sx={{ width: "90%" }}
                                     variant="outlined"
@@ -677,9 +578,9 @@ const AddOrderPage = () => {
                                     <OutlinedInput
                                         multiline
                                         minRows={2.5}
-                                        {...register("AdressDetails")}
+                                        {...register("adressDetails")}
                                         color="info"
-                                        id={`AdressDetails`}
+                                        id={`adressDetails`}
                                         type={"text"}
                                         label={"تفاصيل العنوان"}
                                     />
@@ -690,7 +591,7 @@ const AddOrderPage = () => {
                                         }}
                                         id="component-helper-text"
                                     >
-                                        {errors?.AdressDetails?.message}
+                                        {errors?.adressDetails?.message}
                                     </FormHelperText>
                                 </FormControl>
                             </div>
@@ -698,7 +599,7 @@ const AddOrderPage = () => {
                             {/* isVillage */}
                             <FormControl>
                                 <FormLabel
-                                    error={!!errors.IsVillage}
+                                    error={!!errors.isVillage}
                                     id="demo-radio-buttons-group-label"
                                     color="info"
                                 >
@@ -708,115 +609,114 @@ const AddOrderPage = () => {
                                     row
                                     aria-labelledby="demo-radio-buttons-group-label"
                                     name="radio-buttons-group"
+                                    value={isVillage}
+                                    onChange={handleIsVillage}
                                 >
                                     <FormControlLabel
-                                        value={0}
-                                        {...register("IsVillage")}
+                                        value={"0"}
+                                        {...register("isVillage")}
                                         control={<Radio color="info" />}
                                         label="نعم"
                                     />
                                     <FormControlLabel
-                                        value={1}
-                                        {...register("IsVillage")}
+                                        value={"1"}
+                                        {...register("isVillage")}
                                         control={<Radio color="info" />}
                                         label="لا, لمدينة"
                                     />
                                 </RadioGroup>{" "}
-                                <FormHelperText error={!!errors.IsVillage}>
-                                    {errors?.IsVillage?.message}
+                                <FormHelperText error={!!errors.isVillage}>
+                                    {errors?.isVillage?.message}
                                 </FormHelperText>
                             </FormControl>
 
                             {/* branch name */}
                             <div style={{ margin: "20px 0" }}>
-                                <Autocomplete
-                                    noOptionsText="هذا الفرع غير متاح حاليا"
-                                    id="branch"
-                                    disablePortal
-                                    options={branches?.data.map(
-                                        (option: {
-                                            id: number;
-                                            branch: string;
-                                        }) => option.branch
-                                    )}
-                                    renderInput={(params) => (
-                                        <>
-                                            <TextField
-                                                color="info"
-                                                {...register("BranchId")}
-                                                error={!!errors.BranchId}
-                                                sx={{
-                                                    width: "90%",
-                                                }}
-                                                {...params}
-                                                label="اسم الفرع"
-                                                InputProps={{
-                                                    ...params.InputProps,
-                                                    type: "text",
-                                                }}
-                                            />
-                                            <FormHelperText
-                                                error={!!errors.BranchId}
-                                                sx={{
-                                                    fontWeight: "bold",
-                                                    letterSpacing: "0.1rem",
-                                                }}
-                                                id="component-helper-text"
-                                            >
-                                                {errors?.BranchId?.message}
-                                            </FormHelperText>
-                                        </>
-                                    )}
-                                />
+                                <FormControl
+                                    sx={{
+                                        width: "90%",
+                                    }}
+                                >
+                                    <InputLabel
+                                        error={!!errors.branchId}
+                                        color="info"
+                                        id="demo-simple-select-helper-label"
+                                    >
+                                        اسم الفرع
+                                    </InputLabel>
+                                    <Select
+                                        {...register("branchId")}
+                                        labelId="demo-simple-select-helper-label"
+                                        id="demo-simple-select-helper"
+                                        value={branch}
+                                        label="اسم الفرع"
+                                        color="info"
+                                        onChange={handelBranchChange}
+                                    >
+                                        {branches?.data.map(
+                                            (branch: {
+                                                id: number;
+                                                branch: string;
+                                            }) => (
+                                                <MenuItem
+                                                    key={branch.id}
+                                                    defaultChecked
+                                                    value={branch.id.toString()}
+                                                >
+                                                    {branch.branch}
+                                                </MenuItem>
+                                            )
+                                        )}
+                                    </Select>
+                                    <FormHelperText error={!!errors.branchId}>
+                                        {errors?.branchId?.message}
+                                    </FormHelperText>
+                                </FormControl>
                             </div>
-
                             {/* typesOfShipping */}
                             <div style={{ margin: "20px 0" }}>
-                                <Autocomplete
-                                    noOptionsText="هذا الطريقة غير متاحة حاليا"
-                                    id="typesOfShipping"
-                                    disablePortal
-                                    options={typesOfShipping?.data.map(
-                                        (option: {
-                                            id: number;
-                                            type: string;
-                                        }) => option.type
-                                    )}
-                                    renderInput={(params) => (
-                                        <>
-                                            <TextField
-                                                color="info"
-                                                {...register("ShippingTypeId")}
-                                                error={!!errors.ShippingTypeId}
-                                                sx={{
-                                                    width: "90%",
-                                                }}
-                                                {...params}
-                                                label="طريقة الشحن"
-                                                InputProps={{
-                                                    ...params.InputProps,
-                                                    type: "text",
-                                                }}
-                                            />
-                                            <FormHelperText
-                                                error={!!errors.ShippingTypeId}
-                                                sx={{
-                                                    fontWeight: "bold",
-                                                    letterSpacing: "0.1rem",
-                                                }}
-                                                id="component-helper-text"
-                                            >
-                                                {
-                                                    errors?.ShippingTypeId
-                                                        ?.message
-                                                }
-                                            </FormHelperText>
-                                        </>
-                                    )}
-                                />
+                                <FormControl
+                                    sx={{
+                                        width: "90%",
+                                    }}
+                                >
+                                    <InputLabel
+                                        error={!!errors.shippingTypeId}
+                                        color="info"
+                                        id="demo-simple-select-helper-label"
+                                    >
+                                        طريقة الشحن
+                                    </InputLabel>
+                                    <Select
+                                        {...register("shippingTypeId")}
+                                        labelId="demo-simple-select-helper-label"
+                                        id="demo-simple-select-helper"
+                                        value={delivery}
+                                        label="طريقة الشحن"
+                                        color="info"
+                                        onChange={handleDeliveryChange}
+                                    >
+                                        {typesOfShipping?.data.map(
+                                            (shiping: {
+                                                id: number;
+                                                type: string;
+                                            }) => (
+                                                <MenuItem
+                                                    key={shiping.id}
+                                                    value={shiping.id.toString()}
+                                                >
+                                                    {shiping.type}
+                                                </MenuItem>
+                                            )
+                                        )}
+                                    </Select>
+                                    <FormHelperText
+                                        error={!!errors.shippingTypeId}
+                                    >
+                                        {errors?.shippingTypeId?.message}
+                                    </FormHelperText>
+                                </FormControl>
                             </div>
-
-                            {/* step 2 */}
                         </Box>
                     </Box>
                 )}
@@ -839,7 +739,7 @@ const AddOrderPage = () => {
                             <Button
                                 color="info"
                                 variant="contained"
-                                onClick={handleOpenModal}
+                                onClick={handleOpenProductForm}
                                 sx={{
                                     height: "40px",
                                     marginY: "22px",
@@ -851,117 +751,25 @@ const AddOrderPage = () => {
                             </Button>
                         </Box>
                         {/* show Products */}
-                        <ProductsInLargeScreen
-                            products={products}
-                            handleOpenModal={handleOpenModal}
+                        {matches ? (
+                            <ProductsInLargeScreen
+                                products={products}
+                                handleOpenModal={handleOpenProductForm}
+                                setProducts={setProducts}
+                            />
+                        ) : (
+                            <ProductsInSmallScreen
+                                products={products}
+                                handleOpenModal={handleOpenProductForm}
+                                setProducts={setProducts}
+                            />
+                        )}
+                        {/* modal */}
+                        <AddProductForm
+                            handleCloseProductForm={handleCloseProductForm}
+                            open={openProductForm}
                             setProducts={setProducts}
                         />
-                        {/* modal */}
-                        <Modal
-                            aria-labelledby="transition-modal-title"
-                            aria-describedby="transition-modal-description"
-                            open={openModal}
-                            onClose={handleCloseModal}
-                            closeAfterTransition
-                            slots={{ backdrop: Backdrop }}
-                            slotProps={{
-                                backdrop: {
-                                    timeout: 500,
-                                },
-                            }}
-                        >
-                            <Fade in={openModal}>
-                                <Box sx={modalFormstyle}>
-                                    <Typography
-                                        id="transition-modal-title"
-                                        variant="h6"
-                                        component="h2"
-                                    >
-                                        اضافه منتج
-                                    </Typography>
-                                    {/* product name */}
-                                    <div style={{ margin: "20px 0" }}>
-                                        <FormControl
-                                            error={!!errors.productName}
-                                            fullWidth
-                                            sx={{ width: "100%" }}
-                                            variant="outlined"
-                                        >
-                                            <InputLabel
-                                                color="info"
-                                                htmlFor="productName"
-                                            >
-                                                اسم المنتج
-                                            </InputLabel>
-                                            <OutlinedInput
-                                                multiline
-                                                /*   minRows={2.5} */
-                                                maxRows={10}
-                                                {...register("productName")}
-                                                color="info"
-                                                id={`productName`}
-                                                type={"text"}
-                                                label="اسم المنتج"
-                                            />
-                                            <FormHelperText
-                                                sx={{
-                                                    fontWeight: "bold",
-                                                    letterSpacing: "0.1rem",
-                                                }}
-                                                id="component-helper-text"
-                                            >
-                                                {errors?.productName?.message}
-                                            </FormHelperText>
-                                        </FormControl>
-                                    </div>
-                                    {/* product quantity */}
-                                    <div
-                                        style={{
-                                            margin: "20px 0",
-                                        }}
-                                    >
-                                        <NumericInputField
-                                            register={register}
-                                            errors={errors.productQuantity}
-                                            fieldName="productQuantity"
-                                            label="الكمية"
-                                            largeWidth="100%"
-                                            smallWidth="100%"
-                                        />
-                                    </div>
-                                    {/*   product weight */}
-                                    <div
-                                        style={{
-                                            margin: "20px 0",
-                                        }}
-                                    >
-                                        <NumericInputField
-                                            register={register}
-                                            errors={errors.productWeight}
-                                            fieldName="productWeight"
-                                            label="الوزن (كجــم)"
-                                            largeWidth="100%"
-                                            smallWidth="100%"
-                                        />
-                                    </div>
-                                    {/* add special pakage */}
-                                    <Button
-                                        onClick={modalSubmit}
-                                        sx={{
-                                            width: "100%",
-                                            marginX: "auto",
-                                            height: "40px",
-                                            fontWeight: "bold",
-                                        }}
-                                        variant="contained"
-                                    >
-                                        اضافة
-                                    </Button>
-
-                                    <DevTool control={control} />
-                                </Box>
-                            </Fade>
-                        </Modal>{" "}
                     </Box>
                 )}
 
@@ -981,7 +789,7 @@ const AddOrderPage = () => {
                     >
                         <Box sx={{ marginX: "auto", width: "90%" }}>
                             {/* orderCost */}
-                            <div
+                            {/*   <div
                                 style={{
                                     margin: "20px 0",
                                 }}
@@ -994,7 +802,7 @@ const AddOrderPage = () => {
                                     largeWidth="90%"
                                     smallWidth="90%"
                                 />{" "}
-                            </div>
+                            </div> */}
 
                             {/* comments */}
                             <div style={{ margin: "20px 0" }}>
@@ -1028,6 +836,18 @@ const AddOrderPage = () => {
                                 </FormControl>
                             </div>
 
+                            {/* total price */}
+                            <Typography fontWeight={"bold"} marginY={"10px"}>
+                                اجمالي السعر :{" "}
+                                {products.reduce(
+                                    (acc, product) =>
+                                        (Number(product.productPrice) * 10 +
+                                            acc * 10) /
+                                        10,
+                                    0
+                                )}{" "}
+                                جــــنيه
+                            </Typography>
                             {/* total weight */}
                             <Typography fontWeight={"bold"}>
                                 اجمالي الوزن :{" "}

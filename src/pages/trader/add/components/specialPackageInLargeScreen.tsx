@@ -22,7 +22,7 @@ const SpecialPackageInLargeScreen = ({
     setSpecialPackage,
 }: props) => {
     const handelDeleteSpecialPackage = (row: SpecialPackage) => {
-        setSpecialPackage((prev: SpecialPackage) =>
+        setSpecialPackage((prev: SpecialPackage[]) =>
             prev.filter(
                 (oldPackage: SpecialPackage) => oldPackage.id !== row.id
             )

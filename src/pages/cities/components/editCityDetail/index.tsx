@@ -13,8 +13,6 @@ import {
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 
-/* rect-form */
-
 /* hook form */
 import { useForm } from "react-hook-form";
 import { DevTool } from "@hookform/devtools";
@@ -35,6 +33,7 @@ import { convertStateToID, states } from "../../../../utils/converter";
 
 /* toast */
 import { toast } from "react-toastify";
+
 import { useState } from "react";
 
 type EditCityProps = {
