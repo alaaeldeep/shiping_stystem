@@ -10,16 +10,11 @@ import {
     Dialog,
     IconButton,
     Box,
-    Autocomplete,
     FormHelperText,
-    TextField,
     Step,
     StepLabel,
     Stepper,
     Typography,
-    Backdrop,
-    Modal,
-    Fade,
     useMediaQuery,
     FormControl,
     InputLabel,
@@ -44,35 +39,22 @@ import UseQuery from "../../../../hooks/serverState/useQuery";
 /* toast */
 import { toast } from "react-toastify";
 
-/* uuid */
-import { v4 as uuidv4 } from "uuid";
-
 /* components */
 import InputField from "../../../../components/inputFields/textInputField/inputfield";
 import NumericInputField from "../../../../components/inputFields/numericInputField";
 import SpecialPackageInLargeScreen from "./components/specialPackageInLargeScreen";
 import SpecialPackageInSmallScreen from "./components/specialPackageInSmallScreen";
+import SpecialPackageForm from "./components/specialPackageForm";
 
 /* types */
-import { SpecialPackage } from "../../../../components/types";
 import { TraderRow } from "../../../../components/types";
-import SpecialPackageForm from "./components/specialPackageForm";
+import { SpecialPackage } from "../../../../components/types";
 type EditEmployeeDetailsProps = {
     open: boolean;
     data: TraderRow;
     handleClose: () => void;
 };
-const modalFormstyle = {
-    position: "absolute",
-    top: "50%",
-    left: "50%",
-    transform: "translate(-50%, -50%)",
-    width: 400,
-    bgcolor: "background.paper",
-    borderRadius: "25px",
-    boxShadow: 24,
-    p: 4,
-};
+
 /*  */
 const steps = [
     "تحديث البيانات الاساسيه",
@@ -141,6 +123,9 @@ const EditTraderDetails = ({
     const handleCloseSpecialPackageForm = () => {
         setOpenSpecialPackageForm(false);
     };
+    const [SpecialPackage, setSpecialPackage] = useState<SpecialPackage[]>(
+        data.specialPackages
+    );
     /* steps form */
     const [activeStep, setActiveStep] = useState(0);
     const handleNext = () => {
@@ -241,649 +226,432 @@ const EditTraderDetails = ({
         });
     };
 
-    /*  const onSubmit = (e: SyntheticEvent) => {
-        e.preventDefault();
-        const data = {
-            traderData: {
-                fullName: getValues().fullName,
-                userName: getValues().userName,
-                email: getValues().email,
-                phoneNumber: getValues().phoneNumber,
-                password: getValues().password,
-                address: getValues().address,
-                branchId: convertBranchToID(getValues().branch),
-                storeName: getValues().storeName,
-                stateId: convertStateToID(getValues().state),
-                cityId: convertCityToID(getValues().city),
-                rejectedOrderlossRatio: getValues().rejectedOrderlossRatio,
-            },
-            SpecialPackage: convertSpecialPackage(SpecialPackage),
-        };
-        if (
-            getFieldState("fullName").error ||
-            getFieldState("userName").error ||
-            getFieldState("email").error ||
-            (getFieldState("password").isTouched &&
-                getFieldState("password").error) ||
-            getFieldState("phoneNumber").error ||
-            getFieldState("address").error
-        ) {
-            handleReset();
-        } else {
-            setActiveStep(1);
-        }
-        if (
-            !getFieldState("fullName").error &&
-            !getFieldState("userName").error &&
-            !getFieldState("email").error &&
-            !getFieldState("phoneNumber").error &&
-            !getFieldState("password").error &&
-            getFieldState("password").isTouched &&
-            !getFieldState("address").error &&
-            !getFieldState("branch").error &&
-            !getFieldState("state").error &&
-            !getFieldState("storeName").error &&
-            !getFieldState("city").error
-        ) {
-            console.log(data);
-        make the request 🚀 🚀 
-             mutate(data, {
-                onSuccess: () => {
-                    navigate("/traders");
-                },
-            }); 
-        }
-    }; */
-    /* control cities option */
-    /*  const handelAvailableCities = (state: string) => {
-        resetField("city");
-        resetField("citySpecialPackage");
-        setStateId(convertStateToID(state));
-    }; */
-    /*     useEffect(() = > {
-/*         refetch().then((res) => setAvalCities(res?.data.data.cities));
-/*     }, [stateId]); */
-
-    /*     const convertStateToID = (state: string) => {
-        let stateId!: number;
-        states?.data.forEach((stateObj: { id: number; state: string }) => {
-            if (stateObj.state === state) {
-                stateId = stateObj.id;
-            }
-        });
-        return stateId;
-    }; */
-    /*     const convertCityToID = (city: string) => {
-        let cityId!: number;
-        cities2?.data.forEach((cityObj: { id: number; city: string }) => {
-            if (cityObj.city === city) {
-                cityId = cityObj.id;
-            }
-        });
-        return cityId;
-    }; */
-    /*   const convertBranchToID = (branch: string) => {
-        let branchId!: number;
-        branches?.data.forEach((branchObj: { id: number; branch: string }) => {
-            if (branchObj.branch === branch) {
-                branchId = branchObj.id;
-            }
-        });
-        return branchId;
-    }; */
-    /*     const convertSpecialPackage = (SpecialPackage: SpecialPackage[]) => {
-        return SpecialPackage.map((SpecialPackage) => {
-            convertStateToID(SpecialPackage.state.name);
-            convertBranchToID(SpecialPackage.city.name);
-            SpecialPackage.shippingCost;
-            return {
-                stateId: convertStateToID(SpecialPackage.state.name),
-                cityId: convertCityToID(SpecialPackage.city.name),
-                shippingCost: SpecialPackage.shippingCost,
-            };
-        });
-    };
- */
-    /* step form 3 staff */
-
-    /* modal form*/
-    const [SpecialPackage, setSpecialPackage] = useState<SpecialPackage[]>(
-        data.specialPackages
-    );
-
-    const [openModal, setOpenModal] = useState(false);
-    const handleOpenModal = () => setOpenModal(true);
-    const handleCloseModal = () => setOpenModal(false);
-    /*   const handleAddSpecialPackage = (newPackage: SpecialPackage) => {
-        setSpecialPackage((prev) => [...prev, { ...newPackage }]);
-    }; */
-    /*    const handelDeleteSpecialPackage = (row: SpecialPackage) => {
-        setSpecialPackage((prev) =>
-            prev.filter((oldPackage) => oldPackage.id !== row.id)
-        );
-    }; */
-
     return (
-        <>
-            <Dialog
-                fullWidth={true}
-                maxWidth={"xl"}
-                open={open}
-                onClose={handleClose}
-            >
-                <div
-                    style={{ display: "flex", justifyContent: "space-between" }}
+        <Dialog
+            fullWidth={true}
+            maxWidth={"xl"}
+            open={open}
+            onClose={handleClose}
+        >
+            <div style={{ display: "flex", justifyContent: "space-between" }}>
+                <DialogTitle width={{ xs: "230px", sm: "auto" }}>
+                    تعــديــل بيانات الخاصــة بالتاجر : {data.userName}
+                </DialogTitle>
+                <DialogActions>
+                    <IconButton onClick={handleClose}>
+                        <CloseIcon sx={{ color: "red", fontSize: "1.7rem" }} />
+                    </IconButton>
+                </DialogActions>
+            </div>
+
+            <DialogContent>
+                <Box
+                    sx={{
+                        width: "100%",
+                        padding: "20px",
+                        borderRadius: "25px",
+                        boxShadow:
+                            "rgba(17, 17, 26, 0.1) 0px 1px 0px, rgba(17, 17, 26, 0.1) 0px 8px 24px, rgba(17, 17, 26, 0.1) 0px 16px 48px",
+                    }}
                 >
-                    <DialogTitle width={{ xs: "230px", sm: "auto" }}>
-                        تعــديــل بيانات الخاصــة بالتاجر : {data.userName}
-                    </DialogTitle>
-                    <DialogActions>
-                        <IconButton onClick={handleClose}>
-                            <CloseIcon
-                                sx={{ color: "red", fontSize: "1.7rem" }}
-                            />
-                        </IconButton>
-                    </DialogActions>
-                </div>
+                    <Stepper activeStep={activeStep}>
+                        {/* label names */}
+                        {steps.map((label, index) => {
+                            const stepProps: { completed?: boolean } = {};
+                            const labelProps: {
+                                optional?: React.ReactNode;
+                            } = {};
 
-                <DialogContent>
-                    <Box
-                        sx={{
-                            width: "100%",
-                            padding: "20px",
-                            borderRadius: "25px",
-                            boxShadow:
-                                "rgba(17, 17, 26, 0.1) 0px 1px 0px, rgba(17, 17, 26, 0.1) 0px 8px 24px, rgba(17, 17, 26, 0.1) 0px 16px 48px",
-                        }}
-                    >
-                        <Stepper activeStep={activeStep}>
-                            {/* label names */}
-                            {steps.map((label, index) => {
-                                const stepProps: { completed?: boolean } = {};
-                                const labelProps: {
-                                    optional?: React.ReactNode;
-                                } = {};
-
-                                return (
-                                    <Step
-                                        sx={{ paddingX: 1 }}
-                                        key={index}
-                                        {...stepProps}
-                                    >
-                                        <StepLabel {...labelProps}>
-                                            {label}
-                                        </StepLabel>
-                                    </Step>
-                                );
-                            })}
-                        </Stepper>
-
-                        {/* form */}
-                        <form onSubmit={handleSubmit(onSubmit, onError)}>
-                            <Box sx={{ mt: 2, mb: 1 }}>
-                                <Box
-                                    sx={{
-                                        width: "100%",
-                                        /*    backgroundColor: "secondary.main", */
-                                        padding: "10px 0px",
-                                        borderRadius: "25px",
-                                        display: "flex",
-                                        flexDirection: "column",
-                                        justifyContent: "center",
-                                        mb: 3,
-                                    }}
+                            return (
+                                <Step
+                                    sx={{ paddingX: 1 }}
+                                    key={index}
+                                    {...stepProps}
                                 >
-                                    {/* form step 1 */}
-                                    {activeStep === 0 ? (
-                                        <Box
-                                            sx={{
-                                                marginX: "auto",
-                                                width: "90%",
-                                            }}
-                                        >
-                                            {/* full name */}
-                                            <div style={{ margin: "20px 0" }}>
-                                                <InputField
-                                                    register={register}
-                                                    errors={errors.fullName}
-                                                    fieldName="fullName"
-                                                    label=" الاسم بالكامل  "
-                                                    largeWidth="90%"
-                                                    smallWidth="90%"
-                                                />
-                                            </div>
-                                            {/* userName name */}
-                                            <div style={{ margin: "20px 0" }}>
-                                                <InputField
-                                                    register={register}
-                                                    errors={errors.userName}
-                                                    fieldName="userName"
-                                                    label="  اسم المستخدم"
-                                                    largeWidth="90%"
-                                                    smallWidth="90%"
-                                                />
-                                            </div>
-                                            {/* email */}
-                                            <div style={{ margin: "20px 0" }}>
-                                                <InputField
-                                                    register={register}
-                                                    errors={errors.email}
-                                                    fieldName="email"
-                                                    label="البريد الالكتروني"
-                                                    largeWidth="90%"
-                                                    smallWidth="90%"
-                                                />
-                                            </div>
-                                            {/* password */}
-                                            <div style={{ margin: "20px 0" }}>
-                                                <InputField
-                                                    register={register}
-                                                    errors={errors.password}
-                                                    fieldName="password"
-                                                    label="كلمة السر"
-                                                    largeWidth="90%"
-                                                    smallWidth="90%"
-                                                />
-                                            </div>
-                                            {/* phoneNumber */}
-                                            <div style={{ margin: "20px 0" }}>
-                                                <NumericInputField
-                                                    register={register}
-                                                    errors={errors.phoneNumber}
-                                                    fieldName="phoneNumber"
-                                                    label="رقم الهاتف"
-                                                    largeWidth="90%"
-                                                    smallWidth="90%"
-                                                />
-                                            </div>
-                                            {/* address */}
-                                            <div style={{ margin: "20px 0" }}>
-                                                <InputField
-                                                    register={register}
-                                                    errors={errors.address}
-                                                    fieldName="address"
-                                                    label="العنوان"
-                                                    largeWidth="90%"
-                                                    smallWidth="90%"
-                                                />
-                                            </div>{" "}
-                                        </Box>
-                                    ) : null}
-                                    {/* form step 2 */}
-                                    {activeStep === 1 ? (
-                                        <Box
-                                            sx={{
-                                                marginX: "auto",
-                                                width: "90%",
-                                            }}
-                                        >
-                                            {/* store name */}
-                                            <div style={{ margin: "20px 0" }}>
-                                                <InputField
-                                                    register={register}
-                                                    errors={errors.storeName}
-                                                    fieldName="storeName"
-                                                    label="اسم المتجر"
-                                                    largeWidth="90%"
-                                                    smallWidth="90%"
-                                                />
-                                            </div>
-                                            {/* state name */}
-                                            {/*  <div style={{ margin: "20px 0" }}>
-                                                <Autocomplete
-                                                    defaultValue={""}
-                                                    onChange={(_e, value) => {
-                                                        handelAvailableCities(
-                                                            value as string
-                                                        );
-                                                    }}
-                                                    noOptionsText="هذه المحافظة غير متاحة حاليا"
-                                                    id="state"
-                                                    disablePortal
-                                                    options={states?.data.map(
-                                                        (option: {
-                                                            id: number;
-                                                            state: string;
-                                                        }) => option.state
-                                                    )}
-                                                    renderInput={(params) => (
-                                                        <>
-                                                            <TextField
-                                                                color="info"
-                                                                {...register(
-                                                                    "state"
-                                                                )}
-                                                                error={
-                                                                    !!errors.state
-                                                                }
-                                                                sx={{
-                                                                    width: "90%",
-                                                                }}
-                                                                {...params}
-                                                                label="المحافظة"
-                                                                InputProps={{
-                                                                    ...params.InputProps,
-                                                                    type: "text",
-                                                                }}
-                                                            />
-                                                            <FormHelperText
-                                                                error={
-                                                                    !!errors.state
-                                                                }
-                                                                sx={{
-                                                                    fontWeight:
-                                                                        "bold",
-                                                                    letterSpacing:
-                                                                        "0.1rem",
-                                                                }}
-                                                                id="component-helper-text"
-                                                            >
-                                                                {
-                                                                    errors
-                                                                        ?.state
-                                                                        ?.message
-                                                                }
-                                                            </FormHelperText>
-                                                        </>
-                                                    )}
-                                                />
-                                            </div> */}
+                                    <StepLabel {...labelProps}>
+                                        {label}
+                                    </StepLabel>
+                                </Step>
+                            );
+                        })}
+                    </Stepper>
 
-                                            {/* state name */}
-                                            <div style={{ margin: "20px 0" }}>
-                                                <FormControl
-                                                    sx={{
-                                                        width: "90%",
-                                                    }}
-                                                >
-                                                    <InputLabel
-                                                        error={!!errors.stateId}
-                                                        color="info"
-                                                        id="demo-simple-select-helper-label"
-                                                    >
-                                                        اسم المحافظة
-                                                    </InputLabel>
-                                                    <Select
-                                                        {...register("stateId")}
-                                                        labelId="demo-simple-select-helper-label"
-                                                        id="demo-simple-select-helper"
-                                                        value={state}
-                                                        label="اسم المحافظة"
-                                                        color="info"
-                                                        onChange={
-                                                            handelStateChange
-                                                        }
-                                                    >
-                                                        {states?.data.map(
-                                                            (state: {
-                                                                id: number;
-                                                                name: string;
-                                                            }) => (
-                                                                <MenuItem
-                                                                    key={
-                                                                        state.id
-                                                                    }
-                                                                    value={state.id.toString()}
-                                                                >
-                                                                    {state.name}
-                                                                </MenuItem>
-                                                            )
-                                                        )}
-                                                    </Select>
-                                                    <FormHelperText
-                                                        error={!!errors.stateId}
-                                                    >
-                                                        {
-                                                            errors?.stateId
-                                                                ?.message
-                                                        }
-                                                    </FormHelperText>
-                                                </FormControl>
-                                            </div>
+                    {/* form */}
+                    <form onSubmit={handleSubmit(onSubmit, onError)}>
+                        <Box sx={{ mt: 2, mb: 1 }}>
+                            <Box
+                                sx={{
+                                    width: "100%",
+                                    /*    backgroundColor: "secondary.main", */
+                                    padding: "10px 0px",
+                                    borderRadius: "25px",
+                                    display: "flex",
+                                    flexDirection: "column",
+                                    justifyContent: "center",
+                                    mb: 3,
+                                }}
+                            >
+                                {/* form step 1 */}
+                                {activeStep === 0 ? (
+                                    <Box
+                                        sx={{
+                                            marginX: "auto",
+                                            width: "90%",
+                                        }}
+                                    >
+                                        {/* full name */}
+                                        <div style={{ margin: "20px 0" }}>
+                                            <InputField
+                                                register={register}
+                                                errors={errors.fullName}
+                                                fieldName="fullName"
+                                                label=" الاسم بالكامل  "
+                                                largeWidth="90%"
+                                                smallWidth="90%"
+                                            />
+                                        </div>
+                                        {/* userName name */}
+                                        <div style={{ margin: "20px 0" }}>
+                                            <InputField
+                                                register={register}
+                                                errors={errors.userName}
+                                                fieldName="userName"
+                                                label="  اسم المستخدم"
+                                                largeWidth="90%"
+                                                smallWidth="90%"
+                                            />
+                                        </div>
+                                        {/* email */}
+                                        <div style={{ margin: "20px 0" }}>
+                                            <InputField
+                                                register={register}
+                                                errors={errors.email}
+                                                fieldName="email"
+                                                label="البريد الالكتروني"
+                                                largeWidth="90%"
+                                                smallWidth="90%"
+                                            />
+                                        </div>
+                                        {/* password */}
+                                        <div style={{ margin: "20px 0" }}>
+                                            <InputField
+                                                register={register}
+                                                errors={errors.password}
+                                                fieldName="password"
+                                                label="كلمة السر"
+                                                largeWidth="90%"
+                                                smallWidth="90%"
+                                            />
+                                        </div>
+                                        {/* phoneNumber */}
+                                        <div style={{ margin: "20px 0" }}>
+                                            <NumericInputField
+                                                register={register}
+                                                errors={errors.phoneNumber}
+                                                fieldName="phoneNumber"
+                                                label="رقم الهاتف"
+                                                largeWidth="90%"
+                                                smallWidth="90%"
+                                            />
+                                        </div>
+                                        {/* address */}
+                                        <div style={{ margin: "20px 0" }}>
+                                            <InputField
+                                                register={register}
+                                                errors={errors.address}
+                                                fieldName="address"
+                                                label="العنوان"
+                                                largeWidth="90%"
+                                                smallWidth="90%"
+                                            />
+                                        </div>{" "}
+                                    </Box>
+                                ) : null}
+                                {/* form step 2 */}
+                                {activeStep === 1 ? (
+                                    <Box
+                                        sx={{
+                                            marginX: "auto",
+                                            width: "90%",
+                                        }}
+                                    >
+                                        {/* store name */}
+                                        <div style={{ margin: "20px 0" }}>
+                                            <InputField
+                                                register={register}
+                                                errors={errors.storeName}
+                                                fieldName="storeName"
+                                                label="اسم المتجر"
+                                                largeWidth="90%"
+                                                smallWidth="90%"
+                                            />
+                                        </div>
 
-                                            {/* branch name */}
-                                            <div style={{ margin: "20px 0" }}>
-                                                <FormControl
-                                                    sx={{
-                                                        width: "90%",
-                                                    }}
-                                                >
-                                                    <InputLabel
-                                                        error={
-                                                            !!errors.branchId
-                                                        }
-                                                        color="info"
-                                                        id="demo-simple-select-helper-label"
-                                                    >
-                                                        اسم الفرع
-                                                    </InputLabel>
-                                                    <Select
-                                                        {...register(
-                                                            "branchId"
-                                                        )}
-                                                        labelId="demo-simple-select-helper-label"
-                                                        id="demo-simple-select-helper"
-                                                        value={branch}
-                                                        label="اسم الفرع"
-                                                        color="info"
-                                                        onChange={
-                                                            handelBranchChange
-                                                        }
-                                                    >
-                                                        {branches?.data.map(
-                                                            (branch: {
-                                                                id: number;
-                                                                branch: string;
-                                                            }) => (
-                                                                <MenuItem
-                                                                    key={
-                                                                        branch.id
-                                                                    }
-                                                                    defaultChecked
-                                                                    value={branch.id.toString()}
-                                                                >
-                                                                    {
-                                                                        branch.branch
-                                                                    }
-                                                                </MenuItem>
-                                                            )
-                                                        )}
-                                                    </Select>
-                                                    <FormHelperText
-                                                        error={
-                                                            !!errors.branchId
-                                                        }
-                                                    >
-                                                        {
-                                                            errors?.branchId
-                                                                ?.message
-                                                        }
-                                                    </FormHelperText>
-                                                </FormControl>
-                                            </div>
-
-                                            {/* city name */}
-                                            <div style={{ margin: "20px 0" }}>
-                                                <FormControl
-                                                    sx={{
-                                                        width: "90%",
-                                                    }}
-                                                    /*     disabled={!availableCities} */
-                                                >
-                                                    <InputLabel
-                                                        error={!!errors.cityId}
-                                                        color="info"
-                                                        id="demo-simple-select-helper-label"
-                                                    >
-                                                        اسم المدينة
-                                                    </InputLabel>
-                                                    <Select
-                                                        {...register("cityId")}
-                                                        labelId="demo-simple-select-helper-label"
-                                                        id="demo-simple-select-helper"
-                                                        value={city}
-                                                        label="اسم المدينة"
-                                                        color="info"
-                                                        onChange={
-                                                            handelCityChange
-                                                        }
-                                                    >
-                                                        {availableCities?.map(
-                                                            (city: {
-                                                                cityId: number;
-                                                                name: string;
-                                                            }) => (
-                                                                <MenuItem
-                                                                    key={
-                                                                        city.cityId
-                                                                    }
-                                                                    defaultChecked
-                                                                    value={city?.cityId.toString()}
-                                                                >
-                                                                    {city?.name}
-                                                                </MenuItem>
-                                                            )
-                                                        )}
-                                                    </Select>
-                                                    <FormHelperText
-                                                        error={!!errors.cityId}
-                                                    >
-                                                        {
-                                                            errors?.cityId
-                                                                ?.message
-                                                        }
-                                                    </FormHelperText>
-                                                </FormControl>
-                                            </div>
-                                            {/* rejection ratio */}
-                                            <div style={{ margin: "20px 0" }}>
-                                                <NumericInputField
-                                                    register={register}
-                                                    errors={
-                                                        errors.rejectedOrderlossRatio
-                                                    }
-                                                    fieldName="rejectedOrderlossRatio"
-                                                    label="نسبه تحمل التاجر لقيمه شحن الطلبات المرفوضه"
-                                                    largeWidth="90%"
-                                                    smallWidth="90%"
-                                                />
-                                            </div>
-                                        </Box>
-                                    ) : null}
-                                    {/* form step 3  */}
-                                    {/* form step 3  */}
-                                    {activeStep === 2 && (
-                                        <Box
-                                            sx={{
-                                                marginX: "auto",
-                                                width: "90%",
-                                            }}
-                                        >
-                                            <Box
+                                        {/* state name */}
+                                        <div style={{ margin: "20px 0" }}>
+                                            <FormControl
                                                 sx={{
-                                                    display: "flex",
-                                                    alignItems: "center",
-                                                    gap: "10px",
+                                                    width: "90%",
                                                 }}
                                             >
-                                                <Typography>
-                                                    هل تريد اضافه اسعار مميزه
-                                                    لبعض المدن ؟
-                                                </Typography>
-                                                <Button
+                                                <InputLabel
+                                                    error={!!errors.stateId}
                                                     color="info"
-                                                    onClick={
-                                                        handleOpenSpecialPackageForm
+                                                    id="demo-simple-select-helper-label"
+                                                >
+                                                    اسم المحافظة
+                                                </InputLabel>
+                                                <Select
+                                                    {...register("stateId")}
+                                                    labelId="demo-simple-select-helper-label"
+                                                    id="demo-simple-select-helper"
+                                                    value={state}
+                                                    label="اسم المحافظة"
+                                                    color="info"
+                                                    onChange={handelStateChange}
+                                                >
+                                                    {states?.data.map(
+                                                        (state: {
+                                                            id: number;
+                                                            name: string;
+                                                        }) => (
+                                                            <MenuItem
+                                                                key={state.id}
+                                                                value={state.id.toString()}
+                                                            >
+                                                                {state.name}
+                                                            </MenuItem>
+                                                        )
+                                                    )}
+                                                </Select>
+                                                <FormHelperText
+                                                    error={!!errors.stateId}
+                                                >
+                                                    {errors?.stateId?.message}
+                                                </FormHelperText>
+                                            </FormControl>
+                                        </div>
+
+                                        {/* branch name */}
+                                        <div style={{ margin: "20px 0" }}>
+                                            <FormControl
+                                                sx={{
+                                                    width: "90%",
+                                                }}
+                                            >
+                                                <InputLabel
+                                                    error={!!errors.branchId}
+                                                    color="info"
+                                                    id="demo-simple-select-helper-label"
+                                                >
+                                                    اسم الفرع
+                                                </InputLabel>
+                                                <Select
+                                                    {...register("branchId")}
+                                                    labelId="demo-simple-select-helper-label"
+                                                    id="demo-simple-select-helper"
+                                                    value={branch}
+                                                    label="اسم الفرع"
+                                                    color="info"
+                                                    onChange={
+                                                        handelBranchChange
                                                     }
                                                 >
-                                                    اضافه باقة
-                                                </Button>
-                                            </Box>
-                                            {/* show Special Package */}
-                                            {SpecialPackage.length > 0 &&
-                                            matches ? (
-                                                <SpecialPackageInLargeScreen
-                                                    SpecialPackage={
-                                                        SpecialPackage
-                                                    }
-                                                    setSpecialPackage={
-                                                        setSpecialPackage
-                                                    }
-                                                />
-                                            ) : (
-                                                <SpecialPackageInSmallScreen
-                                                    SpecialPackage={
-                                                        SpecialPackage
-                                                    }
-                                                    setSpecialPackage={
-                                                        setSpecialPackage
-                                                    }
-                                                />
-                                            )}
+                                                    {branches?.data.map(
+                                                        (branch: {
+                                                            id: number;
+                                                            branch: string;
+                                                        }) => (
+                                                            <MenuItem
+                                                                key={branch.id}
+                                                                defaultChecked
+                                                                value={branch.id.toString()}
+                                                            >
+                                                                {branch.branch}
+                                                            </MenuItem>
+                                                        )
+                                                    )}
+                                                </Select>
+                                                <FormHelperText
+                                                    error={!!errors.branchId}
+                                                >
+                                                    {errors?.branchId?.message}
+                                                </FormHelperText>
+                                            </FormControl>
+                                        </div>
 
-                                            {/* modal */}
-                                            <SpecialPackageForm
+                                        {/* city name */}
+                                        <div style={{ margin: "20px 0" }}>
+                                            <FormControl
+                                                sx={{
+                                                    width: "90%",
+                                                }}
+                                                /*     disabled={!availableCities} */
+                                            >
+                                                <InputLabel
+                                                    error={!!errors.cityId}
+                                                    color="info"
+                                                    id="demo-simple-select-helper-label"
+                                                >
+                                                    اسم المدينة
+                                                </InputLabel>
+                                                <Select
+                                                    {...register("cityId")}
+                                                    labelId="demo-simple-select-helper-label"
+                                                    id="demo-simple-select-helper"
+                                                    value={city}
+                                                    label="اسم المدينة"
+                                                    color="info"
+                                                    onChange={handelCityChange}
+                                                >
+                                                    {availableCities?.map(
+                                                        (city: {
+                                                            cityId: number;
+                                                            name: string;
+                                                        }) => (
+                                                            <MenuItem
+                                                                key={
+                                                                    city.cityId
+                                                                }
+                                                                defaultChecked
+                                                                value={city?.cityId.toString()}
+                                                            >
+                                                                {city?.name}
+                                                            </MenuItem>
+                                                        )
+                                                    )}
+                                                </Select>
+                                                <FormHelperText
+                                                    error={!!errors.cityId}
+                                                >
+                                                    {errors?.cityId?.message}
+                                                </FormHelperText>
+                                            </FormControl>
+                                        </div>
+                                        {/* rejection ratio */}
+                                        <div style={{ margin: "20px 0" }}>
+                                            <NumericInputField
+                                                register={register}
+                                                errors={
+                                                    errors.rejectedOrderlossRatio
+                                                }
+                                                fieldName="rejectedOrderlossRatio"
+                                                label="نسبه تحمل التاجر لقيمه شحن الطلبات المرفوضه"
+                                                largeWidth="90%"
+                                                smallWidth="90%"
+                                            />
+                                        </div>
+                                    </Box>
+                                ) : null}
+
+                                {/* form step 3  */}
+                                {activeStep === 2 && (
+                                    <Box
+                                        sx={{
+                                            marginX: "auto",
+                                            width: "90%",
+                                        }}
+                                    >
+                                        <Box
+                                            sx={{
+                                                display: "flex",
+                                                alignItems: "center",
+                                                gap: "10px",
+                                            }}
+                                        >
+                                            <Typography>
+                                                هل تريد اضافه اسعار مميزه لبعض
+                                                المدن ؟
+                                            </Typography>
+                                            <Button
+                                                color="info"
+                                                onClick={
+                                                    handleOpenSpecialPackageForm
+                                                }
+                                            >
+                                                اضافه باقة
+                                            </Button>
+                                        </Box>
+                                        {/* show Special Package */}
+                                        {SpecialPackage.length > 0 &&
+                                        matches ? (
+                                            <SpecialPackageInLargeScreen
+                                                SpecialPackage={SpecialPackage}
                                                 setSpecialPackage={
                                                     setSpecialPackage
                                                 }
-                                                open={openSpecialPackageForm}
-                                                states={states}
-                                                handleCloseSpecialPackageForm={
-                                                    handleCloseSpecialPackageForm
-                                                }
-                                                citiesToRepresentative={
-                                                    citiesToRepresentative
+                                            />
+                                        ) : (
+                                            <SpecialPackageInSmallScreen
+                                                SpecialPackage={SpecialPackage}
+                                                setSpecialPackage={
+                                                    setSpecialPackage
                                                 }
                                             />
-                                        </Box>
-                                    )}
-                                </Box>
-                            </Box>
-                            {/* btns to swap forms */}
-                            <Box
-                                sx={{
-                                    display: "flex",
-                                    flexDirection: "row",
-                                    pt: 2,
-                                }}
-                            >
-                                {activeStep !== 0 && (
-                                    <Button
-                                        color="inherit"
-                                        onClick={handleBack}
-                                        sx={{ m: 2 }}
-                                    >
-                                        العودة للخلف
-                                    </Button>
-                                )}
+                                        )}
 
-                                <Box sx={{ flex: "1 1 auto" }} />
-
-                                {activeStep !== 2 && (
-                                    <Button
-                                        color="inherit"
-                                        onClick={handleNext}
-                                        sx={{ m: 2 }}
-                                    >
-                                        استمرار
-                                    </Button>
-                                )}
-                                {activeStep === 2 && (
-                                    <Button
-                                        color="inherit"
-                                        type="submit"
-                                        sx={{ m: 2 }}
-                                    >
-                                        حفظ ومتابعه
-                                    </Button>
+                                        {/* modal */}
+                                        <SpecialPackageForm
+                                            setSpecialPackage={
+                                                setSpecialPackage
+                                            }
+                                            open={openSpecialPackageForm}
+                                            states={states}
+                                            handleCloseSpecialPackageForm={
+                                                handleCloseSpecialPackageForm
+                                            }
+                                            citiesToRepresentative={
+                                                citiesToRepresentative
+                                            }
+                                        />
+                                    </Box>
                                 )}
                             </Box>
-                            <DevTool control={control} />
-                        </form>
-                    </Box>
-                </DialogContent>
-            </Dialog>
-        </>
+                        </Box>
+                        {/* btns to swap forms */}
+                        <Box
+                            sx={{
+                                display: "flex",
+                                flexDirection: "row",
+                                pt: 2,
+                            }}
+                        >
+                            {activeStep !== 0 && (
+                                <Button
+                                    color="inherit"
+                                    onClick={handleBack}
+                                    sx={{ m: 2 }}
+                                >
+                                    العودة للخلف
+                                </Button>
+                            )}
+
+                            <Box sx={{ flex: "1 1 auto" }} />
+
+                            {activeStep !== 2 && (
+                                <Button
+                                    color="inherit"
+                                    onClick={handleNext}
+                                    sx={{ m: 2 }}
+                                >
+                                    استمرار
+                                </Button>
+                            )}
+                            {activeStep === 2 && (
+                                <Button
+                                    color="inherit"
+                                    type="submit"
+                                    sx={{ m: 2 }}
+                                >
+                                    حفظ ومتابعه
+                                </Button>
+                            )}
+                        </Box>
+                        <DevTool control={control} />
+                    </form>
+                </Box>
+            </DialogContent>
+        </Dialog>
     );
 };
 

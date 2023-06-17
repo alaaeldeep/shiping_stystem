@@ -561,37 +561,41 @@
     ],
     "GETorders": [
         {
-            "ClientName": "عميل1",
-            "Phone1": "00000000000",
-            "Phone2": "00000000000",
-            "Email": "alaaeldeepdev@gmail.com",
-            "OrderType": 0,
-            "OrderStatus": 4,
-            "PaymentType": 0,
-            "StateId": {
-                "id": 0,
-                "state": "الشرقية"
+            "clientName": "عميل1",
+            "phone1": "00000000000",
+            "phone2": "00000000000",
+            "email": "alaaeldeepdev@gmail.com",
+            "orderType": 0,
+            "orderStatus": 0,
+            "paymentType": 0,
+            "state": {
+                "id": 1,
+                "name": "الشرقية"
             },
-            "CityId": {
-                "id": 0,
-                "city": "مدينة 1"
+            "city": {
+                "cityId": 1,
+                "name": "مدينة 1"
             },
-            "AdressDetails": "ccccsssaaaaa",
-            "IsVillage": true,
-            "BranchId": {
-                "id": 0,
+            "adressDetails": "ccccsssaaaaa",
+            "isVillage": true,
+            "branch": {
+                "id": 2,
                 "branch": "فرع 1"
             },
-            "ShippingTypeId": {
-                "id": 0,
+            "shippingType": {
+                "shippingTypeId": 1,
                 "type": "شحن عادي"
             },
-            "OrderCost": 20,
+            "totalWeight": 36,
+            "orderShipingCost": 770,
+            "OrderCost": 3000,
+            "totalCost": 3770,
             "comments": "AAAAAA AAAAAAAAAAA",
-            "OrderItem": [
+            "orderItems": [
                 {
                     "id": 0,
                     "productName": "aaa",
+                    "productPrice": 1000,
                     "productWeight": 1.2,
                     "productQuantity": 12
                 },
@@ -599,146 +603,14 @@
                     "id": 1,
                     "productName": "aa",
                     "productWeight": 5,
+                    "productPrice": 1000,
                     "productQuantity": 5
                 }
             ],
             "id": 1,
-            "addedDate": "21 srp 2021 12:25AM"
-        },
-        {
-            "addedDate": "21 srp 2021 12:25AM",
-            "ClientName": "عميل2",
-            "OrderStatus": 2,
-            "Phone1": "00000000000",
-            "Phone2": "00000000000",
-            "Email": "alaaeldeepdev2@gmail.com",
-            "OrderType": 0,
-            "PaymentType": 0,
-            "StateId": {
-                "id": 0,
-                "state": "الشرقية"
-            },
-            "CityId": {
-                "id": 0,
-                "city": "مدينة 1"
-            },
-            "AdressDetails": "ccccsssaaaaa",
-            "IsVillage": true,
-            "BranchId": {
-                "id": 0,
-                "branch": "فرع 1"
-            },
-            "ShippingTypeId": {
-                "id": 0,
-                "type": "شحن عادي"
-            },
-            "OrderCost": 20,
-            "comments": "AAAAAA AAAAAAAAAAA",
-            "OrderItem": [
-                {
-                    "id": 0,
-                    "productName": "aaa",
-                    "productWeight": 1.2,
-                    "productQuantity": 12
-                },
-                {
-                    "id": 1,
-                    "productName": "aa",
-                    "productWeight": 5,
-                    "productQuantity": 5
-                }
-            ],
-            "id": 2
-        },
-        {
-            "addedDate": "21 srp 2021 12:25AM",
-            "ClientName": "عميل3",
-            "OrderStatus ": 3,
-            "Phone1": "00000000000",
-            "Phone2": "00000000000",
-            "Email": "alaaeldeepdev2@gmail.com",
-            "OrderType": 0,
-            "PaymentType": 0,
-            "StateId": {
-                "id": 0,
-                "state": "الشرقية"
-            },
-            "CityId": {
-                "id": 0,
-                "city": "مدينة 1"
-            },
-            "AdressDetails": "ccccsssaaaaa",
-            "IsVillage": true,
-            "BranchId": {
-                "id": 0,
-                "branch": "فرع 1"
-            },
-            "ShippingTypeId": {
-                "id": 0,
-                "type": "شحن عادي"
-            },
-            "OrderCost": 20,
-            "comments": "AAAAAA AAAAAAAAAAA",
-            "OrderItem": [
-                {
-                    "id": 0,
-                    "productName": "aaa",
-                    "productWeight": 1.2,
-                    "productQuantity": 12
-                },
-                {
-                    "id": 1,
-                    "productName": "aa",
-                    "productWeight": 5,
-                    "productQuantity": 5
-                }
-            ],
-            "id": 3
-        },
-        {
-            "addedDate": "21 srp 2021 12:25AM",
-            "ClientName": "4",
-            "OrderStatus": 4,
-            "Phone1": "00000000000",
-            "Phone2": "00000000000",
-            "Email": "alaaeldeepdev2@gmail.com",
-            "OrderType": 0,
-            "PaymentType": 0,
-            "StateId": {
-                "id": 0,
-                "state": "الشرقية"
-            },
-            "CityId": {
-                "id": 0,
-                "city": "مدينة 1"
-            },
-            "AdressDetails": "ccccsssaaaaa",
-            "IsVillage": true,
-            "BranchId": {
-                "id": 0,
-                "branch": "فرع 1"
-            },
-            "ShippingTypeId": {
-                "id": 0,
-                "type": "شحن عادي"
-            },
-            "OrderCost": 20,
-            "comments": "AAAAAA AAAAAAAAAAA",
-            "OrderItem": [
-                {
-                    "id": 0,
-                    "productName": "aaa",
-                    "productWeight": 1.2,
-                    "productQuantity": 12
-                },
-                {
-                    "id": 1,
-                    "productName": "aa",
-                    "productWeight": 5,
-                    "productQuantity": 5
-                }
-            ],
-            "id": 4
+            "date": "21 srp 2021 12:25AM",
+            "traderId": "152",
+            "representativeID": null
         }
     ]
 }

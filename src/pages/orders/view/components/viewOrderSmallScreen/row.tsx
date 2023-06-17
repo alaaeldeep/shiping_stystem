@@ -16,17 +16,15 @@ import PrintIcon from "@mui/icons-material/Print";
 import PublishedWithChangesIcon from "@mui/icons-material/PublishedWithChanges";
 
 /* components */
-import EditEmployeeDetails from "../../../components/editEmployeeDetails";
-import ViewEmployeeDetails from "../../../components/viewEmployeeDetail";
+import EditOrderDetails from "../../../components/editOrderDetails";
+import ViewOrderDetails from "../../../components/viewOrderDetail";
+import ChangeOrderStatus from "../../../components/changeOrderStatus";
 
 /* types */
 import { OrderRow } from "../../../../../components/types";
 
 /* store */
 import { useOwnStore } from "../../../../../store";
-import ViewOrderDetails from "../../../components/viewEmployeeDetail";
-import ChangeOrderStatus from "../../../components/changeOrderStatus";
-import EditOrderDetails from "../../../components/editEmployeeDetails";
 
 type ViewOrderSmallScreenProps = {
     index: number;
@@ -104,11 +102,11 @@ const RowInSmallScreen = ({ index, data }: ViewOrderSmallScreenProps) => {
                     </Typography>
                     {/*  added date */}
                     <Typography sx={{ color: "text.secondary" }}>
-                        {data.addedDate}
+                        {data.date}
                     </Typography>
                 </AccordionSummary>
                 <AccordionDetails>
-                    <Typography>المحافظة : {data.StateId.state}</Typography>
+                    <Typography>المحافظة : {data.state.name}</Typography>
 
                     <Typography>تكلفة الطلب : {data.OrderCost}</Typography>
 
@@ -156,22 +154,6 @@ const RowInSmallScreen = ({ index, data }: ViewOrderSmallScreenProps) => {
                             </>
                         }
                     </Typography>
-                    <div>
-                        طباعة :{" "}
-                        <IconButton>
-                            <PrintIcon
-                                style={
-                                    mode === "dark"
-                                        ? {
-                                              color: "#ACDCEE",
-                                          }
-                                        : {
-                                              color: "#475053",
-                                          }
-                                }
-                            />
-                        </IconButton>
-                    </div>
                 </AccordionDetails>
             </Accordion>
         </>

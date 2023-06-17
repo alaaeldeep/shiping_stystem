@@ -72,49 +72,56 @@ export type OrderPost = {
     }[];
 };
 export type OrderRow = {
-    ClientName: string;
-    Phone1: string;
-    Phone2: string;
-    Email: string;
-    OrderType: number;
-    OrderStatus: number;
-    PaymentType: number;
-    addedDate: string;
-    StateId: {
+    clientName: string;
+    phone1: string;
+    phone2: string;
+    email: string;
+    orderType: number;
+    orderStatus: number;
+    paymentType: number;
+    date: string;
+    state: {
         id: number;
-        state: string;
+        name: string;
     };
-    CityId: {
-        id: number;
-        city: string;
+    city: {
+        cityId: number;
+        name: string;
     };
-    AdressDetails: string;
-    IsVillage: number;
-    BranchId: {
+    adressDetails: string;
+    isVillage: boolean;
+    branch: {
         id: number;
         branch: string;
     };
-    ShippingTypeId: {
-        id: number;
+    shippingType: {
+        shippingTypeId: number;
         type: string;
     };
     OrderCost: number;
+    totalCost: number;
+    totalWeight: number;
+    orderShipingCost: number;
     comments: string;
-    OrderItem: [
+    orderItems: [
         {
             id: number;
             productName: string;
             productWeight: number;
             productQuantity: number;
+            productPrice: number;
         },
         {
             id: 1;
             productName: string;
             productWeight: number;
             productQuantity: number;
+            productPrice: number;
         }
     ];
     id: number;
+    traderId: number;
+    representativeID: any;
 };
 export type Product = {
     productName: string;

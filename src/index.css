@@ -10,3 +10,22 @@ body {
     width: 100%;
     /*   color: rgba(0, 10, 0, 0.013); */
 }
+.logoPrint {
+    display: none;
+}
+@media print {
+    html,
+    body {
+        font-family: "Arial Unicode MS", Arial, sans-serif;
+        direction: rtl;
+        background-color: white !important;
+        color: black !important;
+
+        .logoPrint {
+            display: flex;
+        }
+        .MuiTableCell-root {
+            color: black !important;
+        }
+    }
+}

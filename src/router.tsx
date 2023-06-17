@@ -43,6 +43,8 @@ import AddStatesPage from "./pages/states/add/addStatesPage";
 import Cities from "./pages/cities";
 import ViewCities from "./pages/cities/view/viewCities";
 import AddCityPage from "./pages/cities/add/addCityPage";
+
+/* orders */
 import ViewOrders from "./pages/orders/view/viewOrders";
 import AddOrderPage from "./pages/orders/add/addOrderPage";
 import OrdersPage from "./pages/orders";

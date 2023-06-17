@@ -42,11 +42,6 @@ const headCells: any = [
         id: "settings",
         label: "الاعدادات",
     },
-
-    {
-        id: "print",
-        label: "طباعه",
-    },
 ];
 
 const ViewOrders = () => {

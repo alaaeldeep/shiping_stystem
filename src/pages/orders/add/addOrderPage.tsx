@@ -43,6 +43,7 @@ import NumericInputField from "../../../components/inputFields/numericInputField
 import { TableToolbar } from "../../../components/table/tableToolBar";
 import ProductsInLargeScreen from "./components/ProductsLargeScreesn";
 import AddProductForm from "./components/addProductForm";
+import ProductsInSmallScreen from "./components/ProductsSmallScreesn";
 
 /* react query */
 import UseMutate from "../../../hooks/orders/useAddMutate";
@@ -50,7 +51,6 @@ import UseQuery from "../../../hooks/serverState/useQuery";
 
 /* types */
 import { Product } from "../../../components/types";
-import ProductsInSmallScreen from "./components/ProductsSmallScreesn";
 
 /*  */
 const steps = [
@@ -144,14 +144,6 @@ const AddOrderPage = () => {
 
     const schema = z.object({
         /* step 1 */
-        /*  OrderType: z.enum(["0", "1"], {
-            errorMap: (issue, _ctx) => {
-                switch (issue.code) {
-                    default:
-                        return { message: "برجاء اختيار نوع التسليم" };
-                }
-            },
-        }), */
         clientName: z.string().nonempty("برجاء كتابة اسم العميل بالكامل"),
 
         Phone1: z
@@ -279,8 +271,6 @@ const AddOrderPage = () => {
             theme: "dark",
         });
     };
-
-    /* modal form*/
 
     return (
         <>

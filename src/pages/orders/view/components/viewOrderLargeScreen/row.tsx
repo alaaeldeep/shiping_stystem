@@ -5,12 +5,11 @@ import { useState } from "react";
 import { TableCell, TableRow, IconButton } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import ZoomOutMapIcon from "@mui/icons-material/ZoomOutMap";
-import PrintIcon from "@mui/icons-material/Print";
 import PublishedWithChangesIcon from "@mui/icons-material/PublishedWithChanges";
 
 /* components */
-import EditOrderDetails from "../../../components/editEmployeeDetails";
-import ViewOrderDetails from "../../../components/viewEmployeeDetail";
+import EditOrderDetails from "../../../components/editOrderDetails";
+import ViewOrderDetails from "../../../components/viewOrderDetail";
 
 /* types */
 import { OrderRow } from "../../../../../components/types";
@@ -51,8 +50,13 @@ const RowInLargeScreen = ({ index, data }: props) => {
         setOpenChangeOrderStatus(false);
     };
     const mode = useOwnStore((store) => store.mode);
+
     return (
-        <TableRow hover tabIndex={-1} sx={{ cursor: "pointer" }}>
+        <TableRow
+            hover
+            tabIndex={-1}
+            sx={{ cursor: "pointer", position: "relative" }}
+        >
             {/* edit details */}
             <EditOrderDetails
                 data={data}
@@ -70,7 +74,7 @@ const RowInLargeScreen = ({ index, data }: props) => {
                 open={openChangeOrderStatus}
                 data={data}
                 handleClose={handleCloseChangeOrderStatus}
-            />
+            />{" "}
             {/* view all employees */}
             {
                 <>
@@ -86,10 +90,10 @@ const RowInLargeScreen = ({ index, data }: props) => {
                     </TableCell>
 
                     {/* addedDate name */}
-                    <TableCell align="center">{data.addedDate}</TableCell>
+                    <TableCell align="center">{data.date}</TableCell>
 
                     {/* state */}
-                    <TableCell align="center">{data.StateId.state}</TableCell>
+                    <TableCell align="center">{data.state.name}</TableCell>
                     {/* cost  */}
                     <TableCell align="center">{data.OrderCost}</TableCell>
                     {/* status */}
@@ -122,22 +126,6 @@ const RowInLargeScreen = ({ index, data }: props) => {
                                 style={{
                                     color: "#7AA874",
                                 }}
-                            />
-                        </IconButton>
-                    </TableCell>
-                    {/* print */}
-                    <TableCell align="center">
-                        <IconButton>
-                            <PrintIcon
-                                style={
-                                    mode === "dark"
-                                        ? {
-                                              color: "#ACDCEE",
-                                          }
-                                        : {
-                                              color: "#475053",
-                                          }
-                                }
                             />
                         </IconButton>
                     </TableCell>
