@@ -49,6 +49,8 @@ import ViewOrders from "./pages/orders/view/viewOrders";
 import AddOrderPage from "./pages/orders/add/addOrderPage";
 import OrdersPage from "./pages/orders";
 
+import ViewWeightSettings from "./pages/weightSetting";
+
 export const router = createBrowserRouter([
     {
         path: "/",
@@ -118,6 +120,10 @@ export const router = createBrowserRouter([
                     { path: "", element: <ViewOrders /> },
                     { path: "add", element: <AddOrderPage /> },
                 ],
+            },
+            {
+                path: "weightSettings",
+                element: <ViewWeightSettings />,
             },
         ],
     },

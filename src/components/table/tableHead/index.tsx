@@ -1,16 +1,13 @@
 /* MUI */
 import { TableCell, TableHead, TableRow, TableSortLabel } from "@mui/material";
 
-/* types */
-import { HeadCell } from "../../types";
-
-type Props = { headCell: HeadCell[] };
+type Props = { headCell: any };
 
 const CustomTableHead = ({ headCell }: Props) => {
     return (
         <TableHead>
             <TableRow>
-                {headCell?.map((headCell) => (
+                {headCell?.map((headCell: any) => (
                     <TableCell
                         key={headCell.id}
                         align={"center"}

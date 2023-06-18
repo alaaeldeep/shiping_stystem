@@ -6,7 +6,6 @@ import { Box, Toolbar } from "@mui/material";
 
 /* components */
 import NavBar from "../../components/nav-bar";
-import HomeMainContent from "../home-body";
 import DrawerComponent from "../../components/drawer";
 import { Outlet } from "react-router";
 
@@ -44,7 +43,6 @@ const Layout = () => {
                     width: { md: `calc(100% - ${drawerWidth}px)` },
                 }}
             >
-                {" "}
                 <Toolbar />
                 <Outlet />
             </Box>

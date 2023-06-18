@@ -189,7 +189,7 @@ const DrawerComponent = ({
 
                         {/* weight */}
                         <NavLink
-                            to="/Permissions"
+                            to="/weightSettings"
                             style={{ textDecoration: "none" }}
                         >
                             <ListItemButton

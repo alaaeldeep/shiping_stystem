@@ -612,5 +612,11 @@
             "traderId": "152",
             "representativeID": null
         }
-    ]
+    ],
+    "GetSettings": {
+        "id": 1,
+        "defaultWeight": 8,
+        "overCostPerKG": 10,
+        "villageShipingCost": 4
+    }
 }

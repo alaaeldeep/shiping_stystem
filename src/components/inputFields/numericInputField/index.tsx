@@ -14,6 +14,9 @@ type props = {
     errors: FieldError | undefined | any;
     fieldName:
         | "password"
+        | "defaultWeight"
+        | "overCostPerKG"
+        | "villageShipingCost"
         | "productPrice"
         | "phoneNumber"
         | "phoneNumber2"

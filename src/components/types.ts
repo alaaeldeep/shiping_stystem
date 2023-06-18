@@ -18,6 +18,12 @@ export type StateRow = {
     id: number;
     state: string;
 };
+export type WeightSettingRow = {
+    id: number;
+    defaultWeight: number;
+    overCostPerKG: number;
+    villageShipingCost: number;
+};
 export type BranchesRow = {
     id: number;
     branch: string;
