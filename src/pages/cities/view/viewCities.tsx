@@ -1,11 +1,18 @@
-/* REACT STAFF */
+/* react staff */
 import { useState } from "react";
 
 /* router */
 import { useNavigate } from "react-router";
 
 /* MUI */
-import { Skeleton, Stack, useMediaQuery, Typography } from "@mui/material";
+import {
+    Skeleton,
+    Stack,
+    useMediaQuery,
+    Typography,
+    Box,
+    Pagination,
+} from "@mui/material";
 
 /* react query */
 import UseQuery from "../../../hooks/serverState/useQuery";
@@ -35,6 +42,10 @@ const citiesHeadCells: HeadCell[] = [
         id: "name",
         label: "تكلفة الشحن العادية",
     },
+    {
+        id: "name",
+        label: "الحالة  ",
+    },
 
     {
         id: "settings",
@@ -42,26 +53,27 @@ const citiesHeadCells: HeadCell[] = [
     },
 ];
 const ViewCities = () => {
+    /* pagination */
+    const [pageNumber, setPageNumber] = useState(1);
+    const handlePageNumber = (value: number) => {
+        setPageNumber(value);
+    };
+
     /* fetch */
-    const { data, isLoading, isError } = UseQuery("/cities");
+    const { data, isLoading, isError } = UseQuery(
+        "/Cities/GetCitiesWithShippingCost"
+    );
 
     /* mobile view */
     const matches = useMediaQuery("(min-width:1070px)");
 
     const navigate = useNavigate();
 
-    if (isLoading) {
-        return (
-            <Stack spacing={1}>
-                <Skeleton variant="rounded" width={"100%"} height={70} />
-                <Skeleton variant="rounded" width={"100%"} height={500} />
-            </Stack>
-        );
-    }
     if (isError) {
         setTimeout(() => navigate("/home"), 2000);
         return <Stack spacing={2} sx={{ width: "100%" }}></Stack>;
     }
+
     return (
         <>
             <TableToolbar
@@ -70,7 +82,11 @@ const ViewCities = () => {
                 destination="/cities/add"
                 addIcon={true}
             />
-            {matches ? (
+            {isLoading ? (
+                <Stack spacing={1}>
+                    <Skeleton variant="rounded" width={"100%"} height={500} />
+                </Stack>
+            ) : matches ? (
                 <ViewCitiesLargeScreen
                     rows={data?.data}
                     headCell={citiesHeadCells}
@@ -90,7 +106,23 @@ const ViewCities = () => {
                 >
                     لم يتم اضافة مدن حتي الان
                 </Typography>
-            )}
+            )}{" "}
+            <Box
+                sx={{
+                    display: "flex",
+                    justifyContent: "center",
+                    padding: " 20px",
+                }}
+            >
+                {/* **CHECK FIRST IF TOTAL_PAGES > 1 SHOW THE PAGINATIOn */}
+                <Pagination
+                    /*   count={data?.data.totalPages} */
+                    count={1}
+                    size={matches ? "large" : "small"}
+                    page={pageNumber}
+                    onChange={(_e, value) => handlePageNumber(value)}
+                />
+            </Box>
         </>
     );
 };

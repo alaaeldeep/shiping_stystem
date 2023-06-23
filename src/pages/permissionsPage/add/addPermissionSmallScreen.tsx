@@ -8,9 +8,6 @@ import {
     AccordionSummary,
     Box,
     Checkbox,
-    DialogActions,
-    DialogTitle,
-    IconButton,
     Paper,
     Typography,
 } from "@mui/material";

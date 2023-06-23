@@ -5,10 +5,10 @@ import { request } from "../../lib/axios.utls";
 import { useMutation } from "react-query";
 
 type branchType = {
-    branch: string;
+    name: string;
 };
 const addBranch = (data: branchType) => {
-    return request({ url: "/branches", method: "post", data: data });
+    return request({ url: "/Branches", method: "post", data: data });
 };
 
 const UseMutate = () => {

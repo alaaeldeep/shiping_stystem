@@ -44,7 +44,7 @@ const NavBar = ({ drawerWidth, handleDrawerToggle }: props) => {
                     {/* search field */}
                     <Search />
 
-                    {/* left sile */}
+                    {/* left side */}
                     <Box
                         sx={{
                             display: "flex",

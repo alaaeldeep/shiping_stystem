@@ -19,6 +19,8 @@ import {
     Select,
     MenuItem,
     useMediaQuery,
+    Backdrop,
+    CircularProgress,
 } from "@mui/material";
 
 /* hooks form */
@@ -34,6 +36,8 @@ import { TableToolbar } from "../../../components/table/tableToolBar";
 import InputField from "../../../components/inputFields/textInputField/inputfield";
 import NumericInputField from "../../../components/inputFields/numericInputField";
 import SpecialPackageInLargeScreen from "./components/specialPackageInLargeScreen";
+import SpecialPackageForm from "./components/specialPackageForm";
+import SpecialPackageInSmallScreen from "./components/specialPackageInSmallScreen";
 
 /* react query */
 import UseQuery from "../../../hooks/serverState/useQuery";
@@ -42,10 +46,12 @@ import UseMutate from "../../../hooks/traders/useAddMutate";
 /* toast */
 import { toast } from "react-toastify";
 
+/* store */
+import { useOwnStore } from "../../../store";
+
 /* types */
-import { SpecialPackage } from "../../../components/types";
-import SpecialPackageForm from "./components/specialPackageForm";
-import SpecialPackageInSmallScreen from "./components/specialPackageInSmallScreen";
+import { SpecialPackageView } from "../../../components/types";
+import { convertCityToID, convertStateToID } from "../../../utils/converter";
 
 /*  */
 const steps = [
@@ -61,18 +67,24 @@ const AddTraderPage = () => {
     /*  */
 
     /* fetch data */
-    const { mutate } = UseMutate();
-    const { data: branches } = UseQuery("/branches");
-    const { data: states } = UseQuery("/states");
-    const { data: citiesToRepresentative } = UseQuery(
-        "/citiesToRepresentative"
+    const { mutate, isLoading } = UseMutate();
+    const { data: branches } = UseQuery("/Branches/active");
+    const { data: states } = UseQuery("/states/HavingCities");
+    const { data: avalCities } = UseQuery("/Cities");
+
+    /* store */
+    const canActivateTradersAdd = useOwnStore(
+        (store) => store.user.permissions?.Traders?.[0]
+    );
+    const canActivateTradersView = useOwnStore(
+        (store) => store.user.permissions?.Traders?.[1]
     );
 
     /* state& city state */
     const stateRef = useRef("");
     const [availableCities, setAvailableCities] = useState<
         {
-            cityId: number;
+            id: number;
             stateId: number;
             name: string;
         }[]
@@ -86,7 +98,7 @@ const AddTraderPage = () => {
     };
 
     const handelCity = (stateId: string) => {
-        return citiesToRepresentative?.data.filter((city: any) => {
+        return avalCities?.data.filter((city: any) => {
             if (city.stateId.toString() === stateId) return city;
         });
     };
@@ -157,11 +169,6 @@ const AddTraderPage = () => {
         stateId: z.string().nonempty("برجاء اختيار المحافظه"),
         cityId: z.string().nonempty("برجاء اختيار المدينه"),
         rejectedOrderlossRatio: z.string().nonempty("برجاء كتابه نسبه التحمل"),
-
-        /* step 3 */
-        stateSpecialPackage: z.string().optional(),
-        citySpecialPackage: z.string().optional(),
-        shippingCostSpecialPackage: z.string().optional(),
     });
 
     type FormValue = z.infer<typeof schema>;
@@ -177,11 +184,65 @@ const AddTraderPage = () => {
     const onSubmit = (data: FormValue) => {
         if (
             handelCity(data.stateId).some(
-                (city: { cityId: string; stateId: string }) =>
-                    city.cityId == data.cityId
+                (city: { id: string; stateId: string }) =>
+                    city.id == data.cityId
             )
         ) {
-            console.log({ ...data, specialPackages: SpecialPackage });
+            const requestData = {
+                ...data,
+                stateId: +data.stateId,
+                branchId: +data.branchId,
+                cityId: +data.cityId,
+                rejectedOrderlossRatio: Math.abs(+data.rejectedOrderlossRatio),
+                convertShippingTypeToID: +data.stateId,
+                specialPackages: handelPackage(SpecialPackage),
+            };
+            // console.log(requestData);
+            mutate(requestData, {
+                onSuccess: () => {
+                    navigate("/traders");
+                },
+                onError: (err: any) => {
+                    if (err.message.includes("Username")) {
+                        setError("userName", {
+                            message:
+                                "اسم المستخدم موجود بالفعل, برجاء كتابه اسم جديد",
+                        });
+                        toast.error(
+                            "اسم المستخدم موجود بالفعل, برجاء كتابه اسم جديد",
+                            {
+                                position: toast.POSITION.BOTTOM_LEFT,
+                                autoClose: 2000,
+                                theme: "dark",
+                            }
+                        );
+                    }
+                    if (err.message.includes("Email")) {
+                        setError("email", {
+                            message:
+                                "البريد الالكتروني موجود بالفعل, برجاء كتابه بريد جديد",
+                        });
+                        toast.error(
+                            "البريد الالكتروني موجود بالفعل, برجاء كتابه بريد جديد",
+                            {
+                                position: toast.POSITION.BOTTOM_LEFT,
+                                autoClose: 2000,
+                                theme: "dark",
+                            }
+                        );
+                    }
+                    if (err.message.includes("Passwords")) {
+                        setError("password", {
+                            message: "كلمة السر يجب ان تحتوي علي ارقام ",
+                        });
+                        toast.error("كلمة السر يجب ان تحتوي علي ارقام ", {
+                            position: toast.POSITION.BOTTOM_LEFT,
+                            autoClose: 2000,
+                            theme: "dark",
+                        });
+                    }
+                },
+            });
         } else {
             setError("cityId", { message: "برجاء اختيار مدينة" });
             toast.warn("برجاء   اختيار مدينة ", {
@@ -200,8 +261,16 @@ const AddTraderPage = () => {
     };
 
     /* modal form*/
-    const [SpecialPackage, setSpecialPackage] = useState<SpecialPackage[]>([]);
-
+    const [SpecialPackage, setSpecialPackage] = useState<SpecialPackageView[]>(
+        []
+    );
+    const handelPackage = (specialPackage: SpecialPackageView[]) => {
+        return specialPackage.map((spPackage: SpecialPackageView) => ({
+            cityId: convertCityToID(avalCities, spPackage.city),
+            stateId: convertStateToID(states, spPackage.state),
+            shippingCost: Math.abs(spPackage.shippingCost),
+        }));
+    };
     return (
         <>
             <TableToolbar
@@ -209,6 +278,7 @@ const AddTraderPage = () => {
                 btnTitle="العوده للتجار"
                 destination="/traders"
                 addIcon={false}
+                addBtn={!!canActivateTradersAdd && !!canActivateTradersView}
             />
             <Box sx={{ width: "100%" }}>
                 <Stepper activeStep={activeStep}>
@@ -413,14 +483,14 @@ const AddTraderPage = () => {
                                                 {branches?.data.map(
                                                     (branch: {
                                                         id: number;
-                                                        branch: string;
+                                                        name: string;
                                                     }) => (
                                                         <MenuItem
                                                             key={branch.id}
                                                             defaultChecked
                                                             value={branch.id.toString()}
                                                         >
-                                                            {branch.branch}
+                                                            {branch.name}
                                                         </MenuItem>
                                                     )
                                                 )}
@@ -460,15 +530,13 @@ const AddTraderPage = () => {
                                                 >
                                                     {availableCities?.map(
                                                         (city: {
-                                                            cityId: number;
+                                                            id: number;
                                                             name: string;
                                                         }) => (
                                                             <MenuItem
-                                                                key={
-                                                                    city.cityId
-                                                                }
+                                                                key={city.id}
                                                                 defaultChecked
-                                                                value={city?.cityId.toString()}
+                                                                value={city?.id.toString()}
                                                             >
                                                                 {city?.name}
                                                             </MenuItem>
@@ -552,9 +620,7 @@ const AddTraderPage = () => {
                                         handleCloseSpecialPackageForm={
                                             handleCloseSpecialPackageForm
                                         }
-                                        citiesToRepresentative={
-                                            citiesToRepresentative
-                                        }
+                                        avalCities={avalCities}
                                     />
                                 </Box>
                             )}
@@ -595,7 +661,16 @@ const AddTraderPage = () => {
                             </Button>
                         )}
                     </Box>
-                    <DevTool control={control} />
+                    <DevTool control={control} />{" "}
+                    <Backdrop
+                        sx={{
+                            color: "#fff",
+                            zIndex: (theme) => theme.zIndex.drawer + 1,
+                        }}
+                        open={isLoading}
+                    >
+                        <CircularProgress color="inherit" />
+                    </Backdrop>
                 </form>
             </Box>
         </>

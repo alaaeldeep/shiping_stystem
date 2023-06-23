@@ -8,55 +8,56 @@ export const permissions = [
     { privilegeId: 6, name: "الموظفين" },
     { privilegeId: 7, name: "التجار" },
     { privilegeId: 8, name: "المناديب" },
-    { privilegeId: 9, name: "الاعدادات" },
+    { privilegeId: 9, name: "المحافظات" },
     { privilegeId: 10, name: "المدن" },
     { privilegeId: 11, name: "الطلبات" },
     { privilegeId: 12, name: "الحسابات" },
     { privilegeId: 13, name: "تقارير الطلبات" },
 ];
+
 export const statuses = [
     {
-        status: "جديد",
+        orderStatus: "جديد",
         id: 0,
     },
     {
-        status: "قيد الانتظار",
+        orderStatus: "قيد الانتظار",
         id: 1,
     },
     {
-        status: "تم التسليم للمندوب",
+        orderStatus: "تم التسليم للمندوب",
         id: 2,
     },
     {
-        status: "تم التسليم",
+        orderStatus: "تم التسليم",
         id: 3,
     },
     {
-        status: "لا يمكن الوصول",
+        orderStatus: "لا يمكن الوصول",
         id: 4,
     },
     {
-        status: "تم التاجيل",
+        orderStatus: "تم التاجيل",
         id: 5,
     },
     {
-        status: "تم التسليم جزئيا",
+        orderStatus: "تم التسليم جزئيا",
         id: 6,
     },
     {
-        status: "تم الالغاء من قبل المستلم",
+        orderStatus: "تم الالغاء من قبل المستلم",
         id: 7,
     },
     {
-        status: "تم الرفض مع الدفع",
+        orderStatus: "تم الرفض مع الدفع",
         id: 8,
     },
     {
-        status: "رفض مع سداد الجزاء",
+        orderStatus: "رفض مع سداد الجزاء",
         id: 9,
     },
     {
-        status: "رفض ولم يتم الدفع",
+        orderStatus: "رفض ولم يتم الدفع",
         id: 10,
     },
 ];
@@ -89,6 +90,78 @@ export const states: string[] = [
     "كفر الشيخ",
     "مطروح",
 ];
+export const convertIdToOrderStatus = (id: number) => {
+    switch (id) {
+        case 0:
+            return "جديد";
+
+        case 1:
+            return "قيد الانتظار";
+
+        case 2:
+            return "تم التسليم للمندوب";
+
+        case 3:
+            return "تم التسليم";
+
+        case 4:
+            return "لا يمكن الوصول";
+
+        case 5:
+            return "تم التاجيل";
+
+        case 6:
+            return "تم التسليم جزئيا";
+
+        case 7:
+            return "تم الاغاء من قبل المستلم";
+
+        case 8:
+            return "تم الرفض مع الدفع";
+
+        case 9:
+            return "رفض مع سداد الجزاء";
+
+        case 10:
+            return "رفض ولم يتم الدفع";
+    }
+};
+export const convertOrderStatusToId = (status: string) => {
+    switch (status) {
+        case "جديد":
+            return 0;
+
+        case "قيد الانتظار":
+            return 1;
+
+        case "تم التسليم للمندوب":
+            return 2;
+
+        case "تم التسليم":
+            return 3;
+
+        case "لا يمكن الوصول":
+            return 4;
+
+        case "تم التاجيل":
+            return 5;
+
+        case "تم التسليم جزئيا":
+            return 6;
+
+        case "تم الاغاء من قبل المستلم":
+            return 7;
+
+        case "تم الرفض مع الدفع":
+            return 8;
+
+        case "رفض مع سداد الجزاء":
+            return 9;
+
+        case "رفض ولم يتم الدفع":
+            return 10;
+    }
+};
 export const convertBranchToID = (branches: any, branch: string) => {
     let BranchId!: number;
     branches?.data.forEach((branchObj: { id: number; branch: string }) => {
@@ -119,10 +192,10 @@ export const convertShippingTypeToID = (typesOfShipping: any, type: string) => {
     );
     return shippingTypeId;
 };
-export const convertCityToID = (cities2: any, city: string) => {
+export const convertCityToID = (cities: any, city: string) => {
     let cityId!: number;
-    cities2?.data.forEach((cityObj: { id: number; city: string }) => {
-        if (cityObj.city === city) {
+    cities?.data.forEach((cityObj: { id: number; name: string }) => {
+        if (cityObj.name === city) {
             cityId = cityObj.id;
         }
     });
@@ -172,8 +245,8 @@ export const convertPermissionToID = (privilege: string) => {
 };
 export const convertIDToCities = (cities: any, citiesId: string) => {
     let privilegeName!: string;
-    cities?.data.forEach((cityObj: { cityId: number; name: string }) => {
-        if (cityObj.cityId === +citiesId) {
+    cities?.data.forEach((cityObj: { id: number; name: string }) => {
+        if (cityObj.id === +citiesId) {
             privilegeName = cityObj.name;
         }
     });

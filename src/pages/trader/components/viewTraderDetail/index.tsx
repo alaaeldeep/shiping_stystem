@@ -5,7 +5,6 @@ import {
     DialogActions,
     Dialog,
     IconButton,
-    useMediaQuery,
     Box,
     Typography,
     TableContainer,
@@ -15,12 +14,20 @@ import {
     TableRow,
     TableBody,
     Paper,
+    Divider,
+    Chip,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
-import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
+
+/* date formatter */
+import moment from "moment";
+import "moment/dist/locale/ar";
+
+/* motion */
+import { motion } from "framer-motion";
 
 /* types */
-import { SpecialPackage, TraderRow } from "../../../../components/types";
+import { SpecialPackageGET, TraderRow } from "../../../../components/types";
 
 type TraderDetailsProps = {
     open: boolean;
@@ -28,13 +35,8 @@ type TraderDetailsProps = {
 
     handleClose: () => void;
 };
-const ViewTraderDetails = ({ open, handleClose, data }: TraderDetailsProps) => {
-    const matches = useMediaQuery("(min-width:1070px)");
 
-    function handelDeleteSpecialPackage(row: SpecialPackage): void {
-        throw new Error("Function not implemented.");
-    }
-    console.log(data.specialPackages);
+const ViewTraderDetails = ({ open, handleClose, data }: TraderDetailsProps) => {
     return (
         <Dialog
             fullWidth={true}
@@ -42,7 +44,14 @@ const ViewTraderDetails = ({ open, handleClose, data }: TraderDetailsProps) => {
             open={open}
             onClose={handleClose}
         >
-            <div style={{ display: "flex", justifyContent: "space-between" }}>
+            <motion.div
+                initial={{ scale: 0.4, opacity: 0 }}
+                animate={{ x: 0, scale: 1, opacity: 1 }}
+                transition={{
+                    duration: 0.3,
+                }}
+                style={{ display: "flex", justifyContent: "space-between" }}
+            >
                 {/* title */}
                 <DialogTitle width={{ xs: "230px", sm: "auto" }}>
                     عـرض البيانات الخاصــة بالتاجر : {data.userName}
@@ -53,7 +62,7 @@ const ViewTraderDetails = ({ open, handleClose, data }: TraderDetailsProps) => {
                         <CloseIcon sx={{ color: "red", fontSize: "1.7rem" }} />
                     </IconButton>
                 </DialogActions>
-            </div>
+            </motion.div>
 
             {/* content=> view trderDetails */}
             <DialogContent>
@@ -68,6 +77,12 @@ const ViewTraderDetails = ({ open, handleClose, data }: TraderDetailsProps) => {
                         gap: "1rem",
                     }}
                 >
+                    <Divider>
+                        <Chip
+                            label="بيانات التاجر"
+                            sx={{ fontWeight: "bold", padding: "20px" }}
+                        />
+                    </Divider>
                     <Typography>
                         <span style={{ fontWeight: "600" }}>
                             الاسم بالكامل :
@@ -94,12 +109,12 @@ const ViewTraderDetails = ({ open, handleClose, data }: TraderDetailsProps) => {
                     </Typography>
 
                     <Typography>
-                        <span style={{ fontWeight: "600" }}>العنوان</span>{" "}
+                        <span style={{ fontWeight: "600" }}>العنوان : </span>{" "}
                         {data.address}
                     </Typography>
                     <Typography>
                         <span style={{ fontWeight: "600" }}>اسم الفرع :</span>{" "}
-                        {data.branch.branch}{" "}
+                        {data.branch.name}{" "}
                     </Typography>
                     <Typography>
                         <span style={{ fontWeight: "600" }}>اسم المتجر :</span>{" "}
@@ -117,7 +132,7 @@ const ViewTraderDetails = ({ open, handleClose, data }: TraderDetailsProps) => {
                         <span style={{ fontWeight: "600" }}>
                             تاريخ الاضافة :
                         </span>{" "}
-                        {data.date}{" "}
+                        {moment(data.date).locale("ar").format("LLLL")}
                     </Typography>
                     <Typography>
                         <span style={{ fontWeight: "600" }}>
@@ -128,21 +143,28 @@ const ViewTraderDetails = ({ open, handleClose, data }: TraderDetailsProps) => {
 
                     {/* **************************** */}
                 </Box>
-
-                <Typography
+                <Divider>
+                    <Chip
+                        label="    باقات مميزه لبعض المدن"
+                        sx={{
+                            fontWeight: "bold",
+                            padding: "20px",
+                            margin: "20px",
+                        }}
+                    />
+                </Divider>
+                {/*                 <Typography
                     fontWeight={"bold"}
                     width={"100%"}
                     textAlign={"center"}
                     sx={{
                         padding: "20px",
-
-                        /*   boxShadow:
+                        boxShadow:
                             "rgba(17, 17, 26, 0.1) 0px 1px 0px, rgba(17, 17, 26, 0.1) 0px 8px 24px, rgba(17, 17, 26, 0.1) 0px 16px 48px",
-                     */
                     }}
                 >
                     باقات مميزه لبعض المدن
-                </Typography>
+                </Typography> */}
                 {data.specialPackages.length > 0 ? (
                     <TableContainer component={Paper}>
                         <Table aria-label="simple table">
@@ -161,7 +183,7 @@ const ViewTraderDetails = ({ open, handleClose, data }: TraderDetailsProps) => {
                             </TableHead>
                             <TableBody>
                                 {data.specialPackages.map(
-                                    (row: SpecialPackage, index: number) => (
+                                    (row: SpecialPackageGET, index: number) => (
                                         <TableRow
                                             key={index}
                                             sx={{
@@ -176,10 +198,10 @@ const ViewTraderDetails = ({ open, handleClose, data }: TraderDetailsProps) => {
                                                 component="th"
                                                 scope="row"
                                             >
-                                                {row.state.name}
+                                                {row.state}
                                             </TableCell>
                                             <TableCell align="center">
-                                                {row.city.name}
+                                                {row.city}
                                             </TableCell>
                                             <TableCell align="center">
                                                 {row.shippingCost}

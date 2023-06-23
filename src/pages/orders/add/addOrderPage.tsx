@@ -6,8 +6,10 @@ import { useNavigate } from "react-router";
 
 /* MUI */
 import {
+    Backdrop,
     Box,
     Button,
+    CircularProgress,
     FormControl,
     FormControlLabel,
     FormHelperText,
@@ -49,6 +51,9 @@ import ProductsInSmallScreen from "./components/ProductsSmallScreesn";
 import UseMutate from "../../../hooks/orders/useAddMutate";
 import UseQuery from "../../../hooks/serverState/useQuery";
 
+/* store */
+import { useOwnStore } from "../../../store";
+
 /* types */
 import { Product } from "../../../components/types";
 
@@ -61,13 +66,20 @@ const steps = [
 
 const AddOrderPage = () => {
     /* API */
-    const { data: branches } = UseQuery("/branches");
-    const { data: typesOfShipping } = UseQuery("/typeOfShipping");
-    const { mutate } = UseMutate();
-    const { data: states } = UseQuery("/states");
-    const { data: citiesToRepresentative } = UseQuery(
-        "/citiesToRepresentative"
+    const { data: branches } = UseQuery("/Branches/active");
+    const { data: typesOfShipping } = UseQuery("/ShippingTypeSettings");
+    const { data: states } = UseQuery("/states/HavingCities");
+    const { data: avalCities } = UseQuery("/Cities");
+    const { mutate, isLoading } = UseMutate();
+
+    /* store */
+    const canActivateOrdersAdd = useOwnStore(
+        (store) => store.user.permissions?.Orders?.[0]
     );
+    const canActivateOrdersView = useOwnStore(
+        (store) => store.user.permissions?.Orders?.[1]
+    );
+    const traderId = useOwnStore((store) => store.user.userId);
 
     const navigate = useNavigate();
 
@@ -88,7 +100,7 @@ const AddOrderPage = () => {
     const stateRef = useRef("");
     const [availableCities, setAvailableCities] = useState<
         {
-            cityId: number;
+            id: number;
             stateId: number;
             name: string;
         }[]
@@ -102,7 +114,7 @@ const AddOrderPage = () => {
     };
 
     const handelCity = (stateId: string) => {
-        return citiesToRepresentative?.data.filter((city: any) => {
+        return avalCities?.data.filter((city: any) => {
             if (city.stateId.toString() === stateId) return city;
         });
     }; /* branch state */
@@ -146,28 +158,21 @@ const AddOrderPage = () => {
         /* step 1 */
         clientName: z.string().nonempty("برجاء كتابة اسم العميل بالكامل"),
 
-        Phone1: z
+        phone1: z
             .string()
             .nonempty("برجاء كتابه رقم الهاتف")
             .length(11, " تاكد من كتابه رقم صحيح مكون من 11 رقم"),
-        Phone2: z.string().optional(),
+        phone2: z.string().optional(),
 
         email: z
             .string()
             .nonempty("برجاء كتابة البريد الالكتروني")
             .email("برجاء كتابة بريد الالكتروني صالح"),
 
-        OrderType: z.string().nonempty("برجاء اختيار نوع التسليم"),
+        orderType: z.string().nonempty("برجاء اختيار نوع التسليم"),
 
         paymentType: z.string().nonempty("برجاء اختيار نوع الدفع"),
-        /*  paymentType: z.enum(["0", "1", "2"], {
-            errorMap: (issue, _ctx) => {
-                switch (issue.code) {
-                    default:
-                        return { message: "برجاء اختيار نوع الدفع" };
-                }
-            },
-        }), */
+
         stateId: z.string().nonempty("برجاء اختيار المحافظه"),
         cityId: z.string().nonempty("برجاء اختيار المدينه"),
 
@@ -211,17 +216,8 @@ const AddOrderPage = () => {
             })
             .nonempty("برجاء اختيار طريقة الشحن"),
 
-        /* isVillage: z.enum(["0", "1"], {
-            errorMap: (issue, _ctx) => {
-                switch (issue.code) {
-                    default:
-                        return { message: "برجاء تحديد نوع مكان التوصيل" };
-                }
-            },
-        }), */
-
         /* step 3 */
-        //  OrderCost: z.string().nonempty("برجاء كتابة تكلفة الطلب"),
+        orderCost: z.string().nonempty("برجاء كتابة تكلفة الطلب"),
         comments: z.string().optional(),
     });
     type FormValue = z.infer<typeof schema>;
@@ -237,24 +233,42 @@ const AddOrderPage = () => {
     const onSubmit = (requestData: FormValue) => {
         if (
             handelCity(requestData.stateId).some(
-                (city: { cityId: string; stateId: string }) =>
-                    city.cityId == requestData.cityId
+                (city: { id: string; stateId: string }) =>
+                    city.id == requestData.cityId
             )
         ) {
             /*🚀 make request 🚀*/
-            const dta = {
+            const request = {
                 ...requestData,
-                orderType: +requestData.OrderType,
+                orderType: +requestData.orderType,
                 shippingTypeId: +requestData.shippingTypeId,
                 cityId: +requestData.cityId,
                 stateId: +requestData.stateId,
                 paymentType: +requestData.paymentType,
                 branchId: +requestData.branchId,
                 orderStatus: 0,
+                orderCost: Math.abs(+requestData.orderCost),
                 isVillage: requestData.isVillage === "0" ? true : false,
-                orderItems: products,
+                orderItems: products.map((product) => ({
+                    productName: product.productName,
+                    productPrice: product.productPrice,
+                    productQuantity: product.productQuantity,
+                })),
+                traderId,
             };
-            console.log(dta);
+
+            mutate(request, {
+                onSuccess: () => {
+                    navigate("/orders");
+                },
+                onError: () => {
+                    toast.warn("برجاء   اختيار مدينة ", {
+                        position: toast.POSITION.BOTTOM_LEFT,
+                        autoClose: 2000,
+                        theme: "dark",
+                    });
+                },
+            });
         } else {
             setError("cityId", { message: "برجاء اختيار مدينة" });
             toast.warn("برجاء   اختيار مدينة ", {
@@ -279,6 +293,7 @@ const AddOrderPage = () => {
                 btnTitle="العودة للطلبات"
                 destination="/orders"
                 addIcon={false}
+                addBtn={!!canActivateOrdersAdd && !!canActivateOrdersView}
             />{" "}
             <Stepper activeStep={activeStep}>
                 {/* label names */}
@@ -337,8 +352,8 @@ const AddOrderPage = () => {
                                 {/* Phone1 */}
                                 <NumericInputField
                                     register={register}
-                                    errors={errors.Phone1}
-                                    fieldName="Phone1"
+                                    errors={errors.phone1}
+                                    fieldName="phone1"
                                     label=" رقم الهاتف الاساسي"
                                     largeWidth="49%"
                                     smallWidth="100%"
@@ -346,8 +361,8 @@ const AddOrderPage = () => {
                                 {/* optional Phone1 */}
                                 <NumericInputField
                                     register={register}
-                                    errors={errors.Phone2}
-                                    fieldName="Phone2"
+                                    errors={errors.phone2}
+                                    fieldName="phone2"
                                     label=" رقم الهاتف الاحتياطي"
                                     largeWidth="49%"
                                     smallWidth="100%"
@@ -384,14 +399,14 @@ const AddOrderPage = () => {
                                     }}
                                 >
                                     <InputLabel
-                                        error={!!errors.OrderType}
+                                        error={!!errors.orderType}
                                         color="info"
                                         id="demo-simple-select-helper-label"
                                     >
                                         نوع التسليم
                                     </InputLabel>
                                     <Select
-                                        {...register("OrderType")}
+                                        {...register("orderType")}
                                         labelId="demo-simple-select-helper-label"
                                         id="demo-simple-select-helper"
                                         value={delivery}
@@ -407,8 +422,8 @@ const AddOrderPage = () => {
                                             التسليم اونلاين
                                         </MenuItem>
                                     </Select>
-                                    <FormHelperText error={!!errors.OrderType}>
-                                        {errors?.OrderType?.message}
+                                    <FormHelperText error={!!errors.orderType}>
+                                        {errors?.orderType?.message}
                                     </FormHelperText>
                                 </FormControl>
                                 {/* paymentType */}
@@ -530,13 +545,13 @@ const AddOrderPage = () => {
                                         >
                                             {availableCities?.map(
                                                 (city: {
-                                                    cityId: number;
+                                                    id: number;
                                                     name: string;
                                                 }) => (
                                                     <MenuItem
-                                                        key={city.cityId}
+                                                        key={city.id}
                                                         defaultChecked
-                                                        value={city?.cityId.toString()}
+                                                        value={city?.id.toString()}
                                                     >
                                                         {city?.name}
                                                     </MenuItem>
@@ -646,14 +661,14 @@ const AddOrderPage = () => {
                                         {branches?.data.map(
                                             (branch: {
                                                 id: number;
-                                                branch: string;
+                                                name: string;
                                             }) => (
                                                 <MenuItem
                                                     key={branch.id}
                                                     defaultChecked
                                                     value={branch.id.toString()}
                                                 >
-                                                    {branch.branch}
+                                                    {branch.name}
                                                 </MenuItem>
                                             )
                                         )}
@@ -689,13 +704,13 @@ const AddOrderPage = () => {
                                         {typesOfShipping?.data.map(
                                             (shiping: {
                                                 id: number;
-                                                type: string;
+                                                name: string;
                                             }) => (
                                                 <MenuItem
                                                     key={shiping.id}
                                                     value={shiping.id.toString()}
                                                 >
-                                                    {shiping.type}
+                                                    {shiping.name}
                                                 </MenuItem>
                                             )
                                         )}
@@ -779,20 +794,20 @@ const AddOrderPage = () => {
                     >
                         <Box sx={{ marginX: "auto", width: "90%" }}>
                             {/* orderCost */}
-                            {/*   <div
+                            <div
                                 style={{
                                     margin: "20px 0",
                                 }}
                             >
                                 <NumericInputField
                                     register={register}
-                                    errors={errors.OrderCost}
-                                    fieldName="OrderCost"
+                                    errors={errors.orderCost}
+                                    fieldName="orderCost"
                                     label="تكلفة الطلب"
                                     largeWidth="90%"
                                     smallWidth="90%"
                                 />{" "}
-                            </div> */}
+                            </div>
 
                             {/* comments */}
                             <div style={{ margin: "20px 0" }}>
@@ -827,7 +842,7 @@ const AddOrderPage = () => {
                             </div>
 
                             {/* total price */}
-                            <Typography fontWeight={"bold"} marginY={"10px"}>
+                            {/* <Typography fontWeight={"bold"} marginY={"10px"}>
                                 اجمالي السعر :{" "}
                                 {products.reduce(
                                     (acc, product) =>
@@ -837,7 +852,7 @@ const AddOrderPage = () => {
                                     0
                                 )}{" "}
                                 جــــنيه
-                            </Typography>
+                            </Typography> */}
                             {/* total weight */}
                             <Typography fontWeight={"bold"}>
                                 اجمالي الوزن :{" "}
@@ -903,6 +918,15 @@ const AddOrderPage = () => {
                     )}
                 </Box>
                 <DevTool control={control} />
+                <Backdrop
+                    sx={{
+                        color: "#fff",
+                        zIndex: (theme) => theme.zIndex.drawer + 1,
+                    }}
+                    open={isLoading}
+                >
+                    <CircularProgress color="inherit" />
+                </Backdrop>
             </form>
         </>
     );

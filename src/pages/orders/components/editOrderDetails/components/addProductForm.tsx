@@ -53,7 +53,6 @@ const AddProductForm = ({
         productName: z.string().nonempty("برجاء كتابة اسم المنتج"),
         productQuantity: z.string().nonempty("برجاء ادخال الكمية  "),
         productWeight: z.string().nonempty("برجاء ادخال الوزن بالكيلوجـرام "),
-        productPrice: z.string().nonempty("برجاء كتابة سعر المنتج "),
     });
 
     /*          */
@@ -75,7 +74,6 @@ const AddProductForm = ({
 
     const modalSubmit = (e: SyntheticEvent) => {
         e.preventDefault();
-        console.log();
 
         if (
             (getFieldState("productName").isTouched &&
@@ -86,10 +84,7 @@ const AddProductForm = ({
             (!getFieldState("productQuantity").isTouched &&
                 getFieldState("productWeight").isTouched &&
                 getFieldState("productWeight").error) ||
-            (!getFieldState("productWeight").isTouched &&
-                getFieldState("productPrice").isTouched &&
-                getFieldState("productPrice").error) ||
-            !getFieldState("productPrice").isTouched
+            !getFieldState("productWeight").isTouched
         ) {
             toast.warn("برجاء اكمال الحقول الفارغة ", {
                 position: toast.POSITION.BOTTOM_LEFT,
@@ -108,9 +103,8 @@ const AddProductForm = ({
                 ...prev,
                 {
                     productName: getValues("productName"),
-                    productQuantity: +getValues("productQuantity"),
-                    productWeight: +getValues("productWeight"),
-                    productPrice: +getValues("productPrice"),
+                    productQuantity: Math.abs(+getValues("productQuantity")),
+                    productWeight: Math.abs(+getValues("productWeight")),
                     id: uuidv4(),
                 },
             ]);
@@ -118,7 +112,7 @@ const AddProductForm = ({
             resetField("productName");
             resetField("productQuantity");
             resetField("productWeight");
-            resetField("productPrice");
+
             handleCloseProductForm();
         }
     };
@@ -145,19 +139,16 @@ const AddProductForm = ({
                     style={{
                         display: "flex",
                         justifyContent: "center",
-                        /*  padding: "50px", */
                     }}
                     noValidate
                 >
                     <Box
                         sx={{
                             width: "100%",
-                            /*    backgroundColor: "secondary.main", */
                             padding: "10px 0px",
                             borderRadius: "25px",
                             display: "flex",
                             flexDirection: "column",
-                            /*   border: "1px solid #9ba4b5b7", */
                             justifyContent: "center",
                             mb: 3,
                             boxShadow:
@@ -167,14 +158,6 @@ const AddProductForm = ({
                         <Box sx={{ marginX: "auto", width: "90%" }}>
                             {/* product name */}
                             <div style={{ margin: "20px 0" }}>
-                                {/*  <InputField
-                                    register={register}
-                                    errors={errors.productName}
-                                    fieldName="productName"
-                                    label="اسم المنتج"
-                                    largeWidth="90%"
-                                    smallWidth="90%"
-                                /> */}
                                 <FormControl
                                     error={!!errors.productName}
                                     fullWidth
@@ -207,17 +190,6 @@ const AddProductForm = ({
                                     </FormHelperText>
                                 </FormControl>
                             </div>{" "}
-                            {/* product Price*/}
-                            <div style={{ margin: "20px 0" }}>
-                                <NumericInputField
-                                    register={register}
-                                    errors={errors.productPrice}
-                                    fieldName="productPrice"
-                                    label="سعر المنتج"
-                                    largeWidth="100%"
-                                    smallWidth="100%"
-                                />
-                            </div>
                             {/* product quantity*/}
                             <div style={{ margin: "20px 0" }}>
                                 <NumericInputField

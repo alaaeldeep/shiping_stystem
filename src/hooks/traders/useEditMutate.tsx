@@ -5,14 +5,14 @@ import { request } from "../../lib/axios.utls";
 import { useMutation, useQueryClient } from "react-query";
 
 /* types */
-import { RepresentativeType } from "../../components/types";
+import { TraderPostType } from "../../components/types";
 
-type RepresentativeID = {
-    id: number;
+type TraderID = {
+    id: string;
 };
-const updateRepresentative = (data: RepresentativeType & RepresentativeID) => {
+const updateTrader = (data: TraderPostType & TraderID) => {
     return request({
-        url: `/representatives/${data.id}`,
+        url: `/Traders/${data.id}`,
         method: "put",
         data: data,
     });
@@ -20,11 +20,28 @@ const updateRepresentative = (data: RepresentativeType & RepresentativeID) => {
 
 const UseMutate = () => {
     const queryClient = useQueryClient();
-    return useMutation(updateRepresentative, {
+    return useMutation(updateTrader, {
         onSuccess: () => {
-            queryClient.invalidateQueries("/representatives");
+            queryClient.invalidateQueries("/Traders");
         },
     });
 };
 
 export default UseMutate;
+/* update status */
+type TraderStatus = { id: string; status: boolean };
+const updateStatusTrader = (data: TraderStatus) => {
+    return request({
+        url: `/Traders/status/${data.id}`,
+        method: "put",
+        data: data,
+    });
+};
+export const UseMutateStatus = () => {
+    const queryClient = useQueryClient();
+    return useMutation(updateStatusTrader, {
+        onSuccess: () => {
+            queryClient.invalidateQueries("/Traders");
+        },
+    });
+};

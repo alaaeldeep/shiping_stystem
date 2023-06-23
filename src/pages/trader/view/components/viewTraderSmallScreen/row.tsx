@@ -6,26 +6,35 @@ import {
     Accordion,
     AccordionDetails,
     AccordionSummary,
+    FormControlLabel,
     IconButton,
     Typography,
 } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import ZoomOutMapIcon from "@mui/icons-material/ZoomOutMap";
-
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+
+/* store */
+import { useOwnStore } from "../../../../../store/index";
 
 /* components */
 import ViewTraderDetails from "../../../components/viewTraderDetail";
+import EditTraderDetails from "../../../components/editTraderDetails";
+import ChangeStatusHandler from "../../../components/ChangeStatusHandeler";
+import { StatusSwitch } from "../../../../employes/view/components/viewEmployeeLargeScreen/row";
 
 /* types */
 import { TraderRow } from "../../../../../components/types";
-import EditTraderDetails from "../../../components/editTraderDetails";
 
 type props = {
     index: number;
     data: TraderRow;
 };
 const RowInSmallScreen = ({ index, data }: props) => {
+    /* store */
+    const canActivateTradersEdit = useOwnStore(
+        (store) => store.user.permissions?.Traders?.[2]
+    );
     const [expanded, setExpanded] = useState<string | false>(false);
 
     const [openEditTraderDetails, setOpenEditTraderDetails] = useState(false);
@@ -47,7 +56,18 @@ const RowInSmallScreen = ({ index, data }: props) => {
         (panel: string) =>
         (event: React.SyntheticEvent, isExpanded: boolean) => {
             setExpanded(isExpanded ? panel : false);
-        };
+        }; /* status */
+    const handleChangeStatus = () => {
+        handleClickOpenChangeStatus();
+    };
+    /* change status representative */
+    const [openChangeStatus, setOpenChangeStatus] = useState(false);
+    const handleClickOpenChangeStatus = () => {
+        setOpenChangeStatus(true);
+    };
+    const handleCloseOpenChangeStatus = () => {
+        setOpenChangeStatus(false);
+    };
     return (
         <>
             {/* view trader details */}
@@ -61,6 +81,12 @@ const RowInSmallScreen = ({ index, data }: props) => {
                 data={data}
                 open={openEditTraderDetails}
                 handleClose={handleCloseEditTraderDetails}
+            />{" "}
+            {/* change status */}
+            <ChangeStatusHandler
+                data={data}
+                handleClose={handleCloseOpenChangeStatus}
+                openStatusHandler={openChangeStatus}
             />
             <Accordion
                 sx={{ px: 5 }}
@@ -82,13 +108,43 @@ const RowInSmallScreen = ({ index, data }: props) => {
                     </Typography>
                 </AccordionSummary>
                 <AccordionDetails>
-                    <Typography>الاسم : {data.userName}</Typography>
-                    <Typography>اسم المتجر : {data.storeName}</Typography>
-                    <Typography>رقم الهاتف : {data.phoneNumber}</Typography>
-                    <Typography>الفرع : {data.branch.branch}</Typography>
+                    <Typography sx={{ marginBottom: "5px" }}>
+                        الاسم : {data.userName}
+                    </Typography>
+                    <Typography sx={{ marginBottom: "5px" }}>
+                        اسم المتجر : {data.storeName}
+                    </Typography>
+                    <Typography sx={{ marginBottom: "5px" }}>
+                        رقم الهاتف : {data.phoneNumber}
+                    </Typography>
+                    <Typography sx={{ marginBottom: "5px" }}>
+                        الفرع : {data.branch.name}
+                    </Typography>
 
-                    <Typography>الحاله : {"//"}</Typography>
-                    <Typography>
+                    <Typography sx={{ marginBottom: "5px" }}>
+                        الحاله :{" "}
+                        <FormControlLabel
+                            control={
+                                <StatusSwitch sx={{ m: 1 }} defaultChecked />
+                            }
+                            label={
+                                data.status ? (
+                                    <Typography sx={{ color: "#65C466" }}>
+                                        نشط
+                                    </Typography>
+                                ) : (
+                                    <Typography sx={{ color: "#FEA1A1" }}>
+                                        غير نشط
+                                    </Typography>
+                                )
+                            }
+                            checked={data.status}
+                            onChange={handleChangeStatus}
+                            disabled={!canActivateTradersEdit}
+                            /*  checked={false} */
+                        />
+                    </Typography>
+                    <Typography sx={{ marginBottom: "5px" }}>
                         الاعدادات :{" "}
                         {
                             <>
@@ -101,15 +157,19 @@ const RowInSmallScreen = ({ index, data }: props) => {
                                         }}
                                     />
                                 </IconButton>
-                                <IconButton
-                                    onClick={handleClickOpenEditTraderDetails}
-                                >
-                                    <EditIcon
-                                        style={{
-                                            color: "#7AA874",
-                                        }}
-                                    />
-                                </IconButton>
+                                {canActivateTradersEdit && (
+                                    <IconButton
+                                        onClick={
+                                            handleClickOpenEditTraderDetails
+                                        }
+                                    >
+                                        <EditIcon
+                                            style={{
+                                                color: "#7AA874",
+                                            }}
+                                        />
+                                    </IconButton>
+                                )}
                             </>
                         }
                     </Typography>

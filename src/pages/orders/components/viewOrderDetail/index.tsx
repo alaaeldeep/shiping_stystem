@@ -1,5 +1,5 @@
 /* react staff */
-import { forwardRef, useRef } from "react";
+import { useRef } from "react";
 
 /* react print */
 import { useReactToPrint } from "react-to-print";
@@ -29,6 +29,9 @@ import {
 import CloseIcon from "@mui/icons-material/Close";
 import PrintIcon from "@mui/icons-material/Print";
 
+/* motion */
+import { motion } from "framer-motion";
+
 /* types */
 import { OrderRow, Product } from "../../../../components/types";
 import { useOwnStore } from "../../../../store";
@@ -46,9 +49,6 @@ const ViewOrderDetails = ({ open, handleClose, data }: OrderDetailsProps) => {
         content: () => componentRef.current,
         pageStyle: `{ { display: "block",backgroundColor:"red  }`,
     });
-
-    const matches = useMediaQuery("(min-width:1070px)");
-    const printMedia = useMediaQuery("print");
 
     const checkStatus = (status: number) => {
         switch (status) {
@@ -92,9 +92,9 @@ const ViewOrderDetails = ({ open, handleClose, data }: OrderDetailsProps) => {
             // code block
         }
     };
+    console.log(data);
     return (
         <>
-            {" "}
             <Dialog
                 fullWidth={true}
                 maxWidth={"xl"}
@@ -102,7 +102,12 @@ const ViewOrderDetails = ({ open, handleClose, data }: OrderDetailsProps) => {
                 onClose={handleClose}
                 sx={{}}
             >
-                <div
+                <motion.div
+                    initial={{ scale: 0.4, opacity: 0 }}
+                    animate={{ x: 0, scale: 1, opacity: 1 }}
+                    transition={{
+                        duration: 0.3,
+                    }}
                     style={{
                         display: "flex",
                         justifyContent: "space-between",
@@ -120,7 +125,7 @@ const ViewOrderDetails = ({ open, handleClose, data }: OrderDetailsProps) => {
                             />
                         </IconButton>
                     </DialogActions>
-                </div>
+                </motion.div>
                 {/* content=> view OrderDetails */}
                 <DialogContent ref={componentRef}>
                     <Box
@@ -140,16 +145,23 @@ const ViewOrderDetails = ({ open, handleClose, data }: OrderDetailsProps) => {
                                 justifyContent: "space-between",
                             }}
                         >
-                            <img src="./iti-logo.png" height={55} />
+                            <img
+                                src="./iti-logo.png"
+                                height={55}
+                                alt="iti logo in print screen"
+                            />
                             <h1>TEAM 4 </h1>
-                            <img src="./iconLogo.png" height={55} />
+                            <img
+                                src="./iconLogo.png"
+                                height={55}
+                                alt="iti logo in print screen"
+                            />
                         </Box>
-
                         {/* order data */}
                         <Divider>
                             <Chip
                                 label="بيانات الطلب"
-                                sx={{ fontWeight: "bold" }}
+                                sx={{ fontWeight: "bold", padding: "20px" }}
                             />
                         </Divider>
                         <Typography>
@@ -171,6 +183,19 @@ const ViewOrderDetails = ({ open, handleClose, data }: OrderDetailsProps) => {
                             </span>{" "}
                             {checkStatus(data.orderStatus)}
                         </Typography>
+                        {data.representative ? (
+                            <Typography>
+                                <span style={{ fontWeight: "600" }}>
+                                    اسم المندوب :
+                                </span>{" "}
+                                {data.representative.fullName}
+                            </Typography>
+                        ) : (
+                            <div
+                                id="printWhiteSpace"
+                                style={{ marginBottom: "2rem" }}
+                            ></div>
+                        )}
                         <Typography>
                             <span style={{ fontWeight: "600" }}>
                                 نوع الدفع :
@@ -183,13 +208,13 @@ const ViewOrderDetails = ({ open, handleClose, data }: OrderDetailsProps) => {
                             <span style={{ fontWeight: "600" }}>
                                 نوع الشحن :
                             </span>{" "}
-                            {data.shippingType.type}
+                            {data.shippingType.name}
                         </Typography>
                         <Typography>
                             <span style={{ fontWeight: "600" }}>
                                 تكلفة الطلب :
                             </span>{" "}
-                            {data.OrderCost} جـنيه مــصري
+                            {data.orderCost} جـنيه مــصري
                         </Typography>
                         <Typography>
                             <span style={{ fontWeight: "600" }}>
@@ -209,10 +234,9 @@ const ViewOrderDetails = ({ open, handleClose, data }: OrderDetailsProps) => {
                             </span>{" "}
                             {data.totalWeight} كجـــم
                         </Typography>
-
                         {/* client data */}
                         <Divider
-                            /* sx={{
+                        /* sx={{
                                 ":before": {
                                     borderTop: "thin solid red",
                                 },
@@ -223,10 +247,9 @@ const ViewOrderDetails = ({ open, handleClose, data }: OrderDetailsProps) => {
                         >
                             <Chip
                                 label="بيانات العميل"
-                                sx={{ fontWeight: "bold" }}
+                                sx={{ fontWeight: "bold", padding: "20px" }}
                             />
                         </Divider>
-
                         <Typography>
                             <span style={{ fontWeight: "600" }}>
                                 {" "}
@@ -262,7 +285,7 @@ const ViewOrderDetails = ({ open, handleClose, data }: OrderDetailsProps) => {
                                 {" "}
                                 اسم الفرع :
                             </span>{" "}
-                            {data.branch.branch}
+                            {data.branch.name}
                         </Typography>
                         <Typography>
                             {" "}
@@ -289,7 +312,30 @@ const ViewOrderDetails = ({ open, handleClose, data }: OrderDetailsProps) => {
                                 ? "التسليم في الفرع"
                                 : "التسليم اونلاين"}
                         </Typography>
-
+                        {/* trader data */}
+                        <Divider>
+                            <Chip
+                                label="بيانات   التاجر"
+                                sx={{
+                                    fontWeight: "bold",
+                                    padding: "20px",
+                                }}
+                            />
+                        </Divider>{" "}
+                        <Typography>
+                            <span style={{ fontWeight: "600" }}>
+                                {" "}
+                                اسم المتجر :
+                            </span>{" "}
+                            {data.trader.fullName}
+                        </Typography>
+                        <Typography>
+                            <span style={{ fontWeight: "600" }}>
+                                {" "}
+                                رقم الهاتف :
+                            </span>{" "}
+                            {data.trader.phoneNumber}
+                        </Typography>
                         {/* products data */}
                         {/* <Typography
                             fontWeight={"bold"}
@@ -302,7 +348,10 @@ const ViewOrderDetails = ({ open, handleClose, data }: OrderDetailsProps) => {
                         <Divider>
                             <Chip
                                 label="تفاصيل منتجات الطلب"
-                                sx={{ fontWeight: "bold" }}
+                                sx={{
+                                    fontWeight: "bold",
+                                    padding: "20px",
+                                }}
                             />
                         </Divider>
                         <TableContainer
@@ -358,31 +407,40 @@ const ViewOrderDetails = ({ open, handleClose, data }: OrderDetailsProps) => {
                 </DialogContent>
 
                 {/* print */}
-                <Fab
-                    color="secondary"
-                    onClick={handlePrint}
-                    sx={{
-                        position: "absolute",
-                        right: 50,
-                        bottom: 60,
+                <motion.div
+                    initial={{ scale: 0.4, opacity: 0 }}
+                    animate={{ x: 0, scale: 1, opacity: 1 }}
+                    transition={{
+                        duration: 0.3,
                     }}
                 >
-                    <Tooltip title="طباعة" onClick={handlePrint}>
-                        <IconButton>
-                            <PrintIcon
-                                sx={
-                                    mode === "dark"
-                                        ? {
-                                              color: "#ACDCEE",
-                                          }
-                                        : {
-                                              color: "#475063",
-                                          }
-                                }
-                            />
-                        </IconButton>
-                    </Tooltip>{" "}
-                </Fab>
+                    {" "}
+                    <Fab
+                        color="secondary"
+                        onClick={handlePrint}
+                        sx={{
+                            position: "absolute",
+                            right: 50,
+                            bottom: 60,
+                        }}
+                    >
+                        <Tooltip title="طباعة" onClick={handlePrint}>
+                            <IconButton>
+                                <PrintIcon
+                                    sx={
+                                        mode === "dark"
+                                            ? {
+                                                  color: "#ACDCEE",
+                                              }
+                                            : {
+                                                  color: "#475063",
+                                              }
+                                    }
+                                />
+                            </IconButton>
+                        </Tooltip>{" "}
+                    </Fab>
+                </motion.div>
             </Dialog>
         </>
     );

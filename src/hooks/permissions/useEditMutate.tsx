@@ -7,11 +7,11 @@ import { useMutation, useQueryClient } from "react-query";
 type permissionType = {
     roleName: string;
     rolePrivileges: any;
-    roleId: number;
+    roleId: string;
 };
 const updatePermission = (data: permissionType) => {
     return request({
-        url: `/permissions/${data.id}`,
+        url: `/RolesPrivileges/${data.roleId}`,
         method: "put",
         data: data,
     });
@@ -21,7 +21,7 @@ const UseMutate = () => {
     const queryClient = useQueryClient();
     return useMutation(updatePermission, {
         onSuccess: () => {
-            queryClient.invalidateQueries("/permissions");
+            queryClient.invalidateQueries("/RolesPrivileges");
         },
     });
 };

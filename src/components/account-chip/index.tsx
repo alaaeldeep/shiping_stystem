@@ -1,6 +1,9 @@
 /* react staff */
 import { useState } from "react";
 
+/* router */
+import { useNavigate } from "react-router";
+
 /* MUI */
 import {
     Chip,
@@ -13,9 +16,19 @@ import {
 import Settings from "@mui/icons-material/Settings";
 import Logout from "@mui/icons-material/Logout";
 
+/* toast */
+import { toast } from "react-toastify";
+
+/* store */
+import { useOwnStore } from "../../store";
+
 const AccountChip = () => {
+    const userName = useOwnStore((store) => store.user.userName);
+    const logout = useOwnStore((store) => store.logout);
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 
+    /* router */
+    const navigate = useNavigate();
     const open = Boolean(anchorEl);
 
     const handleClick = (event: React.MouseEvent<HTMLElement>) => {
@@ -25,17 +38,18 @@ const AccountChip = () => {
     const handleClose = () => {
         setAnchorEl(null);
     };
+
     return (
         <>
             {" "}
             <Chip
                 onClick={handleClick}
                 avatar={<Avatar />}
-                label="مرحبا, محمد خالد"
+                label={`مرحبا , ${userName}`}
                 variant="outlined"
                 sx={{
                     cursor: "pointer",
-                    width: { xs: "100px", md: "140px" },
+                    width: { xs: "100px", md: "180px" },
                     fontWeight: "bold",
                 }}
             />
@@ -74,7 +88,17 @@ const AccountChip = () => {
                     </ListItemIcon>
                     الاعدادات
                 </MenuItem>
-                <MenuItem onClick={handleClose}>
+                <MenuItem
+                    onClick={() => {
+                        logout();
+                        navigate("/login");
+                        toast.info("تم تسجيل الخروج", {
+                            position: toast.POSITION.BOTTOM_LEFT,
+                            autoClose: 2000,
+                            theme: "dark",
+                        });
+                    }}
+                >
                     <ListItemIcon>
                         <Logout fontSize="small" />
                     </ListItemIcon>

@@ -5,8 +5,9 @@ import { request } from "../../lib/axios.utls";
 import { useMutation, useQueryClient } from "react-query";
 
 type stateType = {
-    state: string;
+    name: string;
     id: number;
+    status: boolean;
 };
 const updatePermission = (data: stateType) => {
     return request({

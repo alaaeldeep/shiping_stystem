@@ -16,9 +16,7 @@ export const ViewPermissionsSmallScreen = ({
         <Paper sx={{ width: "100%" }}>
             {/* view Permissions*/}
             {rows.map((row, index) => (
-                <>
-                    <RowInMobile data={row} index={index} />
-                </>
+                <RowInMobile data={row} index={index} key={index} />
             ))}
         </Paper>
     );

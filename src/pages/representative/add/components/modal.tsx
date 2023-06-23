@@ -37,7 +37,6 @@ export default function TransitionsModal({
     handleAddSpecialPackage,
 }: ModalProps) {
     const schema = z.object({
-        /*  branch: z.string().nonempty("برجاء اختيار الفرع"), */
         state: z.string().nonempty("برجاء اختيار المحافظه"),
         city: z.string().nonempty("برجاء اختيار المدينه"),
         shippingCost: z.string().nonempty("برجاء ادخال تكلفه الشحن"),

@@ -102,12 +102,10 @@ const ProductsInSmallScreen = ({
                             </Typography>
                             {/*product Price */}
 
-                            <Typography> السعر : {row.productPrice}</Typography>
-
                             {/*produc tWeight  */}
                             <Typography>
                                 {" "}
-                                السعر : {row.productWeight}
+                                الوزن : {row.productWeight}
                             </Typography>
 
                             {/* settings */}

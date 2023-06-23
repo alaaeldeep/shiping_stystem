@@ -2,50 +2,61 @@
 import { useState } from "react";
 
 /* MUI */
-import { TableCell, TableRow, IconButton } from "@mui/material";
+import {
+    TableCell,
+    TableRow,
+    IconButton,
+    FormControlLabel,
+    Typography,
+} from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
-import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 
 /* components */
-import DeleteHandler from "../../../components/deleteHandeler";
 import EditCityDetails from "../../../components/editCityDetail";
 
 /* types */
+import { CityRow } from "../../../../../components/types";
+import { StatusSwitch } from "../../../../employes/view/components/viewEmployeeLargeScreen/row";
+import ChangeStatusHandler from "../../../components/ChangeStatusHandeler";
+
+/* types */
 type props = {
-    id: number;
-    state: string;
-    city: string;
+    data: CityRow;
     labelId: string;
     index: number;
-    shippingCost: number;
 };
 
-const Row = ({ id, city, state, labelId, index, shippingCost }: props) => {
-    const [openEditStateDetails, setOpenEditStateDetails] = useState(false);
-    const [openDeleteHandler, setOpenDeleteHandler] = useState(false);
-    const handleDeleteHandlerOpen = () => {
-        setOpenDeleteHandler(true);
-    };
-    const handleDeleteHandlerClose = () => {
-        setOpenDeleteHandler(false);
-    };
-
+const Row = ({ labelId, index, data }: props) => {
+    /* edit */
+    const [openEditCityDetails, setOpenEditCityDetails] = useState(false);
     const handleClickOpenEditStateDetails = () => {
-        setOpenEditStateDetails(true);
+        setOpenEditCityDetails(true);
     };
     const handleCloseEditStateDetails = () => {
-        setOpenEditStateDetails(false);
+        setOpenEditCityDetails(false);
+    };
+
+    /* status */
+    const handleChange = () => {
+        handleClickOpenChangeStatus();
+    };
+    /* change status representative */
+    const [openChangeStatus, setOpenChangeStatus] = useState(false);
+    const handleClickOpenChangeStatus = () => {
+        setOpenChangeStatus(true);
+    };
+    const handleCloseOpenChangeStatus = () => {
+        setOpenChangeStatus(false);
     };
     return (
-        <TableRow hover tabIndex={-1} key={id} sx={{ cursor: "pointer" }}>
+        <TableRow hover tabIndex={-1} key={data.id} sx={{ cursor: "pointer" }}>
             {/*Edit city Details modal */}
-            <EditCityDetails
-                open={openEditStateDetails}
-                handleClose={handleCloseEditStateDetails}
-                id={id}
-                state={state}
-                city={city}
-                shippingCost={shippingCost}
+
+            {/* change status */}
+            <ChangeStatusHandler
+                data={data}
+                handleClose={handleCloseOpenChangeStatus}
+                openStatusHandler={openChangeStatus}
             />
             {/* view all State */}
             {
@@ -61,13 +72,36 @@ const Row = ({ id, city, state, labelId, index, shippingCost }: props) => {
                         {index + 1}
                     </TableCell>
                     {/* city name */}
-                    <TableCell align="center">{city}</TableCell>
+                    <TableCell align="center">{data.name}</TableCell>
 
                     {/* state */}
-                    <TableCell align="center">{state}</TableCell>
+                    <TableCell align="center">{data.state.name}</TableCell>
 
                     {/* shippingCost */}
-                    <TableCell align="center">{shippingCost}</TableCell>
+                    <TableCell align="center">{data.shippingCost}</TableCell>
+
+                    {/* status */}
+                    <TableCell align="center">
+                        <FormControlLabel
+                            control={
+                                <StatusSwitch sx={{ m: 1 }} defaultChecked />
+                            }
+                            label={
+                                data.status ? (
+                                    <Typography sx={{ color: "#65C466" }}>
+                                        نشط
+                                    </Typography>
+                                ) : (
+                                    <Typography sx={{ color: "#FEA1A1" }}>
+                                        غير نشط
+                                    </Typography>
+                                )
+                            }
+                            checked={data.status}
+                            onChange={handleChange}
+                            /*  checked={false} */
+                        />
+                    </TableCell>
 
                     {/* settings */}
                     <TableCell align="center">
@@ -78,20 +112,11 @@ const Row = ({ id, city, state, labelId, index, shippingCost }: props) => {
                                 }}
                             />
                         </IconButton>
-                        <IconButton onClick={handleDeleteHandlerOpen}>
-                            <DeleteForeverIcon
-                                style={{
-                                    color: "#DF2E38",
-                                }}
-                            />
-                        </IconButton>
                     </TableCell>
-                    {/*delete State Details modal */}
-                    <DeleteHandler
-                        id={id}
-                        city={city}
-                        openDeleteHandler={openDeleteHandler}
-                        handleDeleteHandlerClose={handleDeleteHandlerClose}
+                    <EditCityDetails
+                        open={openEditCityDetails}
+                        handleClose={handleCloseEditStateDetails}
+                        data={data}
                     />
                 </>
             }

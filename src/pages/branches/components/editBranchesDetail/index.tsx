@@ -7,8 +7,16 @@ import {
     Dialog,
     IconButton,
     Box,
+    Backdrop,
+    CircularProgress,
 } from "@mui/material"; /* rect-form */
 import CloseIcon from "@mui/icons-material/Close";
+
+/* toast */
+import { toast } from "react-toastify";
+
+/* motion */
+import { motion } from "framer-motion";
 
 /* hook form */
 import { useForm } from "react-hook-form";
@@ -28,39 +36,50 @@ type EditBrancheProps = {
     open: boolean;
     branch: string;
     id: number;
+    status: boolean;
+    pageNumber: number;
     handleClose: () => void;
 };
 const EditBranchesDetails = ({
     open,
     handleClose,
     branch,
+    status,
     id,
+    pageNumber,
 }: EditBrancheProps) => {
-    const { mutate } = UseMutate();
+    /*   const { mutate, isLoading } = UseMutate(pageNumber); */
     const schema = z.object({
-        branch: z.string().nonempty(" برجاء كتابة اسم الفرع"),
+        name: z.string().nonempty(" برجاء كتابة اسم الفرع"),
     });
     type FormValue = z.infer<typeof schema>;
     const { register, control, handleSubmit, formState } = useForm<FormValue>({
         defaultValues: {
-            branch,
+            name: branch,
         },
         mode: "onTouched",
         resolver: zodResolver(schema),
     });
     const { errors } = formState;
+
     /*   🚀 make the request 🚀 */
     const onSubmit = (data: FormValue) => {
-        mutate(
-            { ...data, id },
-            {
-                onSuccess: () => {
-                    {
-                        handleClose();
-                    }
-                },
-            }
-        );
+        const requestData = { name: data.name, status, id };
+
+        /*  mutate(requestData, {
+            onSuccess: () => {
+                {
+                    handleClose();
+                }
+            },
+        }); */
+    };
+    const onError = () => {
+        toast.warn("برجاء اكمال الحقول الفارغة ", {
+            position: toast.POSITION.BOTTOM_LEFT,
+            autoClose: 2000,
+            theme: "dark",
+        });
     };
     return (
         <Dialog
@@ -69,7 +88,14 @@ const EditBranchesDetails = ({
             open={open}
             onClose={handleClose}
         >
-            <div style={{ display: "flex", justifyContent: "space-between" }}>
+            <motion.div
+                initial={{ scale: 0.4, opacity: 0 }}
+                animate={{ x: 0, scale: 1, opacity: 1 }}
+                transition={{
+                    duration: 0.3,
+                }}
+                style={{ display: "flex", justifyContent: "space-between" }}
+            >
                 <DialogTitle width={{ xs: "230px", sm: "auto" }}>
                     تعــديــل بيانات الخاصــة بفرع : {branch}
                 </DialogTitle>
@@ -78,11 +104,11 @@ const EditBranchesDetails = ({
                         <CloseIcon sx={{ color: "red", fontSize: "1.7rem" }} />
                     </IconButton>
                 </DialogActions>
-            </div>
+            </motion.div>
 
             <DialogContent>
                 <form
-                    onSubmit={handleSubmit(onSubmit)}
+                    onSubmit={handleSubmit(onSubmit, onError)}
                     style={{
                         display: "flex",
                         justifyContent: "center",
@@ -106,8 +132,8 @@ const EditBranchesDetails = ({
                             <div style={{ margin: "20px 0" }}>
                                 <InputField
                                     register={register}
-                                    errors={errors.branch}
-                                    fieldName="branch"
+                                    errors={errors.name}
+                                    fieldName="name"
                                     label="اسم الفرع"
                                     largeWidth="90%"
                                     smallWidth="90%"
@@ -129,7 +155,16 @@ const EditBranchesDetails = ({
                         </Button>
                     </Box>
                     <DevTool control={control} />
-                </form>
+                </form>{" "}
+                {/* <Backdrop
+                    sx={{
+                        color: "#fff",
+                        zIndex: (theme) => theme.zIndex.drawer + 1,
+                    }}
+                    open={isLoading}
+                >
+                    <CircularProgress color="inherit" />
+                </Backdrop> */}
             </DialogContent>
         </Dialog>
     );

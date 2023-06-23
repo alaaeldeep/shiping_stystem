@@ -22,7 +22,7 @@ const UseMutate = () => {
     const queryClient = useQueryClient();
     return useMutation(updateCity, {
         onSuccess: () => {
-            queryClient.invalidateQueries("/cities");
+            queryClient.invalidateQueries("/Cities/GetCitiesWithShippingCost");
         },
     });
 };

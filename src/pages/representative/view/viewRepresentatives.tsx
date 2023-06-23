@@ -1,8 +1,18 @@
+/* react staff */
+import { useState } from "react";
+
 /* router */
 import { useNavigate } from "react-router-dom";
 
 /* MUI */
-import { useMediaQuery, Skeleton, Stack, Typography } from "@mui/material";
+import {
+    useMediaQuery,
+    Skeleton,
+    Stack,
+    Typography,
+    Pagination,
+    Box,
+} from "@mui/material";
 
 /* react query */
 import UseQuery from "../../../hooks/serverState/useQuery";
@@ -11,6 +21,9 @@ import UseQuery from "../../../hooks/serverState/useQuery";
 import { ViewRepresentativesLargeScreen } from "./components/viewRepresentativesLargeScreen/viewRepresentativesLargeScreen";
 import { ViewRepresentativesSmallScreen } from "./components/viewRepresentativesSmallScreen/viewRepresentativesSmallScreen";
 import { TableToolbar } from "../../../components/table/tableToolBar";
+
+/* store */
+import { useOwnStore } from "../../../store";
 
 const headCells = [
     {
@@ -45,19 +58,30 @@ const headCells = [
 ];
 
 const ViewRepresentatives = () => {
-    const { data, isLoading, isError } = UseQuery("/representatives");
-    const { data: branches } = UseQuery("/branches");
+    const canActivateRepresentativesAdd = useOwnStore(
+        (store) => store.user.permissions?.Representatives?.[0]
+    );
+    const canActivateRepresentativesView = useOwnStore(
+        (store) => store.user.permissions?.Representatives?.[1]
+    );
+    /* pagination */
+    const [pageNumber, setPageNumber] = useState(1);
+    const handlePageNumber = (value: number) => {
+        setPageNumber(value);
+    };
+
+    const { data, isLoading, isError } = UseQuery("/Representatives");
+
     const matches = useMediaQuery("(min-width:1070px)");
     const navigate = useNavigate();
 
-    if (isLoading) {
+    /*  if (isLoading) {
         return (
             <Stack spacing={1}>
-                <Skeleton variant="rounded" width={"100%"} height={70} />
                 <Skeleton variant="rounded" width={"100%"} height={500} />
             </Stack>
         );
-    }
+    } */
 
     if (isError) {
         setTimeout(() => navigate("/home"), 2000);
@@ -70,8 +94,16 @@ const ViewRepresentatives = () => {
                 btnTitle="اضف مندوب"
                 destination="/representatives/add"
                 addIcon={true}
+                addBtn={
+                    !!canActivateRepresentativesAdd &&
+                    !!canActivateRepresentativesView
+                }
             />
-            {matches ? (
+            {isLoading ? (
+                <Stack spacing={1}>
+                    <Skeleton variant="rounded" width={"100%"} height={500} />
+                </Stack>
+            ) : matches ? (
                 <ViewRepresentativesLargeScreen
                     rows={data?.data}
                     headCell={headCells}
@@ -91,7 +123,23 @@ const ViewRepresentatives = () => {
                 >
                     لم يتم اضافة مناديب حتي الان
                 </Typography>
-            )}
+            )}{" "}
+            <Box
+                sx={{
+                    display: "flex",
+                    justifyContent: "center",
+                    padding: " 20px",
+                }}
+            >
+                {/* **CHECK FIRST IF TOTAL_PAGES > 1 SHOW THE PAGINATIOn */}
+                <Pagination
+                    /*   count={data?.data.totalPages} */
+                    count={5}
+                    size={matches ? "large" : "small"}
+                    page={pageNumber}
+                    onChange={(_e, value) => handlePageNumber(value)}
+                />
+            </Box>
         </>
     );
 };

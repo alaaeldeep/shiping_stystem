@@ -8,6 +8,8 @@ import {
     FormHelperText,
     TextField,
     Autocomplete,
+    Backdrop,
+    CircularProgress,
 } from "@mui/material";
 
 /* hooks form */
@@ -32,9 +34,9 @@ import { states } from "../../../utils/converter";
 
 const AddStatesPage = () => {
     const navigate = useNavigate();
-    const { mutate } = UseMutate();
+    const { mutate, isLoading } = UseMutate();
     const schema = z.object({
-        state: z.enum(
+        name: z.enum(
             [
                 "أسوان",
                 "أسيوط",
@@ -141,8 +143,8 @@ const AddStatesPage = () => {
                                     <>
                                         <TextField
                                             color="info"
-                                            {...register("state")}
-                                            error={!!errors.state}
+                                            {...register("name")}
+                                            error={!!errors.name}
                                             sx={{
                                                 width: "90%",
                                             }}
@@ -154,14 +156,14 @@ const AddStatesPage = () => {
                                             }}
                                         />
                                         <FormHelperText
-                                            error={!!errors.state}
+                                            error={!!errors.name}
                                             sx={{
                                                 fontWeight: "bold",
                                                 letterSpacing: "0.1rem",
                                             }}
                                             id="component-helper-text"
                                         >
-                                            {errors?.state?.message}
+                                            {errors?.name?.message}
                                         </FormHelperText>
                                     </>
                                 )}
@@ -183,7 +185,16 @@ const AddStatesPage = () => {
                     </Button>
                 </Box>
                 <DevTool control={control} />
-            </form>
+            </form>{" "}
+            <Backdrop
+                sx={{
+                    color: "#fff",
+                    zIndex: (theme) => theme.zIndex.drawer + 1,
+                }}
+                open={isLoading}
+            >
+                <CircularProgress color="inherit" />
+            </Backdrop>
         </>
     );
 };

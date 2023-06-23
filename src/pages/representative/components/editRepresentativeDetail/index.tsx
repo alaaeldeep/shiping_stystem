@@ -17,9 +17,14 @@ import {
     MenuItem,
     InputLabel,
     Select,
+    Backdrop,
+    CircularProgress,
 } from "@mui/material";
 import { SelectChangeEvent } from "@mui/material/Select";
 import CloseIcon from "@mui/icons-material/Close";
+
+/* motion */
+import { motion } from "framer-motion";
 
 /* react staff */
 import { useRef, useState } from "react";
@@ -46,7 +51,6 @@ import UseQuery from "../../../../hooks/serverState/useQuery";
 import { RepresentativeGET } from "../../../../components/types";
 import UseMutate from "../../../../hooks/representatives/useEditMutate";
 import { convertStateToID } from "../../../../utils/converter";
-/*import UseMutate from "../../../hooks/representatives/useAddMutate"; */
 
 const steps = ["تسجيل البيانات الاساسيه", " حفظ ومتابعه"];
 
@@ -57,22 +61,30 @@ type prop = {
 };
 const EditRepresentativeDetail = ({ open, handleClose, data }: prop) => {
     /* fetch data */
-    const { data: branches } = UseQuery("/branches");
-    const { data: states } = UseQuery("/states");
+    const { data: branches } = UseQuery("/Branches/active");
+    const { data: states } = UseQuery("/states/active");
     /* post data */
-    const { mutate } = UseMutate();
+    const { mutate, isLoading } = UseMutate();
 
     /* state state */
     const selectedStates = useRef<string[]>(
-        data.states.map((state) => state.name)
+        data.states.map((state) => state.state)
     );
+    const [state, setState] = useState<string[]>(
+        data.states.map((state) => state.state)
+    );
+    const handelStateChange = (event: any) => {
+        setState(event);
+        setValue("statesId", state);
+    };
     /* branch state */
-    const [branch, setBranch] = useState<string>(data.branch.id.toString());
+    const [branch, setBranch] = useState<string>(data.branch.id?.toString());
     const handelBranchChange = (event: SelectChangeEvent) => {
         setBranch(event.target.value as string);
     };
+
     /* select input */
-    const [discount, setDiscount] = useState(data.discountType.toString());
+    const [discount, setDiscount] = useState(data.discountType?.toString());
     const handleChange = (event: SelectChangeEvent) => {
         setDiscount(event.target.value);
     };
@@ -121,7 +133,7 @@ const EditRepresentativeDetail = ({ open, handleClose, data }: prop) => {
         address: z.string().nonempty("برجاء كتابة العنوان"),
 
         /* step 2 */
-        statesId: z.string(),
+        statesId: z.any(),
         /*  state: z.string().nonempty("برجاء اختيار المحافظه"), */
 
         branchId: z.string().nonempty("برجاء اختيار الفرع"),
@@ -134,53 +146,96 @@ const EditRepresentativeDetail = ({ open, handleClose, data }: prop) => {
                 }
             },
         }),
-
         companyOrderRatio: z
             .string()
             .nonempty("برجاء تحديد نسبة الشركه من الطلب"),
     });
     type FormValue = z.infer<typeof schema>;
     /* hooks form */
-    const { register, control, formState, handleSubmit, setError } =
+    const { register, control, formState, handleSubmit, setError, setValue } =
         useForm<FormValue>({
             defaultValues: {
                 userName: data.userName,
                 fullName: data.fullName,
                 email: data.email,
-                branchId: data.branch.id.toString(),
+                branchId: data.branch.id?.toString(),
                 phoneNumber: data.phoneNumber,
                 address: data.address,
-                companyOrderRatio: data.companyOrderRatio.toString(),
+                companyOrderRatio: data.companyOrderRatio + "",
+                statesId: data.states.map((state) => state.state),
             },
             mode: "onTouched",
             resolver: zodResolver(schema),
         });
     const { errors } = formState;
 
-    const onSubmit = (data: FormValue) => {
+    const onSubmit = (FormData: FormValue) => {
         if (selectedStates.current.length > 0) {
             const statesId = selectedStates.current.map((state) =>
                 convertStateToID(states, state)
             );
 
-            const requstData = {
-                userName: data.userName,
-                fullName: data.fullName,
-                email: data.email,
-                phoneNumber: data.phoneNumber,
-                branchId: +data.branchId,
-                statesId: statesId,
-                password: data.password,
-                address: data.address,
-                discountType: +data.discountType,
-                companyOrderRatio: +data.companyOrderRatio,
-                /* id: data.id, */
+            const requestData = {
+                userName: FormData.userName,
+                fullName: FormData.fullName,
+                email: FormData.email,
+                phoneNumber: FormData.phoneNumber,
+                branchId: +FormData.branchId,
+                states: statesId.map((state) => ({
+                    stateId: state,
+                })),
+                password: FormData.password,
+                address: FormData.address,
+                discountType: +FormData.discountType,
+                companyOrderRatio: Math.abs(+FormData.companyOrderRatio),
+                status: data.status,
+                id: data.id,
             };
             /*    🚀 make the request 🚀  */
-            console.log(requstData);
-            mutate(requstData, {
+
+            mutate(requestData, {
                 onSuccess: () => {
                     handleClose();
+                },
+                onError: (err: any) => {
+                    if (err.message.includes("Username")) {
+                        setError("userName", {
+                            message:
+                                "اسم المستخدم موجود بالفعل, برجاء كتابه اسم جديد",
+                        });
+                        toast.error(
+                            "اسم المستخدم موجود بالفعل, برجاء كتابه اسم جديد",
+                            {
+                                position: toast.POSITION.BOTTOM_LEFT,
+                                autoClose: 2000,
+                                theme: "dark",
+                            }
+                        );
+                    }
+                    if (err.message.includes("Email")) {
+                        setError("email", {
+                            message:
+                                "البريد الالكتروني موجود بالفعل, برجاء كتابه بريد جديد",
+                        });
+                        toast.error(
+                            "البريد الالكتروني موجود بالفعل, برجاء كتابه بريد جديد",
+                            {
+                                position: toast.POSITION.BOTTOM_LEFT,
+                                autoClose: 2000,
+                                theme: "dark",
+                            }
+                        );
+                    }
+                    if (err.message.includes("Passwords")) {
+                        setError("password", {
+                            message: "كلمة السر يجب ان تحتوي علي ارقام ",
+                        });
+                        toast.error("كلمة السر يجب ان تحتوي علي ارقام ", {
+                            position: toast.POSITION.BOTTOM_LEFT,
+                            autoClose: 2000,
+                            theme: "dark",
+                        });
+                    }
                 },
             });
         } else {
@@ -209,7 +264,14 @@ const EditRepresentativeDetail = ({ open, handleClose, data }: prop) => {
             open={open}
             onClose={handleClose}
         >
-            <div style={{ display: "flex", justifyContent: "space-between" }}>
+            <motion.div
+                initial={{ scale: 0.4, opacity: 0 }}
+                animate={{ x: 0, scale: 1, opacity: 1 }}
+                transition={{
+                    duration: 0.3,
+                }}
+                style={{ display: "flex", justifyContent: "space-between" }}
+            >
                 {/* title */}
                 <DialogTitle width={{ xs: "230px", sm: "auto" }}>
                     تعديل البيانات الخاصــة بالمندوب : {data.userName}
@@ -220,8 +282,7 @@ const EditRepresentativeDetail = ({ open, handleClose, data }: prop) => {
                         <CloseIcon sx={{ color: "red", fontSize: "1.7rem" }} />
                     </IconButton>
                 </DialogActions>
-            </div>
-
+            </motion.div>
             {/* content=> edit RepresentativeDetails */}
             <DialogContent>
                 <Box sx={{ width: "100%" }}>
@@ -350,16 +411,17 @@ const EditRepresentativeDetail = ({ open, handleClose, data }: prop) => {
                                             {/* state name */}
                                             <div style={{ margin: "20px 0" }}>
                                                 <Autocomplete
-                                                    defaultValue={data.states.map(
-                                                        (state) => state.name
-                                                    )}
+                                                    value={state}
                                                     onChange={(
                                                         _e,
                                                         value: string[]
-                                                    ) =>
-                                                        (selectedStates.current =
-                                                            value)
-                                                    }
+                                                    ) => {
+                                                        selectedStates.current =
+                                                            value;
+                                                        handelStateChange(
+                                                            value
+                                                        );
+                                                    }}
                                                     noOptionsText="هذه المحافظة غير متاحه حاليا"
                                                     multiple
                                                     id="statesId"
@@ -387,24 +449,26 @@ const EditRepresentativeDetail = ({ open, handleClose, data }: prop) => {
                                                                 /*   {...params} */
                                                                 label="اسم المحافظة"
                                                             />
-                                                            <FormHelperText
-                                                                error={
-                                                                    !!errors.statesId
-                                                                }
-                                                                sx={{
-                                                                    fontWeight:
-                                                                        "bold",
-                                                                    letterSpacing:
-                                                                        "0.1rem",
-                                                                }}
-                                                                id="component-helper-text"
-                                                            >
-                                                                {
-                                                                    errors
-                                                                        ?.statesId
-                                                                        ?.message
-                                                                }
-                                                            </FormHelperText>
+                                                            {
+                                                                <FormHelperText
+                                                                    error={
+                                                                        !!errors.statesId
+                                                                    }
+                                                                    sx={{
+                                                                        fontWeight:
+                                                                            "bold",
+                                                                        letterSpacing:
+                                                                            "0.1rem",
+                                                                    }}
+                                                                    id="component-helper-text"
+                                                                >
+                                                                    {
+                                                                        errors
+                                                                            ?.statesId
+                                                                            ?.message
+                                                                    }
+                                                                </FormHelperText>
+                                                            }
                                                         </>
                                                     )}
                                                 />
@@ -442,14 +506,14 @@ const EditRepresentativeDetail = ({ open, handleClose, data }: prop) => {
                                                         {branches?.data.map(
                                                             (branch: {
                                                                 id: number;
-                                                                branch: string;
+                                                                name: string;
                                                             }) => (
                                                                 <MenuItem
                                                                     defaultChecked
-                                                                    value={branch.id.toString()}
+                                                                    value={branch.id?.toString()}
                                                                 >
                                                                     {
-                                                                        branch.branch
+                                                                        branch.name
                                                                     }
                                                                 </MenuItem>
                                                             )
@@ -581,6 +645,15 @@ const EditRepresentativeDetail = ({ open, handleClose, data }: prop) => {
                     </>
                 </Box>
             </DialogContent>
+            <Backdrop
+                sx={{
+                    color: "#fff",
+                    zIndex: (theme) => theme.zIndex.drawer + 1,
+                }}
+                open={isLoading}
+            >
+                <CircularProgress color="inherit" />
+            </Backdrop>
         </Dialog>
     );
 };

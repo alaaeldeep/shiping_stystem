@@ -7,55 +7,70 @@ import {
     AccordionDetails,
     AccordionSummary,
     Box,
+    FormControlLabel,
     IconButton,
     Typography,
 } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
-import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 
 /* components */
 import EditStatesDetails from "../../../components/editStatesDetail";
-import DeleteHandler from "../../../components/deleteHandeler";
+import ChangeStatusHandler from "../../../components/ChangeStatusHandeler";
+import { StatusSwitch } from "../../../../employes/view/components/viewEmployeeLargeScreen/row";
+
+/* types */
+import { StateRow } from "../../../../../components/types";
 
 /* types */
 type props = {
     index: number;
-    state: string;
-    id: number;
+    data: StateRow;
 };
-const RowInMobile = ({ index, state, id }: props) => {
+const RowInMobile = ({ index, data }: props) => {
     const [expanded, setExpanded] = useState<string | false>(false);
     const handleChange =
         (panel: string) =>
         (event: React.SyntheticEvent, isExpanded: boolean) => {
             setExpanded(isExpanded ? panel : false);
         };
-
+    /* edit */
     const [openEditStatesDetails, setOpenEditStatesDetails] = useState(false);
-    const [openDeleteHandler, setOpenDeleteHandler] = useState(false);
-    const handleDeleteHandlerOpen = () => {
-        setOpenDeleteHandler(true);
-    };
-    const handleDeleteHandlerClose = () => {
-        setOpenDeleteHandler(false);
-    };
-
     const handleClickOpenEditStatesDetails = () => {
         setOpenEditStatesDetails(true);
     };
     const handleCloseEditStatesDetails = () => {
         setOpenEditStatesDetails(false);
     };
-
+    /* status */
+    const handleChangeStatus = () => {
+        handleClickOpenChangeStatus();
+    };
+    /* change status representative */
+    const [openChangeStatus, setOpenChangeStatus] = useState(false);
+    const handleClickOpenChangeStatus = () => {
+        setOpenChangeStatus(true);
+    };
+    const handleCloseOpenChangeStatus = () => {
+        setOpenChangeStatus(false);
+    };
     return (
         <>
             {/*Edit States Details modal */}
             <EditStatesDetails
+                status={data.status}
                 open={openEditStatesDetails}
                 handleClose={handleCloseEditStatesDetails}
-                id={id}
-                state={state}
+                id={data.id}
+                name={data.name}
+            />{" "}
+            {/* change status */}
+            <ChangeStatusHandler
+                id={data.id}
+                name={data.name}
+                status={data.status}
+                handleClose={handleCloseOpenChangeStatus}
+                openStatusHandler={openChangeStatus}
             />
             <Accordion
                 key={index}
@@ -74,15 +89,42 @@ const RowInMobile = ({ index, state, id }: props) => {
                     </Typography>
                     {/* pemsion name */}
                     <Typography sx={{ color: "text.secondary" }}>
-                        {state}
+                        {data.name}
                     </Typography>
                 </AccordionSummary>
 
                 <AccordionDetails>
                     {/* id */}
-                    <Typography>الرقم : {index + 1}</Typography>
+                    <Typography sx={{ marginBottom: "5px" }}>
+                        الرقم : {index + 1}
+                    </Typography>
                     {/* state name */}
-                    <Typography> المحافظة : {state}</Typography>
+                    <Typography sx={{ marginBottom: "5px" }}>
+                        {" "}
+                        المحافظة : {data.name}
+                    </Typography>
+                    <Typography sx={{ marginBottom: "5px" }}>
+                        {" "}
+                        الحالة :{" "}
+                        <FormControlLabel
+                            control={
+                                <StatusSwitch sx={{ m: 1 }} defaultChecked />
+                            }
+                            label={
+                                status ? (
+                                    <Typography sx={{ color: "#65C466" }}>
+                                        نشط
+                                    </Typography>
+                                ) : (
+                                    <Typography sx={{ color: "#FEA1A1" }}>
+                                        غير نشط
+                                    </Typography>
+                                )
+                            }
+                            checked={data.status}
+                            onChange={handleChangeStatus}
+                        />
+                    </Typography>
 
                     {/* settings */}
                     <Box
@@ -102,24 +144,10 @@ const RowInMobile = ({ index, state, id }: props) => {
                                     }}
                                 />
                             </IconButton>
-                            <IconButton onClick={handleDeleteHandlerOpen}>
-                                <DeleteForeverIcon
-                                    style={{
-                                        color: "#DF2E38",
-                                    }}
-                                />
-                            </IconButton>
                         </Box>
                     </Box>
                 </AccordionDetails>
             </Accordion>{" "}
-            {/*delete State Details modal */}
-            <DeleteHandler
-                state={state}
-                id={id}
-                openDeleteHandler={openDeleteHandler}
-                handleDeleteHandlerClose={handleDeleteHandlerClose}
-            />
         </>
     );
 };

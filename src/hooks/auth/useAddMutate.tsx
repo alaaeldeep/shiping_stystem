@@ -9,11 +9,11 @@ type user = {
     password: string;
 };
 const logIn = (data: user) => {
-    return request({ url: "/api/Users/Login", method: "post", data: data });
+    return request({ url: "/Users/Login", method: "post", data: data });
 };
 
-const UseMutate = () => {
+const UseLogin = () => {
     return useMutation(logIn);
 };
 
-export default UseMutate;
+export default UseLogin;

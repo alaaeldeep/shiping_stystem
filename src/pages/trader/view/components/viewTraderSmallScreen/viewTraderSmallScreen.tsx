@@ -1,6 +1,3 @@
-/* React staff */
-import { useState } from "react";
-
 /* MUI */
 import { Paper } from "@mui/material";
 
@@ -14,14 +11,6 @@ type ViewTraderSmallScreenProps = {
 };
 
 export const ViewTraderSmallScreen = ({ rows }: ViewTraderSmallScreenProps) => {
-    const [expanded, setExpanded] = useState<string | false>(false);
-
-    const handleChange =
-        (panel: string) =>
-        (event: React.SyntheticEvent, isExpanded: boolean) => {
-            setExpanded(isExpanded ? panel : false);
-        };
-
     return (
         <Paper sx={{ width: "100%" }}>
             {/* view traders*/}

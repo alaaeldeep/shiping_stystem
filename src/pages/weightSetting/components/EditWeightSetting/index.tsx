@@ -7,38 +7,33 @@ import {
     Dialog,
     IconButton,
     Box,
-    useMediaQuery,
-    FormHelperText,
-    SelectChangeEvent,
-    FormControl,
-    InputLabel,
-    Select,
-    MenuItem,
-    Paper,
-    Toolbar,
-    Typography,
-    OutlinedInput,
+    Backdrop,
+    CircularProgress,
 } from "@mui/material"; /* rect-form */
 import CloseIcon from "@mui/icons-material/Close";
+
+/* motion */
+import { motion } from "framer-motion";
 
 /* hook form */
 import { useForm } from "react-hook-form";
 import { DevTool } from "@hookform/devtools";
 
 /* zod */
-import { date, z } from "zod";
+import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 /* react query */
-import UseMutate from "../../../../hooks/branches/useEditMutate";
+import UseMutate from "../../../../hooks/weightSetting/useEditMutate";
 
 /* components */
-import InputField from "../../../../components/inputFields/textInputField/inputfield";
-import { useNavigate } from "react-router";
+import NumericInputField from "../../../../components/inputFields/numericInputField";
+
+/* toast */
+import { toast } from "react-toastify";
 
 /* types */
 import { WeightSettingRow } from "../../../../components/types";
-import { toast } from "react-toastify";
 
 type EditWeightSettingProps = {
     open: boolean;
@@ -50,44 +45,12 @@ const EditWeightSetting = ({
     open,
     handleClose,
 }: EditWeightSettingProps) => {
-    const navigate = useNavigate();
-    const { mutate } = UseMutate();
+    const { mutate, isLoading } = UseMutate();
 
     /* zod validation */
     const schema = z.object({
         /* step 3 */
-        defaultWeight: z.preprocess(
-            (a) => parseInt(z.string().parse(a)),
-            z
-                .number({
-                    required_error: "برجاء ادخال تكلفة الشحن الافتراضية",
-                    invalid_type_error:
-                        "برجاء ادخال تكلفة الشحن الافتراضية مثال : 10",
-                })
-                .nonnegative("برجاء ادخال قيمة اكبر من -1   ")
-        ),
-        overCostPerKG: z.preprocess(
-            (a) => parseInt(z.string().parse(a)),
-            z
-                .number({
-                    required_error:
-                        "  برجاء ادخال سعر كل كجــم اضافي علي الوزن",
-                    invalid_type_error:
-                        "  برجاء ادخال سعر كل كجــم اضافي علي الوزن مثال :10",
-                })
-                .nonnegative("برجاء ادخال قيمة اكبر من -1   ")
-        ),
-        villageShipingCost: z.preprocess(
-            (a) => parseInt(z.string().parse(a)),
-            z
-                .number({
-                    required_error: "برجاء ادخال تكلفه الشحن للقــري",
-                    invalid_type_error:
-                        "برجاء ادخال تكلفه الشحن للقــري مثال : 10",
-                })
-                .nonnegative("برجاء ادخال قيمة اكبر من -1   ")
-        ),
-        /*   defaultWeight: z
+        defaultWeight: z
             .string()
             .nonempty("برجاء ادخال تكلفة الشحن الافتراضية"),
         overCostPerKG: z
@@ -95,10 +58,9 @@ const EditWeightSetting = ({
             .nonempty("  برجاء ادخال سعر كل كجــم اضافي علي الوزن"),
         villageShipingCost: z
             .string()
-            .nonempty("برجاء ادخال تكلفه الشحن للقــري"), */
+            .nonempty("برجاء ادخال تكلفه الشحن للقــري"),
     });
 
-    /*          */
     type FormValue = z.infer<typeof schema>;
     /* hooks form */
     const { register, control, formState, handleSubmit } = useForm<FormValue>({
@@ -107,15 +69,24 @@ const EditWeightSetting = ({
             overCostPerKG: data.overCostPerKG + "",
             villageShipingCost: data.villageShipingCost + "",
         },
-        mode: "onTouched",
+        mode: "onChange",
         resolver: zodResolver(schema),
     });
 
     const { errors } = formState;
 
     const onSubmit = (requestData: FormValue) => {
-        console.log({ ...requestData, is: data.id });
-        handleClose();
+        const newSetting = {
+            defaultWeight: Math.abs(+requestData.defaultWeight),
+            overCostPerKG: Math.abs(+requestData.overCostPerKG),
+            villageShipingCost: Math.abs(+requestData.villageShipingCost),
+            id: data.id,
+        };
+        mutate(newSetting, {
+            onSuccess: () => {
+                handleClose();
+            },
+        });
     };
     const onError = () => {
         toast.warn("برجاء اكمال الحقول الفارغة ", {
@@ -131,7 +102,14 @@ const EditWeightSetting = ({
             open={open}
             onClose={handleClose}
         >
-            <div style={{ display: "flex", justifyContent: "space-between" }}>
+            <motion.div
+                initial={{ scale: 0.4, opacity: 0 }}
+                animate={{ x: 0, scale: 1, opacity: 1 }}
+                transition={{
+                    duration: 0.3,
+                }}
+                style={{ display: "flex", justifyContent: "space-between" }}
+            >
                 <DialogTitle width={{ xs: "230px", sm: "auto" }}>
                     تعــديــل اعدادات الوزن
                 </DialogTitle>
@@ -140,29 +118,23 @@ const EditWeightSetting = ({
                         <CloseIcon sx={{ color: "red", fontSize: "1.7rem" }} />
                     </IconButton>
                 </DialogActions>
-            </div>
-
+            </motion.div>
             <DialogContent>
                 <form
                     onSubmit={handleSubmit(onSubmit, onError)}
                     style={{
                         display: "flex",
                         justifyContent: "center",
-                        /*  padding: "50px", */
                     }}
                     noValidate
                 >
                     <Box
                         sx={{
                             width: "100%",
-                            /*    backgroundColor: "secondary.main", */
-                            /*       padding: "10px 0px", */
-                            /*        borderRadius: "25px", */
                             display: "flex",
                             flexDirection: "column",
                             justifyContent: "center",
                             mb: 3,
-
                             padding: "20px",
                             borderRadius: "25px",
                             boxShadow:
@@ -172,36 +144,35 @@ const EditWeightSetting = ({
                         <Box sx={{ marginX: "auto", width: "90%" }}>
                             {/* default Weight */}
                             <div style={{ margin: "20px 0" }}>
-                                <InputField
+                                <NumericInputField
                                     register={register}
                                     errors={errors.defaultWeight}
                                     fieldName="defaultWeight"
                                     label="وزن الشحن الافتراضية يبدء من صفر كـجم الي : "
-                                    /*    label="تكلفة الشحن الافتراضية تبدء من صفر كـجم الي : " */
-                                    largeWidth="90%"
-                                    smallWidth="90%"
+                                    largeWidth="100%"
+                                    smallWidth="100%"
                                 />
                             </div>
-                            {/* default Weight */}
+                            {/* over Cost PerKG */}
                             <div style={{ margin: "20px 0" }}>
-                                <InputField
+                                <NumericInputField
                                     register={register}
                                     errors={errors.overCostPerKG}
                                     fieldName="overCostPerKG"
                                     label="سعر كل كـجم اضافي  : "
-                                    largeWidth="90%"
-                                    smallWidth="90%"
+                                    largeWidth="100%"
+                                    smallWidth="100%"
                                 />
                             </div>
-                            {/* default Weight */}
+                            {/* village ShipingCost */}
                             <div style={{ margin: "20px 0" }}>
-                                <InputField
+                                <NumericInputField
                                     register={register}
                                     errors={errors.villageShipingCost}
                                     fieldName="villageShipingCost"
                                     label="تكلفة  الشحن للقري  : "
-                                    largeWidth="90%"
-                                    smallWidth="90%"
+                                    largeWidth="100%"
+                                    smallWidth="100%"
                                 />
                             </div>
                         </Box>
@@ -221,7 +192,16 @@ const EditWeightSetting = ({
                     </Box>
                     <DevTool control={control} />
                 </form>
-            </DialogContent>
+            </DialogContent>{" "}
+            <Backdrop
+                sx={{
+                    color: "#fff",
+                    zIndex: (theme) => theme.zIndex.drawer + 1,
+                }}
+                open={isLoading}
+            >
+                <CircularProgress color="inherit" />
+            </Backdrop>
         </Dialog>
     );
 };

@@ -16,9 +16,14 @@ import {
     AccordionSummary,
     Paper,
     Typography,
+    CircularProgress,
+    Backdrop,
 } from "@mui/material"; /* rect-form */
 import CloseIcon from "@mui/icons-material/Close";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+
+/* motion */
+import { motion } from "framer-motion";
 
 /* hook form */
 import { useForm } from "react-hook-form";
@@ -47,7 +52,7 @@ import {
 type EditPermissionDetailsProps = {
     open: boolean;
     roleName: string;
-    id: number;
+    id: string;
     selectedPermissions: any;
     handleClose: () => void;
 };
@@ -63,8 +68,8 @@ const EditPermissionDetailsSmallScreen = ({
     selectedPermissions,
     id,
 }: EditPermissionDetailsProps) => {
-    const { mutate } = UseMutate();
-    console.log(id);
+    const { mutate, isLoading } = UseMutate();
+
     /*  zod */
     const schema = z.object({
         roleName: z.string().nonempty("برجاء كتابة اسم الصلاحية"),
@@ -73,16 +78,13 @@ const EditPermissionDetailsSmallScreen = ({
     type FormValue = z.infer<typeof schema>;
 
     /* hooks form */
-    const { register, control, formState, getValues, getFieldState } =
+    const { register, control, formState, getValues, getFieldState, setError } =
         useForm<FormValue>({
             defaultValues: { roleName: roleName },
             mode: "onTouched",
             resolver: zodResolver(schema),
         });
     const { errors } = formState;
-
-    /* container for old selected permissions */
-    const selected: string[] = [];
 
     /* mobile view */
     const [expanded, setExpanded] = useState<string | false>(false);
@@ -92,6 +94,9 @@ const EditPermissionDetailsSmallScreen = ({
         (event: React.SyntheticEvent, isExpanded: boolean) => {
             setExpanded(isExpanded ? panel : false);
         };
+    /* container for old selected permissions */
+    const selected: string[] = [];
+
     /* handel submit */
     const handleEditSubmit = (e: SyntheticEvent) => {
         e.preventDefault();
@@ -110,7 +115,7 @@ const EditPermissionDetailsSmallScreen = ({
 
                 permissions: [],
             };
-            //console.log(getValues().Permissions);
+
             for (const Permission in getValues().Permissions) {
                 /* transform from string to true,false */
 
@@ -143,12 +148,7 @@ const EditPermissionDetailsSmallScreen = ({
             /*🚀 make the request 🚀*/
 
             if (permission.permissions.length > 0) {
-                console.log({
-                    roleName: permission.roleName,
-                    roleId: id,
-                    rolePrivileges: permission.permissions,
-                });
-                /* mutate(
+                mutate(
                     {
                         roleName: permission.roleName,
                         roleId: id,
@@ -158,8 +158,24 @@ const EditPermissionDetailsSmallScreen = ({
                         onSuccess() {
                             handleClose();
                         },
+                        onError: (err: any) => {
+                            if (err.message.includes("Role name")) {
+                                setError("roleName", {
+                                    message:
+                                        "اسم الصلاحية موجود بالفعل, برجاء كتابه اسم جديد",
+                                });
+                                toast.error(
+                                    "اسم الصلاحية موجود بالفعل, برجاء كتابه اسم جديد",
+                                    {
+                                        position: toast.POSITION.BOTTOM_LEFT,
+                                        autoClose: 2000,
+                                        theme: "dark",
+                                    }
+                                );
+                            }
+                        },
                     }
-                ); */
+                );
             } else {
                 toast.warn("برجاء تحديد  صلاحيات المجموعه قبل الاضافة", {
                     position: toast.POSITION.BOTTOM_LEFT,
@@ -177,7 +193,12 @@ const EditPermissionDetailsSmallScreen = ({
                 open={open}
                 onClose={handleClose}
             >
-                <div
+                <motion.div
+                    initial={{ scale: 0.4, opacity: 0 }}
+                    animate={{ x: 0, scale: 1, opacity: 1 }}
+                    transition={{
+                        duration: 0.3,
+                    }}
                     style={{ display: "flex", justifyContent: "space-between" }}
                 >
                     <DialogTitle width={{ xs: "230px", sm: "auto" }}>
@@ -190,7 +211,7 @@ const EditPermissionDetailsSmallScreen = ({
                             />
                         </IconButton>
                     </DialogActions>
-                </div>
+                </motion.div>
 
                 <DialogContent>
                     <form
@@ -212,7 +233,8 @@ const EditPermissionDetailsSmallScreen = ({
                                 gap: "2rem",
                                 justifyContent: "center",
                                 mb: 3,
-                                border: "1px solid #9ba4b5b7",
+                                boxShadow:
+                                    "rgba(17, 17, 26, 0.1) 0px 1px 0px, rgba(17, 17, 26, 0.1) 0px 8px 24px, rgba(17, 17, 26, 0.1) 0px 16px 48px",
                             }}
                         >
                             {/* role name with default value */}
@@ -233,14 +255,18 @@ const EditPermissionDetailsSmallScreen = ({
                                     {selectedPermissions.map(
                                         (
                                             row: {
-                                                permissionName: string;
+                                                privilegeId: number;
+                                                id: number;
                                                 permissions: boolean[];
                                             },
                                             index: number
                                         ) => {
                                             /* save the select persimmons ,  to exclude theme from the other permission options */
-                                            selected.push(row.permissionName);
-                                            const labelId = `enhanced-table-checkbox-${index}`;
+                                            selected.push(
+                                                convertIdToPermission(
+                                                    row.privilegeId
+                                                )
+                                            );
                                             return (
                                                 <Accordion
                                                     key={index}
@@ -260,22 +286,17 @@ const EditPermissionDetailsSmallScreen = ({
                                                         aria-controls="panel1bh-content"
                                                         id="panel1bh-header"
                                                     >
-                                                        {/* id */}
-                                                        <Typography
-                                                            sx={{
-                                                                width: "33%",
-                                                                flexShrink: 0,
-                                                            }}
-                                                        >
-                                                            {index + 1}
-                                                        </Typography>
                                                         {/* pemsion name */}
                                                         <Typography
                                                             sx={{
                                                                 color: "text.secondary",
                                                             }}
                                                         >
-                                                            {row.permissionName}
+                                                            {" "}
+                                                            {convertIdToPermission(
+                                                                row.privilegeId
+                                                            )}
+                                                            {/*  {row.privilegeId} */}
                                                         </Typography>
                                                     </AccordionSummary>
 
@@ -287,7 +308,7 @@ const EditPermissionDetailsSmallScreen = ({
                                                         {/* permission name */}
                                                         <Typography>
                                                             الصلاحية :{" "}
-                                                            {row.permissionName}
+                                                            {row.privilegeId}
                                                         </Typography>
                                                         {/* add */}
                                                         <Box
@@ -310,14 +331,16 @@ const EditPermissionDetailsSmallScreen = ({
                                                             <Checkbox
                                                                 value="add"
                                                                 {...register(
-                                                                    `Permissions.${row.permissionName}`
+                                                                    `Permissions.${convertIdToPermission(
+                                                                        row.privilegeId
+                                                                    )}`
                                                                 )}
+                                                                size="small"
+                                                                color="success"
                                                                 defaultChecked={
                                                                     row
                                                                         .permissions[0]
                                                                 }
-                                                                size="small"
-                                                                color="success"
                                                             />
                                                         </Box>
                                                         {/* view */}
@@ -341,14 +364,16 @@ const EditPermissionDetailsSmallScreen = ({
                                                             <Checkbox
                                                                 value="view"
                                                                 {...register(
-                                                                    `Permissions.${row.permissionName}`
+                                                                    `Permissions.${convertIdToPermission(
+                                                                        row.privilegeId
+                                                                    )}`
                                                                 )}
+                                                                size="small"
+                                                                color="success"
                                                                 defaultChecked={
                                                                     row
                                                                         .permissions[1]
                                                                 }
-                                                                size="small"
-                                                                color="success"
                                                             />
                                                         </Box>
                                                         {/* edit */}
@@ -372,14 +397,16 @@ const EditPermissionDetailsSmallScreen = ({
                                                             <Checkbox
                                                                 value="edit"
                                                                 {...register(
-                                                                    `Permissions.${row.permissionName}`
+                                                                    `Permissions.${convertIdToPermission(
+                                                                        row.privilegeId
+                                                                    )}`
                                                                 )}
+                                                                size="small"
+                                                                color="success"
                                                                 defaultChecked={
                                                                     row
                                                                         .permissions[2]
                                                                 }
-                                                                size="small"
-                                                                color="success"
                                                             />
                                                         </Box>
                                                         {/* delete */}
@@ -403,14 +430,16 @@ const EditPermissionDetailsSmallScreen = ({
                                                             <Checkbox
                                                                 value="delete"
                                                                 {...register(
-                                                                    `Permissions.${row.permissionName}`
+                                                                    `Permissions.${convertIdToPermission(
+                                                                        row.privilegeId
+                                                                    )}`
                                                                 )}
+                                                                size="small"
+                                                                color="success"
                                                                 defaultChecked={
                                                                     row
                                                                         .permissions[3]
                                                                 }
-                                                                size="small"
-                                                                color="success"
                                                             />
                                                         </Box>
                                                     </AccordionDetails>
@@ -420,7 +449,6 @@ const EditPermissionDetailsSmallScreen = ({
                                     )}
                                     {/* other permission options can select from it  */}
                                     {permissions.map((row, index) => {
-                                        const labelId = `enhanced-table-checkbox-${index}`;
                                         /* show only available options ,after we already displayed the selected permissions*/
                                         if (
                                             !selected.includes(
@@ -449,15 +477,6 @@ const EditPermissionDetailsSmallScreen = ({
                                                         aria-controls="panel1bh-content"
                                                         id="panel1bh-header"
                                                     >
-                                                        {/* id */}
-                                                        <Typography
-                                                            sx={{
-                                                                width: "33%",
-                                                                flexShrink: 0,
-                                                            }}
-                                                        >
-                                                            {index + 1}
-                                                        </Typography>
                                                         {/* pemsion name */}
                                                         <Typography
                                                             sx={{
@@ -620,7 +639,16 @@ const EditPermissionDetailsSmallScreen = ({
                                 تحديث
                             </Button>
                         </Box>
-                        <DevTool control={control} />
+                        <DevTool control={control} />{" "}
+                        <Backdrop
+                            sx={{
+                                color: "#fff",
+                                zIndex: (theme) => theme.zIndex.drawer + 1,
+                            }}
+                            open={isLoading}
+                        >
+                            <CircularProgress color="inherit" />
+                        </Backdrop>
                     </form>
                 </DialogContent>
             </Dialog>

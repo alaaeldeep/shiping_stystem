@@ -33,11 +33,8 @@ export const ViewCitiesLargeScreen = ({
                             <Row
                                 key={index}
                                 index={index}
-                                id={row.id}
                                 labelId={labelId}
-                                city={row.city}
-                                state={row.state}
-                                shippingCost={row.shippingCost}
+                                data={row}
                             />
                         );
                     })}

@@ -254,7 +254,6 @@ const AddOrderPage = () => {
                 isVillage: requestData.isVillage === "0" ? true : false,
                 orderItems: products,
             };
-            console.log(dta);
         } else {
             setError("cityId", { message: "برجاء اختيار مدينة" });
             toast.warn("برجاء   اختيار مدينة ", {
@@ -338,7 +337,7 @@ const AddOrderPage = () => {
                                 <NumericInputField
                                     register={register}
                                     errors={errors.Phone1}
-                                    fieldName="Phone1"
+                                    fieldName="phone1"
                                     label=" رقم الهاتف الاساسي"
                                     largeWidth="49%"
                                     smallWidth="100%"
@@ -347,7 +346,7 @@ const AddOrderPage = () => {
                                 <NumericInputField
                                     register={register}
                                     errors={errors.Phone2}
-                                    fieldName="Phone2"
+                                    fieldName="phone2"
                                     label=" رقم الهاتف الاحتياطي"
                                     largeWidth="49%"
                                     smallWidth="100%"

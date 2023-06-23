@@ -11,14 +11,12 @@ import {
     Divider,
     Drawer,
     List,
-    ListItem,
     ListItemButton,
     ListItemIcon,
     ListItemText,
 } from "@mui/material";
 import HomeIcon from "@mui/icons-material/Home";
-import InboxIcon from "@mui/icons-material/MoveToInbox";
-import MailIcon from "@mui/icons-material/Mail";
+
 import { ExpandLess, ExpandMore } from "@mui/icons-material";
 import LocalMallIcon from "@mui/icons-material/LocalMall";
 import SettingsIcon from "@mui/icons-material/Settings";
@@ -47,16 +45,65 @@ const DrawerComponent = ({
     const handleClick = () => {
         setOpen(!open);
     };
+    const [openTraderCollapse, setOpenTraderCollapse] = useState(false);
+    const handleClickTraderCollapse = () => {
+        setOpenTraderCollapse(!openTraderCollapse);
+    };
 
+    /* trader */
+    const canActivateTradersAdd = useOwnStore(
+        (store) => store.user.permissions?.Traders?.[0]
+    );
+    const canActivateTradersView = useOwnStore(
+        (store) => store.user.permissions?.Traders?.[1]
+    );
+
+    /* employee */
+    const canActivateEmployeeAdd = useOwnStore(
+        (store) => store.user.permissions?.Employees?.[0]
+    );
+    const canActivateEmployeeView = useOwnStore(
+        (store) => store.user.permissions?.Employees?.[1]
+    );
+
+    /* representative */
+    const canActivateRepresentativesAdd = useOwnStore(
+        (store) => store.user.permissions?.Representatives?.[0]
+    );
+    const canActivateRepresentativesView = useOwnStore(
+        (store) => store.user.permissions?.Representatives?.[1]
+    );
+    /* Branches */
+    const canActivateBranchesAdd = useOwnStore(
+        (store) => store.user.permissions?.Branches?.[0]
+    );
+    const canActivateBranchesView = useOwnStore(
+        (store) => store.user.permissions?.Branches?.[1]
+    );
+    /* Settings */
+    const canActivateSettingsView = useOwnStore(
+        (store) => store.user.permissions?.Settings?.[1]
+    );
+    const canActivateSettingsAdd = useOwnStore(
+        (store) => store.user.permissions?.Settings?.[0]
+    );
+
+    /* mode */
     const mode = useOwnStore((store) => store.mode);
     const drawer = (
         <Box>
             {/*logo here */}
             <div onClick={() => navigate("/")} className={styles.logoContainer}>
                 {mode === "dark" ? (
-                    <img src="../../../logo.dark.png" />
+                    <img
+                        src="../../../logo.dark.png"
+                        alt="pioneers logo in dark mode"
+                    />
                 ) : (
-                    <img src="../../../logo.light.webp" />
+                    <img
+                        src="../../../logo.light.webp"
+                        alt="pioneers logo in light mode"
+                    />
                 )}
             </div>
             {/*end logo here */}
@@ -71,57 +118,151 @@ const DrawerComponent = ({
                 aria-labelledby="nested-list-subheader"
             >
                 {/* home */}
-                <NavLink to="/" style={{ textDecoration: "none" }}>
+                <div style={{}}>
+                    <NavLink to="/" style={{ textDecoration: "none" }}>
+                        <ListItemButton
+                            sx={{ color: "text.primary", fontWeight: "bold" }}
+                        >
+                            <ListItemIcon>
+                                <HomeIcon />
+                            </ListItemIcon>
+                            <ListItemText
+                                primary="الرئـيسية"
+                                sx={{
+                                    fontWeight: "bold",
+                                }}
+                            />
+                        </ListItemButton>
+                    </NavLink>
+                </div>
+
+                {/* orders */}
+                <NavLink to="/orders" style={{ textDecoration: "none" }}>
                     <ListItemButton sx={{ color: "text.primary" }}>
                         <ListItemIcon>
-                            <HomeIcon />
+                            <LocalMallIcon />
                         </ListItemIcon>
-                        <ListItemText primary="الرئيسية" />
+                        <ListItemText primary="الطلـبات" />
+                    </ListItemButton>
+                </NavLink>
+                {/* reports */}
+                <NavLink to="/reports" style={{ textDecoration: "none" }}>
+                    <ListItemButton sx={{ color: "text.primary" }}>
+                        <ListItemIcon>
+                            <LocalMallIcon />
+                        </ListItemIcon>
+                        <ListItemText primary="التقارير" />
                     </ListItemButton>
                 </NavLink>
 
                 {/* employees */}
-                <NavLink to="/employees" style={{ textDecoration: "none" }}>
-                    <ListItemButton sx={{ color: "text.primary" }}>
-                        <ListItemIcon>
-                            <LocalMallIcon />
-                        </ListItemIcon>
-                        <ListItemText primary="الموظفين" />
-                    </ListItemButton>
-                </NavLink>
+                {canActivateEmployeeView ? (
+                    <NavLink to="/employees" style={{ textDecoration: "none" }}>
+                        <ListItemButton sx={{ color: "text.primary" }}>
+                            <ListItemIcon>
+                                <LocalMallIcon />
+                            </ListItemIcon>
+                            <ListItemText primary="الموظفين" />
+                        </ListItemButton>
+                    </NavLink>
+                ) : (
+                    canActivateEmployeeAdd && (
+                        <NavLink
+                            to="/employees/add"
+                            style={{ textDecoration: "none" }}
+                        >
+                            <ListItemButton sx={{ color: "text.primary" }}>
+                                <ListItemIcon>
+                                    <LocalMallIcon />
+                                </ListItemIcon>
+                                <ListItemText primary="اضف موظف" />
+                            </ListItemButton>
+                        </NavLink>
+                    )
+                )}
 
                 {/* traders */}
-                <NavLink to="/traders" style={{ textDecoration: "none" }}>
-                    <ListItemButton sx={{ color: "text.primary" }}>
-                        <ListItemIcon>
-                            <LocalMallIcon />
-                        </ListItemIcon>
-                        <ListItemText primary="التجار" />
-                    </ListItemButton>
-                </NavLink>
+                {canActivateTradersView ? (
+                    <NavLink to="/traders" style={{ textDecoration: "none" }}>
+                        <ListItemButton sx={{ color: "text.primary" }}>
+                            <ListItemIcon>
+                                <LocalMallIcon />
+                            </ListItemIcon>
+                            <ListItemText primary="التجــار" />
+                        </ListItemButton>
+                    </NavLink>
+                ) : (
+                    canActivateTradersAdd && (
+                        <NavLink
+                            to="/traders/add   "
+                            style={{ textDecoration: "none" }}
+                        >
+                            <ListItemButton sx={{ color: "text.primary" }}>
+                                <ListItemIcon>
+                                    <LocalMallIcon />
+                                </ListItemIcon>
+                                <ListItemText primary="اضف تاجر" />
+                            </ListItemButton>
+                        </NavLink>
+                    )
+                )}
 
-                {/* representatives */}
-                <NavLink
-                    to="/representatives"
-                    style={{ textDecoration: "none" }}
-                >
-                    <ListItemButton sx={{ color: "text.primary" }}>
-                        <ListItemIcon>
-                            <LocalMallIcon />
-                        </ListItemIcon>
-                        <ListItemText primary="المناديب" />
-                    </ListItemButton>
-                </NavLink>
+                {/* representative */}
+                {canActivateRepresentativesView ? (
+                    <NavLink
+                        to="/representatives"
+                        style={{ textDecoration: "none" }}
+                    >
+                        <ListItemButton sx={{ color: "text.primary" }}>
+                            <ListItemIcon>
+                                <LocalMallIcon />
+                            </ListItemIcon>
+                            <ListItemText primary="المناديب" />
+                        </ListItemButton>
+                    </NavLink>
+                ) : (
+                    canActivateRepresentativesAdd && (
+                        <NavLink
+                            to="/representatives/add   "
+                            style={{ textDecoration: "none" }}
+                        >
+                            <ListItemButton sx={{ color: "text.primary" }}>
+                                <ListItemIcon>
+                                    <LocalMallIcon />
+                                </ListItemIcon>
+                                <ListItemText primary="اضف مندوب" />
+                            </ListItemButton>
+                        </NavLink>
+                    )
+                )}
+
+                <Divider />
 
                 {/* branches */}
-                <NavLink to="/branches" style={{ textDecoration: "none" }}>
-                    <ListItemButton sx={{ color: "text.primary" }}>
-                        <ListItemIcon>
-                            <LocalMallIcon />
-                        </ListItemIcon>
-                        <ListItemText primary="الفروع" />
-                    </ListItemButton>
-                </NavLink>
+                {canActivateBranchesView ? (
+                    <NavLink to="/branches" style={{ textDecoration: "none" }}>
+                        <ListItemButton sx={{ color: "text.primary" }}>
+                            <ListItemIcon>
+                                <LocalMallIcon />
+                            </ListItemIcon>
+                            <ListItemText primary="الفروع" />
+                        </ListItemButton>
+                    </NavLink>
+                ) : (
+                    canActivateBranchesAdd && (
+                        <NavLink
+                            to="/branches/add"
+                            style={{ textDecoration: "none" }}
+                        >
+                            <ListItemButton sx={{ color: "text.primary" }}>
+                                <ListItemIcon>
+                                    <LocalMallIcon />
+                                </ListItemIcon>
+                                <ListItemText primary="اضف فرع" />
+                            </ListItemButton>
+                        </NavLink>
+                    )
+                )}
 
                 {/* states */}
                 <NavLink to="/states" style={{ textDecoration: "none" }}>
@@ -139,20 +280,10 @@ const DrawerComponent = ({
                         <ListItemIcon>
                             <LocalMallIcon />
                         </ListItemIcon>
-                        <ListItemText primary="المدن" />
+                        <ListItemText primary="الـمــدن" />
                     </ListItemButton>
                 </NavLink>
-
-                {/* orders */}
-                <NavLink to="/orders" style={{ textDecoration: "none" }}>
-                    <ListItemButton sx={{ color: "text.primary" }}>
-                        <ListItemIcon>
-                            <LocalMallIcon />
-                        </ListItemIcon>
-                        <ListItemText primary="الطلبات" />
-                    </ListItemButton>
-                </NavLink>
-
+                {/* users */}
                 <NavLink to="/users" style={{ textDecoration: "none" }}>
                     <ListItemButton sx={{ color: "text.primary" }}>
                         <ListItemIcon>
@@ -161,75 +292,76 @@ const DrawerComponent = ({
                         <ListItemText primary="المستخدمين" />
                     </ListItemButton>
                 </NavLink>
+                <Divider />
+                {/* permissions */}
+                <NavLink to="/Permissions" style={{ textDecoration: "none" }}>
+                    <ListItemButton sx={{ color: "text.primary" }}>
+                        <ListItemIcon>
+                            <LocalMallIcon />
+                        </ListItemIcon>
+                        <ListItemText primary="الصلاحيات" />
+                    </ListItemButton>
+                </NavLink>
 
                 {/* settings */}
-                <ListItemButton onClick={handleClick}>
-                    <ListItemIcon>
-                        <SettingsIcon />
-                    </ListItemIcon>
-                    <ListItemText primary="الاعدادات" />
-                    {open ? <ExpandLess /> : <ExpandMore />}
-                </ListItemButton>
-                <Collapse in={open} timeout="auto" unmountOnExit>
-                    <List component="div" disablePadding>
-                        {/* permissions */}
-                        <NavLink
-                            to="/Permissions"
-                            style={{ textDecoration: "none" }}
-                        >
-                            <ListItemButton
-                                sx={{ color: "text.primary", pl: 4 }}
-                            >
-                                <ListItemIcon>
-                                    <LocalMallIcon />
-                                </ListItemIcon>
-                                <ListItemText primary="الصلاحيات" />
-                            </ListItemButton>
-                        </NavLink>
-
-                        {/* weight */}
-                        <NavLink
-                            to="/weightSettings"
-                            style={{ textDecoration: "none" }}
-                        >
-                            <ListItemButton
-                                sx={{ color: "text.primary", pl: 4 }}
-                            >
-                                <ListItemIcon>
-                                    <LocalMallIcon />
-                                </ListItemIcon>
-                                <ListItemText primary="الوزن" />
-                            </ListItemButton>
-                        </NavLink>
-                        <ListItemButton sx={{ pl: 4 }}>
+                {canActivateSettingsView ? (
+                    <>
+                        <ListItemButton onClick={handleClick}>
                             <ListItemIcon>
                                 <SettingsIcon />
                             </ListItemIcon>
-                            <ListItemText primary="اعداد 2" />
+                            <ListItemText primary="الاعدادات" />
+                            {open ? <ExpandLess /> : <ExpandMore />}
                         </ListItemButton>
+                        <Collapse in={open} timeout="auto" unmountOnExit>
+                            <List component="div" disablePadding>
+                                {/* weight */}
+                                <NavLink
+                                    to="/weightSettings"
+                                    style={{ textDecoration: "none" }}
+                                >
+                                    <ListItemButton
+                                        sx={{ color: "text.primary", pl: 4 }}
+                                    >
+                                        <ListItemIcon>
+                                            <LocalMallIcon />
+                                        </ListItemIcon>
+                                        <ListItemText primary="الـوزن" />
+                                    </ListItemButton>
+                                </NavLink>
 
-                        <ListItemButton sx={{ pl: 4 }}>
-                            <ListItemIcon>
-                                <SettingsIcon />
-                            </ListItemIcon>
-                            <ListItemText primary="اعداد 3" />
-                        </ListItemButton>
-                    </List>
-                </Collapse>
-            </List>
-
-            <Divider />
-            <List>
-                {["All mail", "Trash", "Spam"].map((text, index) => (
-                    <ListItem key={text} disablePadding>
-                        <ListItemButton>
-                            <ListItemIcon>
-                                {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-                            </ListItemIcon>
-                            <ListItemText primary={text} />
-                        </ListItemButton>
-                    </ListItem>
-                ))}
+                                {/* shipping type */}
+                                <NavLink
+                                    to="/shippingType"
+                                    style={{ textDecoration: "none" }}
+                                >
+                                    <ListItemButton
+                                        sx={{ color: "text.primary", pl: 4 }}
+                                    >
+                                        <ListItemIcon>
+                                            <LocalMallIcon />
+                                        </ListItemIcon>
+                                        <ListItemText primary="نوع الشحن" />
+                                    </ListItemButton>
+                                </NavLink>
+                            </List>
+                        </Collapse>
+                    </>
+                ) : (
+                    canActivateSettingsAdd && (
+                        <NavLink
+                            to="/shippingType/add"
+                            style={{ textDecoration: "none" }}
+                        >
+                            <ListItemButton sx={{ color: "text.primary" }}>
+                                <ListItemIcon>
+                                    <LocalMallIcon />
+                                </ListItemIcon>
+                                <ListItemText primary="اضف نوع شحن" />
+                            </ListItemButton>
+                        </NavLink>
+                    )
+                )}
             </List>
         </Box>
     );

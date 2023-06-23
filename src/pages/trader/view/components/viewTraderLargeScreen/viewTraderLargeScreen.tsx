@@ -6,9 +6,9 @@ import CustomTableHead from "../../../../../components/table/tableHead";
 import RowInLargeScreen from "./row";
 
 /* types */
-import { EmployeeRow, HeadCell } from "../../../../../components/types";
+import { TraderRow, HeadCell } from "../../../../../components/types";
 type ViewEmployeeLargeScreenProps = {
-    rows: EmployeeRow[];
+    rows: TraderRow[];
     headCell: HeadCell[];
 };
 

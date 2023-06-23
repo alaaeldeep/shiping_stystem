@@ -2,45 +2,11 @@
     "employees": [
         {
             "fullName": "aaaaaaaaaaaa",
-            "userName": "iiiiiiiiiiiiiiiiii",
-            "email": "alaaeldeepdev@gmail.com",
-            "password": "fffffffffffffff",
-            "branchId": {
-                "id": 1,
-                "branch": "branch1"
-            },
-            "phoneNumber": "10912460808",
-            "role": {
-                "id": 8,
-                "role": "role1"
-            },
-            "address": "aaaaaaaaaaaaaaaaaaaaa",
-            "id": 8
-        },
-        {
-            "fullName": "eeeeeeeeee",
-            "userName": "eeeeeeeeeeeee",
-            "email": "alaaeldeepdev@gmail.com",
-            "password": "aaaaaaaaaaaaaaaaaa",
-            "branchId": {
-                "id": 2,
-                "branch": "branch2"
-            },
-            "phoneNumber": "10912460810",
-            "role": {
-                "id": 11,
-                "role": "role2"
-            },
-            "address": "s",
-            "id": 9
-        },
-        {
-            "fullName": "aaaaaaaaaaaa",
             "userName": "aaaaaaaaa",
             "email": "alaaeldeepdev@gmail.com",
             "password": "fffffffffffffff",
             "branch": {
-                "id": 3,
+                "id": 1,
                 "branch": "branch3"
             },
             "phoneNumber": "10912460808",
@@ -49,7 +15,8 @@
                 "role": "role3"
             },
             "address": "aaaaaaaaaaaaaaaaaaaaa",
-            "id": 10
+            "id": 10,
+            "status": false
         },
         {
             "fullName": "aaaaaaaaaaaa",
@@ -57,7 +24,7 @@
             "email": "alaaeldeepdev@gmail.com",
             "password": "fffffffffffffff",
             "branch": {
-                "id": 4,
+                "id": 2,
                 "branch": "branch4"
             },
             "phoneNumber": "10912460808",
@@ -66,11 +33,13 @@
                 "role": "role4"
             },
             "address": "aaaaaaaaaaaaaaaaaaaaa",
-            "id": 11
+            "id": 11,
+            "status": true
         }
     ],
     "traders": [
         {
+            "status": true,
             "date": "2023-06-14T19:33:32.2674159",
             "fullName": "aaaaaaaaaaaa",
             "userName": "aahghgh",
@@ -78,14 +47,19 @@
             "phoneNumber": "10912460810",
             "password": "fhhhhhhhhh",
             "address": "aaaaaaaaaaaa",
-            "branch": { "id": 1, "branch": "branch1" },
+            "branch": {
+                "id": 1,
+                "branch": "branch1"
+            },
             "storeName": "aaaaaa",
             "state": {
                 "name": "الإسماعيلية",
                 "id": 2
             },
-            "city": { "cityId": 2, "name": "مدينة2" },
-
+            "city": {
+                "cityId": 2,
+                "name": "مدينة2"
+            },
             "rejectedOrderlossRatio": "15",
             "specialPackages": [
                 {
@@ -93,7 +67,10 @@
                         "name": "الإسماعيلية",
                         "id": 2
                     },
-                    "city": { "cityId": 3, "name": "مدينة3" },
+                    "city": {
+                        "cityId": 3,
+                        "name": "مدينة3"
+                    },
                     "id": 1,
                     "shippingCost": "15"
                 },
@@ -103,13 +80,17 @@
                         "name": "الشرقية",
                         "id": 1
                     },
-                    "city": { "cityId": 2, "name": "مدينة2" },
+                    "city": {
+                        "cityId": 2,
+                        "name": "مدينة2"
+                    },
                     "shippingCost": "78"
                 }
             ],
             "id": "6"
         },
         {
+            "status": false,
             "date": "2023-06-14T19:33:32.2674159",
             "fullName": "تاجر2",
             "userName": "مستخدم2",
@@ -117,13 +98,19 @@
             "phoneNumber": "10912460806",
             "password": "aaaaaaaaaaaaaaaaaaaa",
             "address": "aaaaaaaaaaaa",
-            "branch": { "id": 2, "branch": "branch2" },
+            "branch": {
+                "id": 2,
+                "branch": "branch2"
+            },
             "storeName": "aaaaaa",
             "state": {
                 "id": 1,
                 "name": "الشرقية"
             },
-            "city": { "cityId": 1, "name": "مدينة1" },
+            "city": {
+                "cityId": 1,
+                "name": "مدينة1"
+            },
             "rejectedOrderlossRatio": "78",
             "specialPackages": [],
             "id": "7"
@@ -131,6 +118,7 @@
     ],
     "representatives": [
         {
+            "status": true,
             "fullName": "wwwwwwwwwwwww",
             "userName": "wwwwwwwwwwwww",
             "email": "alaaeldeepdev@gmail.com",
@@ -139,20 +127,38 @@
             "address": "aaaaaaaaaaaa",
             "discountType": 0,
             "states": [
-                { "id": 0, "name": "أسوان" },
-                { "id": 1, "name": "أسيوط" }
+                {
+                    "id": 0,
+                    "name": "أسوان"
+                },
+                {
+                    "id": 1,
+                    "name": "أسيوط"
+                }
             ],
-            "branch": { "id": 1, "name": "branch1" },
+            "branch": {
+                "id": 1,
+                "name": "branch1"
+            },
             "companyOrderRatio": 99,
             "id": 3
         },
         {
+            "status": false,
             "userName": "eeeeeeeeeeeee",
             "fullName": "aaaaaaaaaaaa",
             "email": "alaaeldeepdev@gmail.com",
             "phoneNumber": "10912460810",
-            "branch": { "id": 2, "name": "branch1" },
-            "states": [{ "id": 0, "name": "أسوان" }],
+            "branch": {
+                "id": 2,
+                "name": "branch1"
+            },
+            "states": [
+                {
+                    "id": 0,
+                    "name": "أسوان"
+                }
+            ],
             "password": "0000000000000000",
             "address": "aaaaaaaaaaaa",
             "discountType": 0,
@@ -169,7 +175,7 @@
                     "permissions": [false, false, true, true]
                 }
             ],
-            "id": 23
+            "id": 1
         },
         {
             "roleName": "مديرq",
@@ -191,12 +197,22 @@
                     "permissions": [false, false, false, true]
                 }
             ],
-            "id": 24
+            "id": 2
+        },
+        {
+            "roleName": "deedee",
+            "rolePrivileges": [
+                {
+                    "privilegeId": 13,
+                    "permissions": [true, false, false, false]
+                }
+            ],
+            "id": 3
         }
     ],
     "permissionsDetails": [
         {
-            "addedDate": "21 srp 2021 12:25AM",
+            "addedDate": "2023-06-14T19:33:32.2674159",
             "id": 1,
             "roleName": "مدير",
             "rolePrivileges": [
@@ -218,7 +234,7 @@
             ]
         },
         {
-            "addedDate": "21 srp 2021 12:25AM",
+            "addedDate": "2023-06-14T19:33:32.2674159",
             "id": 2,
             "roleName": "سيلز",
             "rolePrivileges": [
@@ -230,7 +246,7 @@
             ]
         },
         {
-            "addedDate": "21 srp 2021 12:25AM",
+            "addedDate": "2023-06-14T19:33:32.2674159",
             "id": 3,
             "roleName": "سوبر فايزر",
             "rolePrivileges": [
@@ -242,7 +258,7 @@
             ]
         },
         {
-            "addedDate": "21 srp 2021 12:25AM",
+            "addedDate": "2023-06-14T19:33:32.2674159",
             "id": 4,
             "roleName": "مدير فرع",
             "rolePrivileges": [
@@ -254,7 +270,7 @@
             ]
         },
         {
-            "addedDate": "21 srp 2021 12:25AM",
+            "addedDate": "2023-06-14T19:33:32.2674159",
             "id": 5,
             "roleName": "امين مخزن",
             "rolePrivileges": [
@@ -266,7 +282,7 @@
             ]
         },
         {
-            "addedDate": "21 srp 2021 12:25AM",
+            "addedDate": "2023-06-14T19:33:32.2674159",
             "id": 6,
             "roleName": "حسابات",
             "rolePrivileges": [
@@ -280,78 +296,85 @@
     ],
     "homeReport": [
         {
-            "title": "جديد",
+            "status": 0,
             "number": 11
         },
         {
-            "title": "قيد الانتظار",
+            "status": 1,
             "number": 9
         },
         {
-            "title": "تم التسليم للمندوب",
+            "status": 2,
             "number": 6
         },
         {
-            "title": "تم التسليم",
+            "status": 3,
             "number": 16
         },
         {
-            "title": "لا يمكن الوصول",
+            "status": 4,
             "number": 33
         },
         {
-            "title": "تم التاجيل",
+            "status": 5,
             "number": 0
         },
         {
-            "title": "تم التسليم جزئيا",
+            "status": 6,
             "number": 41
         },
         {
-            "title": "تم الاغاء من قبل المستلم",
+            "status": 7,
             "number": 8
         },
         {
-            "title": "تم الرفض مع الدفع",
+            "status": 8,
             "number": 13
         },
         {
-            "title": "رفض مع سداد الجزاء",
+            "status": 9,
             "number": 12
         },
         {
-            "title": "رفض ولم يتم الدفع",
+            "status": 10,
             "number": 9
         }
     ],
     "states": [
         {
-            "id": 1,
-            "name": "الشرقية"
+            "state": "الإسماعيلية",
+            "id": 2,
+            "status": false
         },
         {
-            "name": "الإسماعيلية",
-            "id": 2
+            "state": "الأقصر",
+            "id": 3,
+            "status": true
         },
         {
-            "name": "الأقصر",
-            "id": 3
+            "state": "المنوفية",
+            "id": 4,
+            "status": false
         },
         {
-            "name": "المنوفية",
-            "id": 4
+            "state": "أسوان",
+            "id": 5,
+            "status": false
         },
         {
-            "name": "أسوان",
-            "id": 5
-        },
-        {
-            "name": "أسيوط",
-            "id": 6
+            "state": "أسيوط",
+            "id": 6,
+            "status": false
         },
         {
             "id": 7,
-            "name": "الإسكندرية"
+            "state": "الإسكندرية",
+            "status": false
+        },
+        {
+            "id": 8,
+            "state": "الفيوم",
+            "status": false
         }
     ],
     "statesTest": [
@@ -479,39 +502,84 @@
         }
     ],
     "citiesToRepresentative": [
-        { "cityId": 1, "name": "مدينة1", "stateId": 1 },
-        { "cityId": 2, "name": "مدينة2", "stateId": 1 },
-        { "cityId": 3, "name": "مدينة3", "stateId": 2 },
-        { "cityId": 4, "name": "مدينة4", "stateId": 3 },
-        { "cityId": 5, "name": "مدينة5", "stateId": 3 },
-        { "cityId": 6, "name": "مدينة6", "stateId": 3 },
-        { "cityId": 7, "name": "مدينة7", "stateId": 4 },
-        { "cityId": 8, "name": "مدينة8", "stateId": 5 },
-        { "cityId": 9, "name": "مدينة9", "stateId": 6 },
-        { "cityId": 10, "name": "مدينة10", "stateId": 7 }
+        {
+            "cityId": 1,
+            "name": "مدينة1",
+            "stateId": 1
+        },
+        {
+            "cityId": 2,
+            "name": "مدينة2",
+            "stateId": 1
+        },
+        {
+            "cityId": 3,
+            "name": "مدينة3",
+            "stateId": 2
+        },
+        {
+            "cityId": 4,
+            "name": "مدينة4",
+            "stateId": 3
+        },
+        {
+            "cityId": 5,
+            "name": "مدينة5",
+            "stateId": 3
+        },
+        {
+            "cityId": 6,
+            "name": "مدينة6",
+            "stateId": 3
+        },
+        {
+            "cityId": 7,
+            "name": "مدينة7",
+            "stateId": 4
+        },
+        {
+            "cityId": 8,
+            "name": "مدينة8",
+            "stateId": 5
+        },
+        {
+            "cityId": 9,
+            "name": "مدينة9",
+            "stateId": 6
+        },
+        {
+            "cityId": 10,
+            "name": "مدينة10",
+            "stateId": 7
+        }
     ],
     "cities": [
         {
             "state": "qqqqq",
             "city": "qqq",
             "shippingCost": "1",
-            "id": 9
-        },
-        {
-            "name": "القناطر",
-            "shippingCost": 40,
-            "stateId": 1,
-            "id": 10
+            "id": 2,
+            "status": false
         }
     ],
     "branches": [
         {
+            "status": false,
             "branch": "فرع 1",
-            "id": 1
+            "id": 1,
+            "date": "2023-06-14T19:33:32.2674159"
         },
         {
+            "status": true,
             "branch": "فرع 2",
-            "id": 2
+            "id": 2,
+            "date": "2023-06-14T19:33:32.2674159"
+        },
+        {
+            "status": true,
+            "branch": "فرع 3",
+            "id": 3,
+            "date": "2023-06-14T19:33:32.2674159"
         }
     ],
     "typeOfShipping": [
@@ -559,60 +627,8 @@
             "id": 7
         }
     ],
-    "GETorders": [
-        {
-            "clientName": "عميل1",
-            "phone1": "00000000000",
-            "phone2": "00000000000",
-            "email": "alaaeldeepdev@gmail.com",
-            "orderType": 0,
-            "orderStatus": 0,
-            "paymentType": 0,
-            "state": {
-                "id": 1,
-                "name": "الشرقية"
-            },
-            "city": {
-                "cityId": 1,
-                "name": "مدينة 1"
-            },
-            "adressDetails": "ccccsssaaaaa",
-            "isVillage": true,
-            "branch": {
-                "id": 2,
-                "branch": "فرع 1"
-            },
-            "shippingType": {
-                "shippingTypeId": 1,
-                "type": "شحن عادي"
-            },
-            "totalWeight": 36,
-            "orderShipingCost": 770,
-            "OrderCost": 3000,
-            "totalCost": 3770,
-            "comments": "AAAAAA AAAAAAAAAAA",
-            "orderItems": [
-                {
-                    "id": 0,
-                    "productName": "aaa",
-                    "productPrice": 1000,
-                    "productWeight": 1.2,
-                    "productQuantity": 12
-                },
-                {
-                    "id": 1,
-                    "productName": "aa",
-                    "productWeight": 5,
-                    "productPrice": 1000,
-                    "productQuantity": 5
-                }
-            ],
-            "id": 1,
-            "date": "21 srp 2021 12:25AM",
-            "traderId": "152",
-            "representativeID": null
-        }
-    ],
+    "GETordersREPRESENTATIVE": [],
+    "GETorders": [],
     "GetSettings": {
         "id": 1,
         "defaultWeight": 8,

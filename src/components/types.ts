@@ -3,10 +3,10 @@ export type PermissionRow = {
     name: string;
 };
 export type PermissionGET = {
-    id: number;
+    id: string;
     roleName: string;
     addedDate: string;
-    rolePrivileges: any;
+    permissions: any;
 };
 export type RoleRow = {
     id: number;
@@ -16,7 +16,8 @@ export type RoleRow = {
 };
 export type StateRow = {
     id: number;
-    state: string;
+    name: string;
+    status: boolean;
 };
 export type WeightSettingRow = {
     id: number;
@@ -26,14 +27,26 @@ export type WeightSettingRow = {
 };
 export type BranchesRow = {
     id: number;
-    branch: string;
-    addedDate: string;
+    name: string;
+    date: string;
+    status: boolean;
 };
+export type ShippingTypeRow = {
+    id: number;
+    name: string;
+    cost: number;
+};
+export type ShippingTypePOST = {
+    name: string;
+    cost: number;
+};
+
 export type CityRow = {
     id: number;
-    state: string;
-    city: string;
+    state: { id: number; name: string };
+    name: string;
     shippingCost: number;
+    status: boolean;
 };
 export type EmployeeRow = {
     id: number;
@@ -45,15 +58,17 @@ export type EmployeeRow = {
     role: string;
     address: string;
 };
+
 export type EmployeeGET = {
-    id: number;
+    id: string;
     userName: string;
     fullName: string;
     phoneNumber: string;
-    branch: { id: number; branch: string };
+    branch: { id: number; name: string };
     email: string;
-    role: { id: number; role: string };
+    role: { id: number; name: string };
     address: string;
+    status: boolean;
 };
 export type OrderPost = {
     id: number;
@@ -77,6 +92,29 @@ export type OrderPost = {
         productQuantity: number;
     }[];
 };
+export type OrderPut = {
+    id: number;
+    orderStatus: number;
+    clientName: string;
+    orderType: number;
+    stateId: number;
+    adressDetails: string;
+    cityId: number;
+    branchId: number;
+    isVillage: boolean;
+    shippingTypeId: number;
+    phone1: string;
+    phone2?: string;
+    email: string;
+    paymentType: number;
+    orderCost: number;
+    orderItem: {
+        productName: string;
+        productWeight: number;
+        productQuantity: number;
+    }[];
+    traderId: string;
+};
 export type OrderRow = {
     clientName: string;
     phone1: string;
@@ -91,20 +129,22 @@ export type OrderRow = {
         name: string;
     };
     city: {
-        cityId: number;
+        id: number;
         name: string;
+        stateId: number;
     };
     adressDetails: string;
     isVillage: boolean;
     branch: {
         id: number;
-        branch: string;
+        name: string;
     };
     shippingType: {
-        shippingTypeId: number;
-        type: string;
+        id: number;
+        name: string;
+        cost: number;
     };
-    OrderCost: number;
+    orderCost: number;
     totalCost: number;
     totalWeight: number;
     orderShipingCost: number;
@@ -126,8 +166,8 @@ export type OrderRow = {
         }
     ];
     id: number;
-    traderId: number;
-    representativeID: any;
+    trader: { id: string; fullName: string; phoneNumber: string };
+    representative?: { id: string; fullName: string };
 };
 export type Product = {
     productName: string;
@@ -138,23 +178,29 @@ export type Product = {
 };
 export type TraderRow = {
     id: string;
+    status: boolean;
     userName: string;
     fullName: string;
     phoneNumber: string;
     email: string;
     address: string;
     storeName: string;
-    city: { cityId: number; name: string };
+    city: { id: number; name: string };
     state: { id: number; name: string };
-    branch: { id: number; branch: string };
-    rejectedOrderlossRatio: string;
+    branch: { id: number; name: string };
+    rejectedOrderlossRatio: number;
     date: string;
     specialPackages: {
-        city: { cityId: number; name: string };
+        city: string;
+        state: string;
+        shippingCost: number;
+    }[];
+    /*  specialPackages: {
+        city: { id: number; name: string };
         state: { id: number; name: string };
         shippingCost: number;
         id: string;
-    }[];
+    }[]; */
 };
 export type RepresentativeRow = {
     id: number;
@@ -168,6 +214,7 @@ export type RepresentativeRow = {
     states: { id: number; state: string }[];
     discountType: "0" | "1";
     companyOrderRatio: string;
+    status: boolean;
 };
 export type RepresentativeType = {
     userName: string;
@@ -180,6 +227,20 @@ export type RepresentativeType = {
     statesId: number[];
     discountType: number;
     companyOrderRatio: number;
+    id?: string;
+};
+export type RepresentativeUpdate = {
+    userName: string;
+    fullName: string;
+    email: string;
+    password: string;
+    phoneNumber: string;
+    address: string;
+    branchId: number;
+    states: { stateId: number }[];
+    discountType: number;
+    companyOrderRatio: number;
+    id: string;
 };
 export type RepresentativeGET = {
     userName: string;
@@ -189,11 +250,13 @@ export type RepresentativeGET = {
     phoneNumber: string;
     address: string;
     branch: { id: number; name: string };
-    states: { id: number; name: string }[];
+    states: { id: number; state: string }[];
     discountType: number;
     companyOrderRatio: number;
-    id: number;
+    id: string;
+    status: boolean;
 };
+
 export type TraderType = {
     traderData: {
         userName: string;
@@ -209,6 +272,35 @@ export type TraderType = {
         stateId: number;
     };
     SpecialPackage: any[];
+};
+export type TraderPostType = {
+    userName: string;
+    fullName: string;
+    email: string;
+    password: string;
+    phoneNumber: string;
+    address: string;
+    storeName: string;
+    branchId: number;
+    cityId: number;
+    rejectedOrderlossRatio: number;
+    stateId: number;
+    specialPackages: any[];
+    id: string;
+};
+export type TraderPost = {
+    userName: string;
+    fullName: string;
+    email: string;
+    password: string;
+    phoneNumber: string;
+    address: string;
+    storeName: string;
+    branchId: number;
+    cityId: number;
+    rejectedOrderlossRatio: number;
+    stateId: number;
+    specialPackages: any[];
 };
 export type PermissionData = {
     id: number;
@@ -241,8 +333,25 @@ export type HeadCell = {
     label: string;
 };
 export type SpecialPackage = {
-    city: { cityId: number; name: string };
+    city: { id: number; name: string };
     state: { id: number; name: string };
     shippingCost: number;
     id: string;
+};
+export type SpecialPackageGET = {
+    city: string;
+    state: string;
+    shippingCost: number;
+};
+export type SpecialPackagePost = {
+    city: string;
+    state: string;
+    shippingCost: number;
+    id?: string;
+};
+export type SpecialPackageView = {
+    city: string;
+    state: string;
+    shippingCost: number;
+    id?: string;
 };

@@ -7,24 +7,44 @@ import {
     AccordionDetails,
     AccordionSummary,
     Box,
+    FormControlLabel,
     IconButton,
     Typography,
 } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+
+/* date formatter */
+import moment from "moment";
+import "moment/dist/locale/ar";
+
+/* store */
+import { useOwnStore } from "../../../../../store";
+
+/* components */
 import EditBranchesDetails from "../../../components/editBranchesDetail";
 import DeleteHandler from "../../../components/deleteHandeler";
+import ChangeStatusHandler from "../../../components/ChangeStatusHandeler";
+import { StatusSwitch } from "../../../../employes/view/components/viewEmployeeLargeScreen/row";
+
+/* types */
+import { BranchesRow } from "../../../../../components/types";
 
 /* types */
 type props = {
     index: number;
-    branch: string;
-    addedDate: string;
-
-    id: number;
+    data: BranchesRow;
+    pageNumber: number;
 };
-const RowInMobile = ({ index, addedDate, id, branch }: props) => {
+const RowInMobile = ({ index, data, pageNumber }: props) => {
+    /* store */
+    const canActivateBranchesEdit = useOwnStore(
+        (store) => store.user.permissions?.Branches?.[2]
+    );
+    const canActivateBranchesDelete = useOwnStore(
+        (store) => store.user.permissions?.Branches?.[3]
+    );
     const [expanded, setExpanded] = useState<string | false>(false);
     const handleChange =
         (panel: string) =>
@@ -48,15 +68,34 @@ const RowInMobile = ({ index, addedDate, id, branch }: props) => {
     const handleCloseEditBranchesDetails = () => {
         setOpenEditBranchesDetails(false);
     };
-
+    /* status */
+    const handleChangeStatus = () => {
+        handleClickOpenChangeStatus();
+    };
+    /* change status representative */
+    const [openChangeStatus, setOpenChangeStatus] = useState(false);
+    const handleClickOpenChangeStatus = () => {
+        setOpenChangeStatus(true);
+    };
+    const handleCloseOpenChangeStatus = () => {
+        setOpenChangeStatus(false);
+    };
     return (
         <>
             {/*Edit Branches Details modal */}
             <EditBranchesDetails
+                pageNumber={pageNumber}
                 open={openEditBranchesDetails}
                 handleClose={handleCloseEditBranchesDetails}
-                id={id}
-                branch={branch}
+                id={data.id}
+                branch={data.name}
+                status={data.status}
+            />{" "}
+            {/* change status */}
+            <ChangeStatusHandler
+                data={data}
+                handleClose={handleCloseOpenChangeStatus}
+                openStatusHandler={openChangeStatus}
             />
             <Accordion
                 key={index}
@@ -76,54 +115,102 @@ const RowInMobile = ({ index, addedDate, id, branch }: props) => {
 
                     {/* branch name */}
                     <Typography sx={{ color: "text.secondary" }}>
-                        {branch}
+                        {data.name}
                     </Typography>
                 </AccordionSummary>
 
                 <AccordionDetails>
                     {/* id */}
-                    <Typography>الرقم : {index + 1}</Typography>
+                    <Typography sx={{ marginBottom: "5px" }}>
+                        الرقم : {index + 1}
+                    </Typography>
 
                     {/* branch name */}
-                    <Typography> اسم الفرع : {branch}</Typography>
+                    <Typography sx={{ marginBottom: "5px" }}>
+                        {" "}
+                        اسم الفرع : {data.name}
+                    </Typography>
 
                     {/* added date */}
-                    <Typography> تاريخ الاضافه : {addedDate}</Typography>
+                    <Typography sx={{ marginBottom: "5px" }}>
+                        {" "}
+                        تاريخ الاضافه :{" "}
+                        {moment(data.date).locale("ar").format("LLLL")}
+                    </Typography>
+                    {/*  status */}
+                    <Typography sx={{ marginBottom: "5px" }}>
+                        {" "}
+                        الحالة :{" "}
+                        {
+                            <FormControlLabel
+                                control={
+                                    <StatusSwitch
+                                        sx={{ m: 1 }}
+                                        defaultChecked
+                                    />
+                                }
+                                label={
+                                    data.status ? (
+                                        <Typography sx={{ color: "#65C466" }}>
+                                            نشط
+                                        </Typography>
+                                    ) : (
+                                        <Typography sx={{ color: "#FEA1A1" }}>
+                                            غير نشط
+                                        </Typography>
+                                    )
+                                }
+                                checked={data.status}
+                                onChange={handleChangeStatus}
+                                disabled={!canActivateBranchesEdit}
+                            />
+                        }
+                    </Typography>
 
                     {/* settings */}
-                    <Box
-                        sx={{
-                            display: "flex",
-                            alignItems: "center",
-                        }}
-                    >
-                        <Typography>الاعدادات : </Typography>
-                        <Box>
-                            <IconButton
-                                onClick={handleClickOpenEditBranchesDetails}
-                            >
-                                <EditIcon
-                                    style={{
-                                        color: "#7AA874",
-                                    }}
-                                />
-                            </IconButton>
-                            <IconButton onClick={handleDeleteHandlerOpen}>
-                                <DeleteForeverIcon
-                                    style={{
-                                        color: "#DF2E38",
-                                    }}
-                                />
-                            </IconButton>
+                    {canActivateBranchesDelete || canActivateBranchesEdit ? (
+                        <Box
+                            sx={{
+                                display: "flex",
+                                alignItems: "center",
+                            }}
+                        >
+                            <Typography>الاعدادات : </Typography>
+                            <Box>
+                                {canActivateBranchesEdit && (
+                                    <IconButton
+                                        onClick={
+                                            handleClickOpenEditBranchesDetails
+                                        }
+                                    >
+                                        <EditIcon
+                                            style={{
+                                                color: "#7AA874",
+                                            }}
+                                        />
+                                    </IconButton>
+                                )}
+                                {canActivateBranchesDelete && (
+                                    <IconButton
+                                        onClick={handleDeleteHandlerOpen}
+                                    >
+                                        <DeleteForeverIcon
+                                            style={{
+                                                color: "#DF2E38",
+                                            }}
+                                        />
+                                    </IconButton>
+                                )}
+                            </Box>
                         </Box>
-                    </Box>
+                    ) : null}
                 </AccordionDetails>
-            </Accordion>{" "}
+            </Accordion>
             <DeleteHandler
-                id={id}
+                id={data.id}
                 openDeleteHandler={openDeleteHandler}
                 handleDeleteHandlerClose={handleDeleteHandlerClose}
-                branch={branch}
+                branch={data.name}
             />
         </>
     );

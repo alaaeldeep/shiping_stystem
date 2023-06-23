@@ -5,7 +5,7 @@ import { request } from "../../lib/axios.utls";
 import { useMutation } from "react-query";
 
 type stateType = {
-    state: string;
+    name: string;
 };
 const addState = (data: stateType) => {
     return request({ url: "/states", method: "post", data: data });

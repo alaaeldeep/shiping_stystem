@@ -16,8 +16,13 @@ import {
     MenuItem,
     Select,
     SelectChangeEvent,
+    Backdrop,
+    CircularProgress,
 } from "@mui/material"; /* rect-form */
 import CloseIcon from "@mui/icons-material/Close";
+
+/* motion */
+import { motion } from "framer-motion";
 
 /* hook form */
 import { useForm } from "react-hook-form";
@@ -52,9 +57,9 @@ const EditEmployeeDetails = ({
     handleClose,
     data,
 }: EditEmployeeDetailsProps) => {
-    const { mutate } = UseMutate();
-    const { data: branches } = UseQuery("/branches");
-    const { data: roles } = UseQuery("/Permissions");
+    const { mutate, isLoading } = UseMutate();
+    const { data: branches } = UseQuery("/Branches/active");
+    const { data: roles } = UseQuery("/RolesPrivileges/simple");
 
     /* branch state */
     const [branch, setBranch] = useState<string>(data.branch.id.toString());
@@ -91,19 +96,37 @@ const EditEmployeeDetails = ({
             .nonempty("برجاء كتابة كلمة السر")
             .min(8, "برجاء كتابه كلمه سر 8 احرف علي الاقل"),
 
-        branchId: z.string().nonempty("برجاء اختيار الفرع"),
+        branchId: z
+            .string({
+                errorMap: (issue, _ctx) => {
+                    switch (issue.code) {
+                        default:
+                            return { message: "برجاء اختيار الفرع " };
+                    }
+                },
+            })
+            .nonempty("برجاء اختيار الفرع"),
 
         phoneNumber: z
             .string()
             .nonempty("برجاء كتابه رقم الهاتف")
             .length(11, " تاكد من كتابه رقم صحيح مكون من 11 رقم"),
 
-        roleId: z.string().nonempty("برجاء تحديد الصلاحيات"),
+        roleId: z
+            .string({
+                errorMap: (issue, _ctx) => {
+                    switch (issue.code) {
+                        default:
+                            return { message: "برجاء اختيار الصلاحية " };
+                    }
+                },
+            })
+            .nonempty("برجاء اختيار الصلاحية"),
 
         address: z.string().nonempty("برجاء كتابة العنوان"),
     });
     type FormValue = z.infer<typeof schema>;
-    const { register, control, handleSubmit, formState, getValues } =
+    const { register, control, handleSubmit, formState, setError } =
         useForm<FormValue>({
             defaultValues: {
                 fullName: data.fullName,
@@ -121,11 +144,56 @@ const EditEmployeeDetails = ({
 
     const onSubmit = (FormValue: FormValue) => {
         /*  🚀 make the request 🚀 */
-        const request = { ...FormValue, id: data.id };
+        const request = {
+            ...FormValue,
+            branchId: +FormValue.branchId,
+            id: data.id,
+        };
+
         mutate(request, {
             onSuccess: () => {
                 {
                     handleClose();
+                }
+            },
+            onError: (err: any) => {
+                if (err.message.includes("Username")) {
+                    setError("userName", {
+                        message:
+                            "اسم المستخدم موجود بالفعل, برجاء كتابه اسم جديد",
+                    });
+                    toast.error(
+                        "اسم المستخدم موجود بالفعل, برجاء كتابه اسم جديد",
+                        {
+                            position: toast.POSITION.BOTTOM_LEFT,
+                            autoClose: 2000,
+                            theme: "dark",
+                        }
+                    );
+                }
+                if (err.message.includes("Email")) {
+                    setError("email", {
+                        message:
+                            "البريد الالكتروني موجود بالفعل, برجاء كتابه بريد جديد",
+                    });
+                    toast.error(
+                        "البريد الالكتروني موجود بالفعل, برجاء كتابه بريد جديد",
+                        {
+                            position: toast.POSITION.BOTTOM_LEFT,
+                            autoClose: 2000,
+                            theme: "dark",
+                        }
+                    );
+                }
+                if (err.message.includes("Passwords")) {
+                    setError("password", {
+                        message: "كلمة السر يجب ان تحتوي علي ارقام ",
+                    });
+                    toast.error("كلمة السر يجب ان تحتوي علي ارقام ", {
+                        position: toast.POSITION.BOTTOM_LEFT,
+                        autoClose: 2000,
+                        theme: "dark",
+                    });
                 }
             },
         });
@@ -145,16 +213,24 @@ const EditEmployeeDetails = ({
             open={open}
             onClose={handleClose}
         >
-            <div style={{ display: "flex", justifyContent: "space-between" }}>
+            {/* motion.div */}
+            <motion.div
+                initial={{ scale: 0.4, opacity: 0 }}
+                animate={{ x: 0, scale: 1, opacity: 1 }}
+                transition={{
+                    duration: 0.3,
+                }}
+                style={{ display: "flex", justifyContent: "space-between" }}
+            >
                 <DialogTitle width={{ xs: "230px", sm: "auto" }}>
-                    تعــديــل بيانات الخاصــة بــــ : {data.userName}
+                    تعــديــل البيانات الخاصــة بــــ : {data.userName}
                 </DialogTitle>
                 <DialogActions>
                     <IconButton onClick={handleClose}>
                         <CloseIcon sx={{ color: "red", fontSize: "1.7rem" }} />
                     </IconButton>
                 </DialogActions>
-            </div>
+            </motion.div>
 
             <DialogContent>
                 <form
@@ -174,9 +250,11 @@ const EditEmployeeDetails = ({
                             borderRadius: "25px",
                             display: "flex",
                             flexDirection: "column",
-                            border: "1px solid #9ba4b5b7",
+                            /*    border: "1px solid #9ba4b5b7", */
                             justifyContent: "center",
                             mb: 3,
+                            boxShadow:
+                                "rgba(17, 17, 26, 0.1) 0px 1px 0px, rgba(17, 17, 26, 0.1) 0px 8px 24px, rgba(17, 17, 26, 0.1) 0px 16px 48px",
                         }}
                     >
                         <Box sx={{ marginX: "auto", width: "90%" }}>
@@ -263,13 +341,14 @@ const EditEmployeeDetails = ({
                                         {branches?.data.map(
                                             (branch: {
                                                 id: number;
-                                                branch: string;
+                                                name: string;
                                             }) => (
                                                 <MenuItem
+                                                    key={branch.id}
                                                     defaultChecked
                                                     value={branch.id.toString()}
                                                 >
-                                                    {branch.branch}
+                                                    {branch.name}
                                                 </MenuItem>
                                             )
                                         )}
@@ -306,12 +385,13 @@ const EditEmployeeDetails = ({
                                         {roles?.data.map(
                                             (role: {
                                                 id: number;
-                                                roleName: string;
+                                                name: string;
                                             }) => (
                                                 <MenuItem
+                                                    key={role.id}
                                                     value={role.id.toString()}
                                                 >
-                                                    {role.roleName}
+                                                    {role.name}
                                                 </MenuItem>
                                             )
                                         )}
@@ -349,6 +429,15 @@ const EditEmployeeDetails = ({
                         </Button>
                     </Box>
                     <DevTool control={control} />
+                    <Backdrop
+                        sx={{
+                            color: "#fff",
+                            zIndex: (theme) => theme.zIndex.drawer + 1,
+                        }}
+                        open={isLoading}
+                    >
+                        <CircularProgress color="inherit" />
+                    </Backdrop>
                 </form>
             </DialogContent>
         </Dialog>

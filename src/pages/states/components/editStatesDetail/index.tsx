@@ -7,8 +7,13 @@ import {
     Dialog,
     IconButton,
     Box,
+    Backdrop,
+    CircularProgress,
 } from "@mui/material";
 import { FormHelperText, TextField, Autocomplete } from "@mui/material";
+/* motion */
+import { motion } from "framer-motion";
+
 /* rect-form */
 import CloseIcon from "@mui/icons-material/Close";
 
@@ -31,19 +36,21 @@ import { states } from "../../../../utils/converter";
 
 type EditStatesProps = {
     open: boolean;
-    state: string;
+    name: string;
     id: number;
+    status: boolean;
     handleClose: () => void;
 };
 const EditStatesDetails = ({
     open,
     handleClose,
     id,
-    state,
+    name,
+    status,
 }: EditStatesProps) => {
-    const { mutate } = UseMutate();
+    const { mutate, isLoading } = UseMutate();
     const schema = z.object({
-        state: z.enum(
+        name: z.enum(
             [
                 "أسوان",
                 "أسيوط",
@@ -85,17 +92,18 @@ const EditStatesDetails = ({
         ),
     });
     type FormValue = z.infer<typeof schema>;
-    const { register, control, handleSubmit, formState, getValues } =
-        useForm<FormValue>({
-            mode: "onChange",
-            resolver: zodResolver(schema),
-        });
+    const { register, control, handleSubmit, formState } = useForm<FormValue>({
+        mode: "onTouched",
+        resolver: zodResolver(schema),
+    });
     const { errors } = formState;
 
     /* 🚀 make the request 🚀  */
     const onSubmit = (data: FormValue) => {
+        const requestData = { ...data };
+
         mutate(
-            { id, ...data },
+            { id, status, name: requestData.name },
             {
                 onSuccess: () => {
                     {
@@ -119,19 +127,26 @@ const EditStatesDetails = ({
             open={open}
             onClose={handleClose}
         >
-            <div style={{ display: "flex", justifyContent: "space-between" }}>
+            <motion.div
+                initial={{ scale: 0.4, opacity: 0 }}
+                animate={{ x: 0, scale: 1, opacity: 1 }}
+                transition={{
+                    duration: 0.3,
+                }}
+                style={{ display: "flex", justifyContent: "space-between" }}
+            >
                 {/* <DialogTitle>
                     تعــديــل البيانات الخاصــة بمحافظة : {state}
                 </DialogTitle> */}
                 <DialogTitle width={{ xs: "230px", sm: "auto" }}>
-                    تعــديــل البيانات الخاصــة بمحافظــة : {state}
+                    تعــديــل البيانات الخاصــة بمحافظــة : {name}
                 </DialogTitle>
                 <DialogActions>
                     <IconButton onClick={handleClose}>
                         <CloseIcon sx={{ color: "red", fontSize: "1.7rem" }} />
                     </IconButton>
                 </DialogActions>
-            </div>
+            </motion.div>
 
             <DialogContent>
                 <form
@@ -153,12 +168,13 @@ const EditStatesDetails = ({
                             flexDirection: "column",
                             justifyContent: "center",
                             mb: 3,
+                            height: "300px",
                         }}
                     >
                         <Box sx={{ marginX: "auto", width: "90%" }}>
-                            <div style={{ margin: "20px 0" }}>
+                            <div style={{ margin: "20px 0 50px" }}>
                                 <Autocomplete
-                                    defaultValue={state}
+                                    defaultValue={name}
                                     id="state"
                                     noOptionsText="اختر من المحافظات المتاحة"
                                     disablePortal
@@ -167,8 +183,8 @@ const EditStatesDetails = ({
                                         <>
                                             <TextField
                                                 color="info"
-                                                {...register("state")}
-                                                error={!!errors.state}
+                                                {...register("name")}
+                                                error={!!errors.name}
                                                 sx={{
                                                     width: "90%",
                                                 }}
@@ -180,14 +196,14 @@ const EditStatesDetails = ({
                                                 }}
                                             />
                                             <FormHelperText
-                                                error={!!errors.state}
+                                                error={!!errors.name}
                                                 sx={{
                                                     fontWeight: "bold",
                                                     letterSpacing: "0.1rem",
                                                 }}
                                                 id="component-helper-text"
                                             >
-                                                {errors?.state?.message}
+                                                {errors?.name?.message}
                                             </FormHelperText>
                                         </>
                                     )}
@@ -209,7 +225,16 @@ const EditStatesDetails = ({
                         </Button>
                     </Box>
                     <DevTool control={control} />
-                </form>
+                </form>{" "}
+                <Backdrop
+                    sx={{
+                        color: "#fff",
+                        zIndex: (theme) => theme.zIndex.drawer + 1,
+                    }}
+                    open={isLoading}
+                >
+                    <CircularProgress color="inherit" />
+                </Backdrop>
             </DialogContent>
         </Dialog>
     );

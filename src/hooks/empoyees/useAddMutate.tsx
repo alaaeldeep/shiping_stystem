@@ -10,12 +10,12 @@ type NewEmployee = {
     userName: string;
     email: string;
     password: string;
-    branchId: string;
+    branchId: number;
     phoneNumber: string;
     address: string;
 };
 const addEmployee = (data: NewEmployee) => {
-    return request({ url: "/employees", method: "post", data: data });
+    return request({ url: "/Employees", method: "post", data: data });
 };
 
 const UseMutate = () => {

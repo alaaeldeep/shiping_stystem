@@ -1,0 +1,23 @@
+/* MUI */
+import { Paper } from "@mui/material";
+
+/* types */
+import { ShippingTypeRow } from "../../../../../components/types";
+import RowInMobile from "./row";
+
+type ViewPermissionsSmallScreenProps = {
+    rows: ShippingTypeRow[];
+};
+
+export const ViewBranchesSmallScreen = ({
+    rows,
+}: ViewPermissionsSmallScreenProps) => {
+    return (
+        <Paper sx={{ width: "100%" }}>
+            {/* view Permissions*/}
+            {rows.map((row, index) => (
+                <RowInMobile key={index} data={row} index={index} />
+            ))}
+        </Paper>
+    );
+};

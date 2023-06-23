@@ -8,6 +8,7 @@ import { Box, Toolbar } from "@mui/material";
 import NavBar from "../../components/nav-bar";
 import DrawerComponent from "../../components/drawer";
 import { Outlet } from "react-router";
+import ScrollToTop from "../../components/ScrollToTop";
 
 const drawerWidth = 220;
 
@@ -43,6 +44,7 @@ const Layout = () => {
                     width: { md: `calc(100% - ${drawerWidth}px)` },
                 }}
             >
+                <ScrollToTop />
                 <Toolbar />
                 <Outlet />
             </Box>

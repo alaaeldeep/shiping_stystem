@@ -16,14 +16,7 @@ export const ViewCitiesSmallScreen = ({ rows }: ViewCitiesSmallScreenProps) => {
         <Paper sx={{ width: "100%" }}>
             {/* view States*/}
             {rows.map((row, index) => (
-                <RowInMobile
-                    key={index}
-                    id={row.id}
-                    index={index}
-                    state={row.state}
-                    city={row.city}
-                    shippingCost={row.shippingCost}
-                />
+                <RowInMobile key={index} data={row} index={index} />
             ))}
         </Paper>
     );

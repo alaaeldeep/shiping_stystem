@@ -65,22 +65,20 @@ export const ViewWeightSettingSmallScreen = ({ data }: props) => {
 
                 <AccordionDetails>
                     {/* default Weight */}
-                    <Typography>
+                    <Typography sx={{ marginBottom: "5px" }}>
                         {" "}
-                        <span style={{ fontWeight: "600" }}>
-                            تكلفة الشحن الافتراضية تبدء من 0 كـجم الي وزن :
-                        </span>{" "}
+                        تكلفة الشحن الافتراضية تبدء من 0 كـجم الي وزن :{" "}
                         {data.defaultWeight} كـجم
                     </Typography>
 
                     {/*  over Cost PerKG */}
-                    <Typography>
+                    <Typography sx={{ marginBottom: "5px" }}>
                         {" "}
                         سعر كل كـجم اضافي : {data.overCostPerKG} جنـيه
                     </Typography>
 
                     {/* village Shiping Cost*/}
-                    <Typography>
+                    <Typography sx={{ marginBottom: "5px" }}>
                         {" "}
                         تكلفة الشحن للقري : {data.villageShipingCost} جنـيه
                     </Typography>
@@ -92,7 +90,9 @@ export const ViewWeightSettingSmallScreen = ({ data }: props) => {
                             alignItems: "center",
                         }}
                     >
-                        <Typography>الاعدادات : </Typography>
+                        <Typography sx={{ marginBottom: "5px" }}>
+                            الاعدادات :{" "}
+                        </Typography>
                         <Box>
                             <IconButton
                                 onClick={handleClickOpenEditWeightSetting}

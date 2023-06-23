@@ -18,6 +18,8 @@ import {
     MenuItem,
     InputLabel,
     Select,
+    Backdrop,
+    CircularProgress,
 } from "@mui/material";
 import { SelectChangeEvent } from "@mui/material/Select";
 
@@ -44,16 +46,26 @@ import { toast } from "react-toastify";
 /* utils */
 import { convertStateToID } from "../../../utils/converter";
 
+/* store */
+import { useOwnStore } from "../../../store";
+
 /*  */
 const steps = ["تسجيل البيانات الاساسيه", " حفظ ومتابعه"];
 
 const AddRepresentativesPage = () => {
     /* fetch data */
-    const { data: branches } = UseQuery("/branches");
-    const { data: states } = UseQuery("/states");
+    const { data: branches } = UseQuery("/Branches/active");
+    const { data: states } = UseQuery("/states/active");
     /* post data */
-    const { mutate } = UseMutate();
+    const { mutate, isLoading, error } = UseMutate();
 
+    /* store */
+    const canActivateRepresentativesAdd = useOwnStore(
+        (store) => store.user.permissions?.Representatives?.[0]
+    );
+    const canActivateRepresentativesView = useOwnStore(
+        (store) => store.user.permissions?.Representatives?.[1]
+    );
     const navigate = useNavigate();
 
     /* state state */
@@ -79,6 +91,10 @@ const AddRepresentativesPage = () => {
         setActiveStep((prevActiveStep) => prevActiveStep - 1);
     };
     /* end-steps form */
+    const [state, setState] = useState<string[]>([]);
+    const handelStateChange = (event: any) => {
+        setState(event);
+    };
 
     /* zod validation */
     const schema = z.object({
@@ -115,10 +131,20 @@ const AddRepresentativesPage = () => {
         address: z.string().nonempty("برجاء كتابة العنوان"),
 
         /* step 2 */
+        /*  statesId: z.array(z.string()).optional(), */
         statesId: z.string(),
         /*  state: z.string().nonempty("برجاء اختيار المحافظه"), */
 
-        branchId: z.string().nonempty("برجاء اختيار الفرع"),
+        branchId: z
+            .string({
+                errorMap: (issue, _ctx) => {
+                    switch (issue.code) {
+                        default:
+                            return { message: "برجاء اختيار الفرع " };
+                    }
+                },
+            })
+            .nonempty("برجاء اختيار الفرع"),
 
         discountType: z.enum(["0", "1"], {
             errorMap: (issue, _ctx) => {
@@ -135,9 +161,8 @@ const AddRepresentativesPage = () => {
     });
     type FormValue = z.infer<typeof schema>;
     /* hooks form */
-    const { register, control, handleSubmit, formState, setError } =
+    const { register, control, handleSubmit, formState, setError, setValue } =
         useForm<FormValue>({
-            defaultValues: {},
             mode: "onTouched",
             resolver: zodResolver(schema),
         });
@@ -159,13 +184,53 @@ const AddRepresentativesPage = () => {
                 password: data.password,
                 address: data.address,
                 discountType: +data.discountType,
-                companyOrderRatio: +data.companyOrderRatio,
+                companyOrderRatio: Math.abs(+data.companyOrderRatio),
             };
             /*    🚀 make the request 🚀  */
 
             mutate(requstData, {
                 onSuccess: () => {
                     navigate("/representatives");
+                },
+                onError: (err: any) => {
+                    if (err.message.includes("Username")) {
+                        setError("userName", {
+                            message:
+                                "اسم المستخدم موجود بالفعل, برجاء كتابه اسم جديد",
+                        });
+                        toast.error(
+                            "اسم المستخدم موجود بالفعل, برجاء كتابه اسم جديد",
+                            {
+                                position: toast.POSITION.BOTTOM_LEFT,
+                                autoClose: 2000,
+                                theme: "dark",
+                            }
+                        );
+                    }
+                    if (err.message.includes("Email")) {
+                        setError("email", {
+                            message:
+                                "البريد الالكتروني موجود بالفعل, برجاء كتابه بريد جديد",
+                        });
+                        toast.error(
+                            "البريد الالكتروني موجود بالفعل, برجاء كتابه بريد جديد",
+                            {
+                                position: toast.POSITION.BOTTOM_LEFT,
+                                autoClose: 2000,
+                                theme: "dark",
+                            }
+                        );
+                    }
+                    if (err.message.includes("Passwords")) {
+                        setError("password", {
+                            message: "كلمة السر يجب ان تحتوي علي ارقام ",
+                        });
+                        toast.error("كلمة السر يجب ان تحتوي علي ارقام ", {
+                            position: toast.POSITION.BOTTOM_LEFT,
+                            autoClose: 2000,
+                            theme: "dark",
+                        });
+                    }
                 },
             });
         } else {
@@ -194,6 +259,10 @@ const AddRepresentativesPage = () => {
                 btnTitle="العوده للمناديب"
                 destination="/representatives"
                 addIcon={false}
+                addBtn={
+                    !!canActivateRepresentativesAdd &&
+                    !!canActivateRepresentativesView
+                }
             />
             <Box sx={{ width: "100%" }}>
                 <Stepper activeStep={activeStep}>
@@ -215,7 +284,6 @@ const AddRepresentativesPage = () => {
                         );
                     })}
                 </Stepper>
-
                 <>
                     {/* form */}
                     <form onSubmit={handleSubmit(onSubmit, onError)}>
@@ -319,13 +387,15 @@ const AddRepresentativesPage = () => {
                                         {/* state name */}
                                         <div style={{ margin: "20px 0" }}>
                                             <Autocomplete
+                                                value={state}
                                                 onChange={(
                                                     _e,
                                                     value: string[]
-                                                ) =>
-                                                    (selectedStates.current =
-                                                        value)
-                                                }
+                                                ) => {
+                                                    selectedStates.current =
+                                                        value;
+                                                    handelStateChange(value);
+                                                }}
                                                 noOptionsText="هذه المحافظة غير متاحه حاليا"
                                                 multiple
                                                 id="statesId"
@@ -376,59 +446,6 @@ const AddRepresentativesPage = () => {
                                         </div>
 
                                         {/* branch name */}
-                                        {/* <div style={{ margin: "20px 0" }}>
-                                            <Autocomplete
-                                                noOptionsText="هذا الفرع غير متاح حاليا"
-                                                id="branch"
-                                                disablePortal
-                                                options={branches?.data.map(
-                                                    (option: {
-                                                        id: string;
-                                                        branch: string;
-                                                    }) => option.branch
-                                                )}
-                                                renderInput={(params) => (
-                                                    <>
-                                                        <TextField
-                                                            color="info"
-                                                            {...register(
-                                                                "branchId"
-                                                            )}
-                                                            error={
-                                                                !!errors.branchId
-                                                            }
-                                                            sx={{
-                                                                width: "90%",
-                                                            }}
-                                                            {...params}
-                                                            label="اسم الفرع"
-                                                            InputProps={{
-                                                                ...params.InputProps,
-                                                                type: "text",
-                                                            }}
-                                                        />
-                                                        <FormHelperText
-                                                            error={
-                                                                !!errors.branchId
-                                                            }
-                                                            sx={{
-                                                                fontWeight:
-                                                                    "bold",
-                                                                letterSpacing:
-                                                                    "0.1rem",
-                                                            }}
-                                                            id="component-helper-text"
-                                                        >
-                                                            {
-                                                                errors?.branchId
-                                                                    ?.message
-                                                            }
-                                                        </FormHelperText>
-                                                    </>
-                                                )}
-                                            />
-                                        </div> */}
-                                        {/* branch name */}
                                         <div style={{ margin: "20px 0" }}>
                                             <FormControl
                                                 sx={{
@@ -456,13 +473,13 @@ const AddRepresentativesPage = () => {
                                                     {branches?.data.map(
                                                         (branch: {
                                                             id: number;
-                                                            branch: string;
+                                                            name: string;
                                                         }) => (
                                                             <MenuItem
                                                                 defaultChecked
                                                                 value={branch.id.toString()}
                                                             >
-                                                                {branch.branch}
+                                                                {branch.name}
                                                             </MenuItem>
                                                         )
                                                     )}
@@ -582,7 +599,16 @@ const AddRepresentativesPage = () => {
                         </Box>
                         <DevTool control={control} />
                     </form>
-                </>
+                </>{" "}
+                <Backdrop
+                    sx={{
+                        color: "#fff",
+                        zIndex: (theme) => theme.zIndex.drawer + 1,
+                    }}
+                    open={isLoading}
+                >
+                    <CircularProgress color="inherit" />
+                </Backdrop>
             </Box>
         </>
     );

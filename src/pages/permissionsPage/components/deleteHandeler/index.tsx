@@ -1,11 +1,14 @@
 /* MUI */
 import { Button, Dialog, DialogActions, DialogTitle } from "@mui/material";
 
+/* motion */
+import { motion } from "framer-motion";
+
 /* react query */
 import UseMutate from "../../../../hooks/permissions/useDeleteMutate";
 
 type props = {
-    id: number;
+    id: string;
     openDeleteHandler: boolean;
     handleDeleteHandlerClose: () => void;
 };
@@ -20,7 +23,13 @@ const DeleteHandler = ({
         handleDeleteHandlerClose();
     };
     return (
-        <div>
+        <motion.div
+            initial={{ scale: 0.4, opacity: 0 }}
+            animate={{ x: 50, scale: 1, opacity: 1 }}
+            transition={{
+                duration: 2,
+            }}
+        >
             <Dialog
                 fullWidth={true}
                 open={openDeleteHandler}
@@ -28,13 +37,21 @@ const DeleteHandler = ({
                 aria-labelledby="alert-dialog-title"
                 aria-describedby="alert-dialog-description"
             >
-                <DialogTitle
-                    id="alert-dialog-title"
-                    width={{ xs: "230px", sm: "auto" }}
+                {" "}
+                <motion.div
+                    initial={{ x: -20, scale: 0.4, opacity: 0 }}
+                    animate={{ x: 0, scale: 1, opacity: 1 }}
+                    transition={{
+                        duration: 0.2,
+                    }}
                 >
-                    هل متاكد من حذف هذه الصلاحية ؟
-                </DialogTitle>
-
+                    <DialogTitle
+                        id="alert-dialog-title"
+                        width={{ xs: "230px", sm: "auto" }}
+                    >
+                        هل متاكد من حذف هذه الصلاحية ؟
+                    </DialogTitle>
+                </motion.div>
                 <DialogActions>
                     <Button
                         onClick={handelDeleteSubmit}
@@ -57,7 +74,7 @@ const DeleteHandler = ({
                     </Button>
                 </DialogActions>
             </Dialog>
-        </div>
+        </motion.div>
     );
 };
 

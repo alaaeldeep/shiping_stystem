@@ -75,7 +75,6 @@ const AddProductForm = ({
 
     const modalSubmit = (e: SyntheticEvent) => {
         e.preventDefault();
-        console.log();
 
         if (
             (getFieldState("productName").isTouched &&

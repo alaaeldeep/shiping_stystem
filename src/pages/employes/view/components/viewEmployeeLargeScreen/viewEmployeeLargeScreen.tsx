@@ -30,7 +30,11 @@ export const ViewEmployeeLargeScreen = ({
                     <TableBody>
                         {rows.map((row, index) => {
                             return (
-                                <RowInLargeScreen data={row} index={index} />
+                                <RowInLargeScreen
+                                    key={index}
+                                    data={row}
+                                    index={index}
+                                />
                             );
                         })}
                     </TableBody>

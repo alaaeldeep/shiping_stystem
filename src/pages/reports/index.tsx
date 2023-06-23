@@ -4,7 +4,7 @@ import { Outlet } from "react-router";
 /* MUI */
 import { Box, Paper } from "@mui/material";
 
-const OrdersPage = () => {
+const Reports = () => {
     return (
         <>
             <Box sx={{ width: "100%" }}>
@@ -16,4 +16,4 @@ const OrdersPage = () => {
     );
 };
 
-export default OrdersPage;
+export default Reports;

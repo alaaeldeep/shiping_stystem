@@ -4,7 +4,6 @@ import { useState } from "react";
 /* mui */
 import MailIcon from "@mui/icons-material/Mail";
 import MessageIcon from "@mui/icons-material/Message";
-import Logout from "@mui/icons-material/Logout";
 import { Menu, Badge, Divider, MenuItem, ListItemIcon } from "@mui/material";
 
 const messages = [

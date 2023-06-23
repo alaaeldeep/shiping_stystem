@@ -11,20 +11,20 @@ import {
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 
 /* types */
-import { SpecialPackage } from "../../../../components/types";
+import { SpecialPackageView } from "../../../../components/types";
 
 type props = {
-    SpecialPackage: SpecialPackage[];
+    SpecialPackage: SpecialPackageView[];
     setSpecialPackage: any;
 };
 const SpecialPackageInLargeScreen = ({
     SpecialPackage,
     setSpecialPackage,
 }: props) => {
-    const handelDeleteSpecialPackage = (row: SpecialPackage) => {
-        setSpecialPackage((prev: SpecialPackage[]) =>
+    const handelDeleteSpecialPackage = (row: SpecialPackageView) => {
+        setSpecialPackage((prev: SpecialPackageView[]) =>
             prev.filter(
-                (oldPackage: SpecialPackage) => oldPackage.id !== row.id
+                (oldPackage: SpecialPackageView) => oldPackage.id !== row.id
             )
         );
     };
@@ -41,7 +41,7 @@ const SpecialPackageInLargeScreen = ({
                 </TableHead>
                 <TableBody>
                     {SpecialPackage.map(
-                        (row: SpecialPackage, index: number) => (
+                        (row: SpecialPackageView, index: number) => (
                             <TableRow
                                 key={index}
                                 sx={{

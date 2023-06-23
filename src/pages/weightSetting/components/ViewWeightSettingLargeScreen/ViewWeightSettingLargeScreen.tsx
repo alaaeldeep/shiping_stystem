@@ -12,17 +12,21 @@ import {
 } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 
+/* store */
+import { useOwnStore } from "../../../../store/index";
+
 /* components  */
 import CustomTableHead from "../../../../components/table/tableHead";
 import EditWeightSetting from "../EditWeightSetting";
 /* types */
 import { WeightSettingRow } from "../../../../components/types";
+import { headCells } from "../../../permissionsPage/add/addPermissionPage";
 
 type ViewPermissionsLargeScreenProps = {
     data: WeightSettingRow;
 };
 
-const weightSettingHeadCells = [
+const weightSettingHeadCells1 = [
     {
         id: "id",
         label: " تكلفة الشحن الافتراضية تبدء من 0 الي وزن ",
@@ -41,9 +45,27 @@ const weightSettingHeadCells = [
         label: "الاعدادات",
     },
 ];
+const weightSettingHeadCells2 = [
+    {
+        id: "id",
+        label: " تكلفة الشحن الافتراضية تبدء من 0 الي وزن ",
+    },
+    {
+        id: "name",
+        label: "سعر كل كـجم اضافي",
+    },
+    {
+        id: "name",
+        label: "تكلفة الشحن للقري",
+    },
+];
 export const ViewWeightSettingLargeScreen = ({
     data,
 }: ViewPermissionsLargeScreenProps) => {
+    const canActivateSettingsEdit = useOwnStore(
+        (store) => store.user.permissions?.Settings?.[2]
+    );
+
     const [openWeightSetting, setOpenWeightSetting] = useState(false);
     const handleClickOpenWeightSetting = () => {
         setOpenWeightSetting(true);
@@ -59,7 +81,13 @@ export const ViewWeightSettingLargeScreen = ({
                     aria-labelledby="tableTitle"
                     size={"medium"}
                 >
-                    <CustomTableHead headCell={weightSettingHeadCells} />
+                    <CustomTableHead
+                        headCell={
+                            canActivateSettingsEdit
+                                ? weightSettingHeadCells1
+                                : weightSettingHeadCells2
+                        }
+                    />
                     <TableBody>
                         <TableRow
                             hover
@@ -97,19 +125,21 @@ export const ViewWeightSettingLargeScreen = ({
                                     </TableCell>
 
                                     {/* settings */}
-                                    <TableCell align="center">
-                                        <IconButton
-                                            onClick={
-                                                handleClickOpenWeightSetting
-                                            }
-                                        >
-                                            <EditIcon
-                                                style={{
-                                                    color: "#7AA874",
-                                                }}
-                                            />
-                                        </IconButton>
-                                    </TableCell>
+                                    {canActivateSettingsEdit && (
+                                        <TableCell align="center">
+                                            <IconButton
+                                                onClick={
+                                                    handleClickOpenWeightSetting
+                                                }
+                                            >
+                                                <EditIcon
+                                                    style={{
+                                                        color: "#7AA874",
+                                                    }}
+                                                />
+                                            </IconButton>
+                                        </TableCell>
+                                    )}
                                 </>
                             }
                         </TableRow>

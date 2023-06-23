@@ -35,9 +35,8 @@ export const ViewStatesLargeScreen = ({
                                 <Row
                                     key={index}
                                     index={index}
-                                    id={row.id}
                                     labelId={labelId}
-                                    state={row.state}
+                                    data={row}
                                 />
                             );
                         })}

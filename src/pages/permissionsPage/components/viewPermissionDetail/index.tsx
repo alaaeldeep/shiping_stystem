@@ -9,6 +9,9 @@ import {
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 
+/* motion */
+import { motion } from "framer-motion";
+
 /* components */
 import { AddPermissionLargeScreen } from "../../add/addPermissionLargeScreen";
 
@@ -24,7 +27,7 @@ import { z } from "zod";
 type PermissionDetailsProps = {
     open: boolean;
     roleName: string;
-    id: number | undefined;
+    id: string | undefined;
     selectedPermissions: any;
     handleClose: () => void;
 };
@@ -50,7 +53,14 @@ const ViewPermissionDetails = ({
             open={open}
             onClose={handleClose}
         >
-            <div style={{ display: "flex", justifyContent: "space-between" }}>
+            <motion.div
+                initial={{ scale: 0.4, opacity: 0 }}
+                animate={{ x: 0, scale: 1, opacity: 1 }}
+                transition={{
+                    duration: 0.3,
+                }}
+                style={{ display: "flex", justifyContent: "space-between" }}
+            >
                 {/* title */}
                 <DialogTitle width={{ xs: "230px", sm: "auto" }}>
                     عـرض الصـــلاحـيــات الخاصــة بــــ : {roleName}
@@ -61,7 +71,7 @@ const ViewPermissionDetails = ({
                         <CloseIcon sx={{ color: "red", fontSize: "1.7rem" }} />
                     </IconButton>
                 </DialogActions>
-            </div>
+            </motion.div>
 
             {/* content=> view permissions */}
             <DialogContent>

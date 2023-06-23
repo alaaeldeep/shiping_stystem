@@ -1,46 +1,60 @@
+/* react staff */
+import { useState } from "react";
+
 /* MUI */
-import { TableCell, TableRow, IconButton } from "@mui/material";
+import {
+    TableCell,
+    TableRow,
+    IconButton,
+    FormControlLabel,
+    Typography,
+} from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
-import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import ZoomOutMapIcon from "@mui/icons-material/ZoomOutMap";
 
 /* components  */
-import DeleteHandler from "../../../components/deleteHandeler";
+import ChangeStatusHandler from "../../../components/ChangeStatusHandeler";
 import EditRepresentativeDetail from "../../../components/editRepresentativeDetail";
 import ViewRepresentativeDetails from "../../../components/viewPersentativeDetail";
-
-/* react staff */
-import { useState } from "react";
-import { RepresentativeGET } from "../../../../../components/types";
+import { StatusSwitch } from "../../../../employes/view/components/viewEmployeeLargeScreen/row";
 
 /* types */
+import { RepresentativeGET } from "../../../../../components/types";
+
 type props = {
     index: number;
     data: RepresentativeGET;
 };
 const RowInLargeScreen = ({ index, data }: props) => {
+    /* status */
+    const handleChange = () => {
+        handleClickOpenChangeStatus();
+    };
+    /* view */
     const [openViewRepresentativeDetails, setOpenViewRepresentativeDetails] =
         useState(false);
-    const [openEditRepresentativeDetails, setOpenEditRepresentativeDetails] =
-        useState(false);
-    const [openDeleteHandler, setOpenDeleteHandler] = useState(false);
-    const handleDeleteHandlerOpen = () => {
-        setOpenDeleteHandler(true);
-    };
-    const handleDeleteHandlerClose = () => {
-        setOpenDeleteHandler(false);
-    };
     const handleClickOpenViewRepresentativeDetails = () => {
         setOpenViewRepresentativeDetails(true);
-    };
-    const handleClickOpenEditRepresentativeDetails = () => {
-        setOpenEditRepresentativeDetails(true);
     };
     const handleCloseViewRepresentativeDetails = () => {
         setOpenViewRepresentativeDetails(false);
     };
+    /* edit */
+    const [openEditRepresentativeDetails, setOpenEditRepresentativeDetails] =
+        useState(false);
+    const handleClickOpenEditRepresentativeDetails = () => {
+        setOpenEditRepresentativeDetails(true);
+    };
     const handleCloseEditRepresentativeDetails = () => {
         setOpenEditRepresentativeDetails(false);
+    };
+    /* change status representative */
+    const [openChangeStatus, setOpenChangeStatus] = useState(false);
+    const handleClickOpenChangeStatus = () => {
+        setOpenChangeStatus(true);
+    };
+    const handleCloseOpenChangeStatus = () => {
+        setOpenChangeStatus(false);
     };
     return (
         <TableRow hover tabIndex={-1} sx={{ cursor: "pointer" }}>
@@ -55,6 +69,12 @@ const RowInLargeScreen = ({ index, data }: props) => {
                 data={data}
                 open={openViewRepresentativeDetails}
                 handleClose={handleCloseViewRepresentativeDetails}
+            />
+            {/* change status */}
+            <ChangeStatusHandler
+                data={data}
+                handleClose={handleCloseOpenChangeStatus}
+                openStatusHandler={openChangeStatus}
             />
             {/* view all representative  */}
             {
@@ -80,7 +100,25 @@ const RowInLargeScreen = ({ index, data }: props) => {
 
                     {/* status */}
                     <TableCell align="center">
-                        <IconButton>//</IconButton>
+                        <FormControlLabel
+                            control={
+                                <StatusSwitch sx={{ m: 1 }} defaultChecked />
+                            }
+                            label={
+                                data.status ? (
+                                    <Typography sx={{ color: "#65C466" }}>
+                                        نشط
+                                    </Typography>
+                                ) : (
+                                    <Typography sx={{ color: "#FEA1A1" }}>
+                                        غير نشط
+                                    </Typography>
+                                )
+                            }
+                            checked={data.status}
+                            onChange={handleChange}
+                            /*  checked={false} */
+                        />
                     </TableCell>
 
                     {/* settings */}
@@ -103,22 +141,7 @@ const RowInLargeScreen = ({ index, data }: props) => {
                                 }}
                             />
                         </IconButton>
-                        <IconButton onClick={handleDeleteHandlerOpen}>
-                            <DeleteForeverIcon
-                                style={{
-                                    color: "#DF2E38",
-                                }}
-                            />
-                        </IconButton>
                     </TableCell>
-
-                    {/*delete State Details modal */}
-                    <DeleteHandler
-                        userName={data.userName}
-                        id={data.id}
-                        openDeleteHandler={openDeleteHandler}
-                        handleDeleteHandlerClose={handleDeleteHandlerClose}
-                    />
                 </>
             }
         </TableRow>

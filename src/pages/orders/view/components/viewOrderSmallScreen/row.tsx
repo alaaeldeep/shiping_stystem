@@ -12,13 +12,18 @@ import {
 import EditIcon from "@mui/icons-material/Edit";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import ZoomOutMapIcon from "@mui/icons-material/ZoomOutMap";
-import PrintIcon from "@mui/icons-material/Print";
 import PublishedWithChangesIcon from "@mui/icons-material/PublishedWithChanges";
+import AssignmentIndIcon from "@mui/icons-material/AssignmentInd";
+
+/* date formatter */
+import moment from "moment";
+import "moment/dist/locale/ar";
 
 /* components */
 import EditOrderDetails from "../../../components/editOrderDetails";
 import ViewOrderDetails from "../../../components/viewOrderDetail";
 import ChangeOrderStatus from "../../../components/changeOrderStatus";
+import AssignToRepresentative from "../../../components/assignToRepresentative";
 
 /* types */
 import { OrderRow } from "../../../../../components/types";
@@ -58,6 +63,16 @@ const RowInSmallScreen = ({ index, data }: ViewOrderSmallScreenProps) => {
     const handleCloseChangeOrderStatus = () => {
         setOpenChangeOrderStatus(false);
     };
+    /* Assign To Representative */
+    const [openAssignToRepresentative, setOpenAssignToRepresentative] =
+        useState(false);
+    const handleClickAssignToRepresentative = () => {
+        setOpenAssignToRepresentative(true);
+    };
+    const handleCloseAssignToRepresentative = () => {
+        setOpenAssignToRepresentative(false);
+    };
+
     const mode = useOwnStore((store) => store.mode);
 
     const handleChange =
@@ -85,6 +100,12 @@ const RowInSmallScreen = ({ index, data }: ViewOrderSmallScreenProps) => {
                 open={openChangeOrderStatus}
                 data={data}
                 handleClose={handleCloseChangeOrderStatus}
+            />{" "}
+            {/* Assign To Representative */}
+            <AssignToRepresentative
+                open={openAssignToRepresentative}
+                data={data}
+                handleClose={handleCloseAssignToRepresentative}
             />
             <Accordion
                 sx={{ px: 5 }}
@@ -102,13 +123,17 @@ const RowInSmallScreen = ({ index, data }: ViewOrderSmallScreenProps) => {
                     </Typography>
                     {/*  added date */}
                     <Typography sx={{ color: "text.secondary" }}>
-                        {data.date}
+                        {moment(data.date).locale("ar").format("LLLL")}
                     </Typography>
                 </AccordionSummary>
                 <AccordionDetails>
-                    <Typography>المحافظة : {data.state.name}</Typography>
+                    <Typography sx={{ marginBottom: "5px" }}>
+                        المحافظة : {data.state.name}
+                    </Typography>
 
-                    <Typography>تكلفة الطلب : {data.OrderCost}</Typography>
+                    <Typography sx={{ marginBottom: "5px" }}>
+                        تكلفة الطلب : {data.orderCost} جنيه
+                    </Typography>
 
                     <div>
                         تغيير الحالة :{" "}
@@ -128,8 +153,28 @@ const RowInSmallScreen = ({ index, data }: ViewOrderSmallScreenProps) => {
                             </IconButton>
                         }
                     </div>
+                    <div>
+                        اسناد الي مندوب :{" "}
+                        {
+                            <IconButton
+                                onClick={handleClickAssignToRepresentative}
+                            >
+                                <AssignmentIndIcon
+                                    style={
+                                        mode === "dark"
+                                            ? {
+                                                  color: "#99DBF5",
+                                              }
+                                            : {
+                                                  color: "#2B2A4C",
+                                              }
+                                    }
+                                />
+                            </IconButton>
+                        }
+                    </div>
 
-                    <Typography>
+                    <Typography sx={{ marginBottom: "5px" }}>
                         الاعدادات :{" "}
                         {
                             <>

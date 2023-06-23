@@ -10,15 +10,15 @@ type NewEmployee = {
     userName: string;
     email: string;
     password: string;
-    branchId: string;
+    branchId: number;
     phoneNumber: string;
     address: string;
-    id: number;
+    id: string;
 };
 
 const updatePermission = (data: NewEmployee) => {
     return request({
-        url: `/employees/${data.id}`,
+        url: `/Employees/${data.id}`,
         method: "put",
         data: data,
     });
@@ -28,9 +28,27 @@ const UseMutate = () => {
     const queryClient = useQueryClient();
     return useMutation(updatePermission, {
         onSuccess: () => {
-            queryClient.invalidateQueries("/employees");
+            queryClient.invalidateQueries("/Employees");
         },
     });
 };
 
 export default UseMutate;
+
+/* update status */
+type EmployeeStatus = { id: string; status: boolean };
+const updateStatusEmployee = (data: EmployeeStatus) => {
+    return request({
+        url: `/Employees/status/${data.id}`,
+        method: "put",
+        data: data,
+    });
+};
+export const UseMutateStatus = () => {
+    const queryClient = useQueryClient();
+    return useMutation(updateStatusEmployee, {
+        onSuccess: () => {
+            queryClient.invalidateQueries("/Employees");
+        },
+    });
+};

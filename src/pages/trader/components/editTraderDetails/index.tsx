@@ -1,6 +1,9 @@
 /* react staff */
 import { useState, useRef } from "react";
 
+/* router */
+import { useNavigate } from "react-router";
+
 /* MUI */
 import {
     Button,
@@ -21,8 +24,16 @@ import {
     Select,
     SelectChangeEvent,
     MenuItem,
+    Backdrop,
+    CircularProgress,
 } from "@mui/material"; /* rect-form */
 import CloseIcon from "@mui/icons-material/Close";
+
+/* uuid */
+import { v4 as uuidv4 } from "uuid";
+
+/* motion */
+import { motion } from "framer-motion";
 
 /* hook form */
 import { useForm } from "react-hook-form";
@@ -33,7 +44,7 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 /* react query */
-import UseMutate from "../../../../hooks/empoyees/useEditMutate";
+import UseMutate from "../../../../hooks/traders/useEditMutate";
 import UseQuery from "../../../../hooks/serverState/useQuery";
 
 /* toast */
@@ -46,9 +57,12 @@ import SpecialPackageInLargeScreen from "./components/specialPackageInLargeScree
 import SpecialPackageInSmallScreen from "./components/specialPackageInSmallScreen";
 import SpecialPackageForm from "./components/specialPackageForm";
 
+/* utils */
+import { convertCityToID, convertStateToID } from "../../../../utils/converter";
+
 /* types */
-import { TraderRow } from "../../../../components/types";
-import { SpecialPackage } from "../../../../components/types";
+import { SpecialPackagePost, TraderRow } from "../../../../components/types";
+
 type EditEmployeeDetailsProps = {
     open: boolean;
     data: TraderRow;
@@ -66,28 +80,27 @@ const EditTraderDetails = ({
     handleClose,
     data,
 }: EditEmployeeDetailsProps) => {
+    const navigate = useNavigate();
     /* mui */
     const matches = useMediaQuery("(min-width:1070px)");
 
     /* fetch data */
-    const { mutate } = UseMutate();
-    const { data: branches } = UseQuery("/branches");
-    const { data: states } = UseQuery("/states");
-    const { data: citiesToRepresentative } = UseQuery(
-        "/citiesToRepresentative"
-    );
+    const { mutate, isLoading } = UseMutate();
+    const { data: branches } = UseQuery("/Branches/active");
+    const { data: states } = UseQuery("/states/HavingCities");
+    const { data: avalCities } = UseQuery("/Cities");
 
     /* state& city state */
     const stateRef = useRef("");
     const [availableCities, setAvailableCities] = useState<
         {
-            cityId: number;
+            id: number;
             stateId: number;
             name: string;
         }[]
     >([
         {
-            cityId: data.city.cityId,
+            id: data.city.id,
             stateId: data.state.id,
             name: data.city.name,
         },
@@ -101,7 +114,7 @@ const EditTraderDetails = ({
     };
 
     const handelCity = (stateId: string) => {
-        return citiesToRepresentative?.data.filter((city: any) => {
+        return avalCities?.data.filter((city: any) => {
             if (city.stateId.toString() === stateId) return city;
         });
     };
@@ -111,7 +124,7 @@ const EditTraderDetails = ({
         setBranch(event.target.value as string);
     };
     /* city state */
-    const [city, setCity] = useState<string>(data.city.cityId.toString());
+    const [city, setCity] = useState<string>(data.city.id.toString());
     const handelCityChange = (event: SelectChangeEvent) => {
         setCity(event.target.value as string);
     };
@@ -123,8 +136,11 @@ const EditTraderDetails = ({
     const handleCloseSpecialPackageForm = () => {
         setOpenSpecialPackageForm(false);
     };
-    const [SpecialPackage, setSpecialPackage] = useState<SpecialPackage[]>(
-        data.specialPackages
+    const [SpecialPackage, setSpecialPackage] = useState<SpecialPackagePost[]>(
+        data.specialPackages.map((specialPackage) => ({
+            ...specialPackage,
+            id: uuidv4(),
+        }))
     );
     /* steps form */
     const [activeStep, setActiveStep] = useState(0);
@@ -175,11 +191,6 @@ const EditTraderDetails = ({
         stateId: z.string().nonempty("برجاء اختيار المحافظه"),
         cityId: z.string().nonempty("برجاء اختيار المدينه"),
         rejectedOrderlossRatio: z.string().nonempty("برجاء كتابه نسبه التحمل"),
-
-        /* step 3 */
-        stateSpecialPackage: z.string().optional(),
-        citySpecialPackage: z.string().optional(),
-        shippingCostSpecialPackage: z.string().optional(),
     }); /* hooks form */
 
     const { register, control, formState, setError, handleSubmit } =
@@ -192,23 +203,87 @@ const EditTraderDetails = ({
                 address: data.address,
                 storeName: data.storeName,
                 branchId: data.branch.id + "",
-                stateId: data.state.name + "",
-                cityId: data.city.name + "",
-                rejectedOrderlossRatio: data.rejectedOrderlossRatio,
+                stateId: data.state.id + "",
+                cityId: data.city.id + "",
+                rejectedOrderlossRatio: data.rejectedOrderlossRatio.toString(),
             },
             mode: "onTouched",
             resolver: zodResolver(schema),
         });
     const { errors } = formState;
     type FormValue = z.infer<typeof schema>;
-    const onSubmit = (data: FormValue) => {
+    const handelPackage = (specialPackage: SpecialPackagePost[]) => {
+        return specialPackage.map((spPackage: SpecialPackagePost) => ({
+            cityId: convertCityToID(avalCities, spPackage.city),
+            stateId: convertStateToID(states, spPackage.state),
+            shippingCost: Math.abs(spPackage.shippingCost),
+        }));
+    };
+    const onSubmit = (requestData: FormValue) => {
         if (
-            handelCity(data.stateId).some(
-                (city: { cityId: string; stateId: string }) =>
-                    city.cityId == data.cityId
+            handelCity(requestData.stateId).some(
+                (city: { id: string; stateId: string }) =>
+                    city.id == requestData.cityId
             )
         ) {
-            console.log({ ...data, specialPackages: SpecialPackage });
+            mutate(
+                {
+                    ...requestData,
+                    id: data.id,
+                    stateId: +requestData.stateId,
+                    cityId: +requestData.cityId,
+                    branchId: +requestData.branchId,
+                    specialPackages: handelPackage(SpecialPackage),
+                    rejectedOrderlossRatio: Math.abs(
+                        +requestData.rejectedOrderlossRatio
+                    ),
+                },
+                {
+                    onSuccess: () => {
+                        handleClose();
+                    },
+                    onError: (err: any) => {
+                        if (err.message.includes("Username")) {
+                            setError("userName", {
+                                message:
+                                    "اسم المستخدم موجود بالفعل, برجاء كتابه اسم جديد",
+                            });
+                            toast.error(
+                                "اسم المستخدم موجود بالفعل, برجاء كتابه اسم جديد",
+                                {
+                                    position: toast.POSITION.BOTTOM_LEFT,
+                                    autoClose: 2000,
+                                    theme: "dark",
+                                }
+                            );
+                        }
+                        if (err.message.includes("Email")) {
+                            setError("email", {
+                                message:
+                                    "البريد الالكتروني موجود بالفعل, برجاء كتابه بريد جديد",
+                            });
+                            toast.error(
+                                "البريد الالكتروني موجود بالفعل, برجاء كتابه بريد جديد",
+                                {
+                                    position: toast.POSITION.BOTTOM_LEFT,
+                                    autoClose: 2000,
+                                    theme: "dark",
+                                }
+                            );
+                        }
+                        if (err.message.includes("Passwords")) {
+                            setError("password", {
+                                message: "كلمة السر يجب ان تحتوي علي ارقام ",
+                            });
+                            toast.error("كلمة السر يجب ان تحتوي علي ارقام ", {
+                                position: toast.POSITION.BOTTOM_LEFT,
+                                autoClose: 2000,
+                                theme: "dark",
+                            });
+                        }
+                    },
+                }
+            );
         } else {
             setError("cityId", { message: "برجاء اختيار مدينة" });
             toast.warn("برجاء   اختيار مدينة ", {
@@ -233,7 +308,14 @@ const EditTraderDetails = ({
             open={open}
             onClose={handleClose}
         >
-            <div style={{ display: "flex", justifyContent: "space-between" }}>
+            <motion.div
+                initial={{ scale: 0.4, opacity: 0 }}
+                animate={{ x: 0, scale: 1, opacity: 1 }}
+                transition={{
+                    duration: 0.3,
+                }}
+                style={{ display: "flex", justifyContent: "space-between" }}
+            >
                 <DialogTitle width={{ xs: "230px", sm: "auto" }}>
                     تعــديــل بيانات الخاصــة بالتاجر : {data.userName}
                 </DialogTitle>
@@ -242,7 +324,7 @@ const EditTraderDetails = ({
                         <CloseIcon sx={{ color: "red", fontSize: "1.7rem" }} />
                     </IconButton>
                 </DialogActions>
-            </div>
+            </motion.div>
 
             <DialogContent>
                 <Box
@@ -460,14 +542,14 @@ const EditTraderDetails = ({
                                                     {branches?.data.map(
                                                         (branch: {
                                                             id: number;
-                                                            branch: string;
+                                                            name: string;
                                                         }) => (
                                                             <MenuItem
                                                                 key={branch.id}
                                                                 defaultChecked
                                                                 value={branch.id.toString()}
                                                             >
-                                                                {branch.branch}
+                                                                {branch.name}
                                                             </MenuItem>
                                                         )
                                                     )}
@@ -506,15 +588,13 @@ const EditTraderDetails = ({
                                                 >
                                                     {availableCities?.map(
                                                         (city: {
-                                                            cityId: number;
+                                                            id: number;
                                                             name: string;
                                                         }) => (
                                                             <MenuItem
-                                                                key={
-                                                                    city.cityId
-                                                                }
+                                                                key={city.id}
                                                                 defaultChecked
-                                                                value={city?.cityId.toString()}
+                                                                value={city?.id.toString()}
                                                             >
                                                                 {city?.name}
                                                             </MenuItem>
@@ -600,9 +680,7 @@ const EditTraderDetails = ({
                                             handleCloseSpecialPackageForm={
                                                 handleCloseSpecialPackageForm
                                             }
-                                            citiesToRepresentative={
-                                                citiesToRepresentative
-                                            }
+                                            avalCities={avalCities}
                                         />
                                     </Box>
                                 )}
@@ -647,7 +725,16 @@ const EditTraderDetails = ({
                                 </Button>
                             )}
                         </Box>
-                        <DevTool control={control} />
+                        <DevTool control={control} />{" "}
+                        <Backdrop
+                            sx={{
+                                color: "#fff",
+                                zIndex: (theme) => theme.zIndex.drawer + 1,
+                            }}
+                            open={isLoading}
+                        >
+                            <CircularProgress color="inherit" />
+                        </Backdrop>
                     </form>
                 </Box>
             </DialogContent>

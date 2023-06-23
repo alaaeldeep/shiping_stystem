@@ -6,8 +6,10 @@ import { useNavigate } from "react-router";
 
 /* MUI */
 import {
+    Backdrop,
     Box,
     Button,
+    CircularProgress,
     FormControl,
     FormHelperText,
     InputLabel,
@@ -15,7 +17,6 @@ import {
     Select,
     SelectChangeEvent,
 } from "@mui/material";
-import { useMediaQuery } from "@mui/material";
 
 /* hooks form */
 import { useForm } from "react-hook-form";
@@ -37,11 +38,22 @@ import UseQuery from "../../../hooks/serverState/useQuery";
 /* toast */
 import { toast } from "react-toastify";
 
+/* store */
+import { useOwnStore } from "../../../store";
+
 const AddEmployPage = () => {
     const navigate = useNavigate();
-    const { data: branches } = UseQuery("/branches");
-    const { data: roles } = UseQuery("/permissions");
-    const { mutate } = UseMutate();
+    const { data: branches } = UseQuery("/Branches/active");
+    const { data: roles } = UseQuery("/RolesPrivileges/simple");
+    const { mutate, isLoading } = UseMutate();
+
+    const canActivateEmployeeAdd = useOwnStore(
+        (store) => store.user.permissions?.Employees?.[0]
+    );
+    const canActivateEmployeeView = useOwnStore(
+        (store) => store.user.permissions?.Employees?.[1]
+    );
+
     /* branch state */
     const [branch, setBranch] = useState<string>();
     const handelBranchChange = (event: SelectChangeEvent) => {
@@ -76,32 +88,93 @@ const AddEmployPage = () => {
             .nonempty("برجاء كتابة كلمة السر")
             .min(8, "برجاء كتابه كلمه سر 8 احرف علي الاقل"),
 
-        branchId: z.string().nonempty("برجاء اختيار الفرع"),
-
         phoneNumber: z
             .string()
             .nonempty("برجاء كتابه رقم الهاتف")
             .length(11, " تاكد من كتابه رقم صحيح مكون من 11 رقم"),
 
-        roleId: z.string().nonempty("برجاء تحديد الصلاحيات"),
+        branchId: z
+            .string({
+                errorMap: (issue, _ctx) => {
+                    switch (issue.code) {
+                        default:
+                            return { message: "برجاء اختيار الفرع " };
+                    }
+                },
+            })
+            .nonempty("برجاء اختيار الفرع"),
+
+        roleId: z
+            .string({
+                errorMap: (issue, _ctx) => {
+                    switch (issue.code) {
+                        default:
+                            return { message: "برجاء اختيار الصلاحية " };
+                    }
+                },
+            })
+            .nonempty("برجاء اختيار الصلاحية"),
+
+        // roleId: z.string().nonempty("برجاء تحديد الصلاحيات"),
 
         address: z.string().nonempty("برجاء كتابة العنوان"),
     });
     type FormValue = z.infer<typeof schema>;
-    const { register, control, handleSubmit, formState, getValues } =
+    const { register, control, handleSubmit, formState, setError } =
         useForm<FormValue>({
-            defaultValues: {},
             mode: "onTouched",
             resolver: zodResolver(schema),
         });
     const { errors } = formState;
-    const matches = useMediaQuery("(min-width:1070px)");
+
     const onSubmit = (data: FormValue) => {
         /*  🚀 make the request 🚀 */
-        mutate(data, {
+        const requestData = { ...data, branchId: +data.branchId };
+
+        mutate(requestData, {
             onSuccess: () => {
                 {
                     navigate("/employees");
+                }
+            },
+            onError: (err: any) => {
+                if (err.message.includes("Username")) {
+                    setError("userName", {
+                        message:
+                            "اسم المستخدم موجود بالفعل, برجاء كتابه اسم جديد",
+                    });
+                    toast.error(
+                        "اسم المستخدم موجود بالفعل, برجاء كتابه اسم جديد",
+                        {
+                            position: toast.POSITION.BOTTOM_LEFT,
+                            autoClose: 2000,
+                            theme: "dark",
+                        }
+                    );
+                }
+                if (err.message.includes("Email")) {
+                    setError("email", {
+                        message:
+                            "البريد الالكتروني موجود بالفعل, برجاء كتابه بريد جديد",
+                    });
+                    toast.error(
+                        "البريد الالكتروني موجود بالفعل, برجاء كتابه بريد جديد",
+                        {
+                            position: toast.POSITION.BOTTOM_LEFT,
+                            autoClose: 2000,
+                            theme: "dark",
+                        }
+                    );
+                }
+                if (err.message.includes("Passwords")) {
+                    setError("password", {
+                        message: "كلمة السر يجب ان تحتوي علي ارقام ",
+                    });
+                    toast.error("كلمة السر يجب ان تحتوي علي ارقام ", {
+                        position: toast.POSITION.BOTTOM_LEFT,
+                        autoClose: 2000,
+                        theme: "dark",
+                    });
                 }
             },
         });
@@ -121,6 +194,7 @@ const AddEmployPage = () => {
                 btnTitle="العودة للموظفين"
                 destination="/employees"
                 addIcon={false}
+                addBtn={!!canActivateEmployeeAdd && !!canActivateEmployeeView}
             />{" "}
             <form
                 onSubmit={handleSubmit(onSubmit, onError)}
@@ -228,13 +302,14 @@ const AddEmployPage = () => {
                                     {branches?.data.map(
                                         (branch: {
                                             id: number;
-                                            branch: string;
+                                            name: string;
                                         }) => (
                                             <MenuItem
+                                                key={branch.id}
                                                 defaultChecked
                                                 value={branch.id.toString()}
                                             >
-                                                {branch.branch}
+                                                {branch.name}
                                             </MenuItem>
                                         )
                                     )}
@@ -271,12 +346,13 @@ const AddEmployPage = () => {
                                     {roles?.data.map(
                                         (role: {
                                             id: number;
-                                            roleName: string;
+                                            name: string;
                                         }) => (
                                             <MenuItem
+                                                key={role.id}
                                                 value={role.id.toString()}
                                             >
-                                                {role.roleName}
+                                                {role.name}
                                             </MenuItem>
                                         )
                                     )}
@@ -311,7 +387,16 @@ const AddEmployPage = () => {
                     >
                         اضافة
                     </Button>
-                </Box>
+                </Box>{" "}
+                <Backdrop
+                    sx={{
+                        color: "#fff",
+                        zIndex: (theme) => theme.zIndex.drawer + 1,
+                    }}
+                    open={isLoading}
+                >
+                    <CircularProgress color="inherit" />
+                </Backdrop>
                 <DevTool control={control} />
             </form>
         </>

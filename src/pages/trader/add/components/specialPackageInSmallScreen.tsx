@@ -15,10 +15,10 @@ import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 
 /* types */
-import { SpecialPackage } from "../../../../components/types";
+import { SpecialPackageView } from "../../../../components/types";
 
 type Props = {
-    SpecialPackage: SpecialPackage[];
+    SpecialPackage: SpecialPackageView[];
     setSpecialPackage: any;
 };
 
@@ -33,10 +33,10 @@ export default function SpecialPackageInSmallScreen({
             setExpanded(isExpanded ? panel : false);
         };
 
-    const handelDeleteSpecialPackage = (row: SpecialPackage) => {
-        setSpecialPackage((prev: SpecialPackage[]) =>
+    const handelDeleteSpecialPackage = (row: SpecialPackageView) => {
+        setSpecialPackage((prev: SpecialPackageView[]) =>
             prev.filter(
-                (oldPackage: SpecialPackage) => oldPackage.id !== row.id
+                (oldPackage: SpecialPackageView) => oldPackage.id !== row.id
             )
         );
     };
@@ -44,7 +44,7 @@ export default function SpecialPackageInSmallScreen({
     return (
         <Paper sx={{ width: "100%" }}>
             {/* view States*/}
-            {SpecialPackage.map((row: SpecialPackage, index: number) => (
+            {SpecialPackage.map((row: SpecialPackageView, index: number) => (
                 <Accordion
                     key={index}
                     sx={{ px: 5 }}

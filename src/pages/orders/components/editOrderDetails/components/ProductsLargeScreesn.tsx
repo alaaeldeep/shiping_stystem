@@ -38,7 +38,7 @@ const ProductsInLargeScreen = ({
                     <TableRow>
                         <TableCell align="center">اسم المنتج</TableCell>
                         <TableCell align="center">الكمية</TableCell>
-                        <TableCell align="center">السعر</TableCell>
+
                         <TableCell align="center">الوزن (كجم)</TableCell>
                         <TableCell sx={{ width: "50px" }} align="center">
                             حذف
@@ -72,9 +72,7 @@ const ProductsInLargeScreen = ({
                             <TableCell align="center">
                                 {row.productWeight}
                             </TableCell>
-                            <TableCell align="center">
-                                {row.productPrice}
-                            </TableCell>
+
                             <TableCell align="center">
                                 <IconButton
                                     onClick={() =>

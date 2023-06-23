@@ -16,8 +16,13 @@ import {
     Select,
     MenuItem,
     SelectChangeEvent,
+    Backdrop,
+    CircularProgress,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
+
+/* motion */
+import { motion } from "framer-motion";
 
 /* hooks form */
 import { useForm } from "react-hook-form";
@@ -32,6 +37,9 @@ import { toast } from "react-toastify";
 
 /* react router */
 import { useNavigate } from "react-router";
+
+/* react query */
+import { UseMutateStatus } from "../../../../hooks/orders/useEditMutate";
 
 /* utils */
 import { statuses } from "../../../../utils/converter";
@@ -48,7 +56,7 @@ type OrderDetailsProps = {
 const ChangeOrderStatus = ({ open, handleClose, data }: OrderDetailsProps) => {
     const navigate = useNavigate();
 
-    //const { mutate } = UseMutate();
+    const { mutate, isLoading } = UseMutateStatus();
 
     const [status, setStatus] = useState<string>();
     const handelStatusChange = (event: SelectChangeEvent) => {
@@ -67,16 +75,16 @@ const ChangeOrderStatus = ({ open, handleClose, data }: OrderDetailsProps) => {
 
     /* 🚀 make the request 🚀  */
     const onSubmit = (requestData: FormValue) => {
-        console.log(requestData);
-        console.log(data.id);
-        handleClose();
-        /*  mutate(getValues(), {
-            onSuccess: () => {
-                {
-                    navigate("/status");
-                }
-            },
-        }); */
+        mutate(
+            { id: data.id, orderStatus: +requestData.orderStatus },
+            {
+                onSuccess: () => {
+                    {
+                        handleClose();
+                    }
+                },
+            }
+        );
     };
     const onError = () => {
         toast.warn("برجاء اختيار حالة الطلب ", {
@@ -92,7 +100,14 @@ const ChangeOrderStatus = ({ open, handleClose, data }: OrderDetailsProps) => {
             open={open}
             onClose={handleClose}
         >
-            <div style={{ display: "flex", justifyContent: "space-between" }}>
+            <motion.div
+                initial={{ scale: 0.4, opacity: 0 }}
+                animate={{ x: 0, scale: 1, opacity: 1 }}
+                transition={{
+                    duration: 0.3,
+                }}
+                style={{ display: "flex", justifyContent: "space-between" }}
+            >
                 {/* id */}
                 <DialogTitle width={{ xs: "230px", sm: "auto" }}>
                     تغيير الحالة الخاصــة بالطلب : {data.id}
@@ -103,7 +118,7 @@ const ChangeOrderStatus = ({ open, handleClose, data }: OrderDetailsProps) => {
                         <CloseIcon sx={{ color: "red", fontSize: "1.7rem" }} />
                     </IconButton>
                 </DialogActions>
-            </div>
+            </motion.div>
 
             {/* content=> view OrderDetails */}
             <DialogContent sx={{ height: "300px" }}>
@@ -203,6 +218,15 @@ const ChangeOrderStatus = ({ open, handleClose, data }: OrderDetailsProps) => {
                             </Button>
                         </Box>
                         <DevTool control={control} />
+                        <Backdrop
+                            sx={{
+                                color: "#fff",
+                                zIndex: (theme) => theme.zIndex.drawer + 1,
+                            }}
+                            open={isLoading}
+                        >
+                            <CircularProgress color="inherit" />
+                        </Backdrop>
                     </form>
                 </Box>
             </DialogContent>

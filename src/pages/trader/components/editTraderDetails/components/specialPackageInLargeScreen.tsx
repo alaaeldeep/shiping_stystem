@@ -11,24 +11,24 @@ import {
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 
 /* types */
-import { SpecialPackage } from "../../../../../components/types";
+import { SpecialPackagePost } from "../../../../../components/types";
 
 type props = {
-    SpecialPackage: SpecialPackage[];
+    SpecialPackage: SpecialPackagePost[];
     setSpecialPackage: any;
 };
 const SpecialPackageInLargeScreen = ({
     SpecialPackage,
     setSpecialPackage,
 }: props) => {
-    const handelDeleteSpecialPackage = (row: SpecialPackage) => {
-        setSpecialPackage((prev: SpecialPackage) =>
+    const handelDeleteSpecialPackage = (row: SpecialPackagePost) => {
+        setSpecialPackage((prev: SpecialPackagePost[]) =>
             prev.filter(
-                (oldPackage: SpecialPackage) => oldPackage.id !== row.id
+                (oldPackage: SpecialPackagePost) => oldPackage.id !== row.id
             )
         );
     };
-    console.log(SpecialPackage);
+
     return (
         <TableContainer component={Paper}>
             <Table aria-label="simple table">
@@ -42,7 +42,7 @@ const SpecialPackageInLargeScreen = ({
                 </TableHead>
                 <TableBody>
                     {SpecialPackage.map(
-                        (row: SpecialPackage, index: number) => (
+                        (row: SpecialPackagePost, index: number) => (
                             <TableRow
                                 key={index}
                                 sx={{
@@ -56,13 +56,9 @@ const SpecialPackageInLargeScreen = ({
                                     component="th"
                                     scope="row"
                                 >
-                                    {row.state.name
-                                        ? row.state.name
-                                        : row.state}
+                                    {row.state}
                                 </TableCell>
-                                <TableCell align="center">
-                                    {row.city.name ? row.city.name : row.city}
-                                </TableCell>
+                                <TableCell align="center">{row.city}</TableCell>
                                 <TableCell align="center">
                                     {row.shippingCost}
                                 </TableCell>

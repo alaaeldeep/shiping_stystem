@@ -8,10 +8,18 @@ import {
     IconButton,
     Box,
     FormHelperText,
-    TextField,
-    Autocomplete,
+    FormControl,
+    InputLabel,
+    Select,
+    MenuItem,
+    SelectChangeEvent,
+    Backdrop,
+    CircularProgress,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
+
+/* motion */
+import { motion } from "framer-motion";
 
 /* hook form */
 import { useForm } from "react-hook-form";
@@ -28,89 +36,67 @@ import UseQuery from "../../../../hooks/serverState/useQuery";
 /* components */
 import InputField from "../../../../components/inputFields/textInputField/inputfield";
 
-/* utils */
-import { convertStateToID, states } from "../../../../utils/converter";
-
 /* toast */
 import { toast } from "react-toastify";
 
+/* react staff */
 import { useState } from "react";
+
+/* types */
+import { CityRow } from "../../../../components/types";
+import NumericInputField from "../../../../components/inputFields/numericInputField";
 
 type EditCityProps = {
     open: boolean;
-    state: string;
-    id: number;
-    city: string;
-    shippingCost: number;
+    data: CityRow;
     handleClose: () => void;
 };
-const EditCityDetails = ({
-    open,
-    handleClose,
-    id,
-    state,
-    city,
-    shippingCost,
-}: EditCityProps) => {
-    const { data: availableStates } = UseQuery("/states");
-    const { mutate } = UseMutate();
+const EditCityDetails = ({ open, handleClose, data }: EditCityProps) => {
+    const { data: availableStates } = UseQuery("/states/active");
+    const { mutate, isLoading } = UseMutate();
 
-    const [selectedState, setSelectedState] = useState<string | null>(state);
-    const handelStateChange = (value: string | null) => {
-        setSelectedState(value);
+    /* states */
+    const [state, setState] = useState<string>(data.state.id + "");
+    const handelStateChange = (event: SelectChangeEvent) => {
+        setState(event.target.value as string);
     };
 
     const schema = z.object({
-        state: z.string().nonempty(" برجاء كتابة اسم المحافظه"),
-        city: z.string().nonempty(" برجاء كتابة اسم المدينة"),
-        shippingCost: z.preprocess(
-            (a) => parseInt(z.string().parse(a)),
-            z
-                .number({
-                    required_error: "برجاء ادخال قيمة الشحن ",
-                    invalid_type_error:
-                        "برجاء ادخال قيمة الشحن رقمية, مثال:25,60",
-                })
-                .positive("برجاء ادخال قيمة اكبر من 0")
-        ),
+        stateId: z.string().nonempty(" برجاء كتابة اسم المحافظه"),
+        name: z.string().nonempty(" برجاء كتابة اسم المدينة"),
+
+        shippingCost: z.string().nonempty(" برجاء ادخال قيمة الشحن"),
     });
     type FormValue = z.infer<typeof schema>;
     const { register, control, handleSubmit, formState, getValues, setError } =
         useForm<FormValue>({
-            defaultValues: { state: availableStates, city, shippingCost },
+            defaultValues: {
+                stateId: data.state.id + "",
+                name: data.name,
+                shippingCost: data.shippingCost + "",
+            },
             mode: "onChange",
             resolver: zodResolver(schema),
         });
     const { errors } = formState;
 
     /* 🚀 make the request 🚀  */
-    const onSubmit = (data: FormValue) => {
-        if (states.includes(getValues("state"))) {
-            mutate(
-                {
-                    name: data.city,
-                    shippingCost: data.shippingCost,
-                    stateId: convertStateToID(availableStates, data.state),
-                    id: id,
+    const onSubmit = (requestDate: FormValue) => {
+        mutate(
+            {
+                name: requestDate.name,
+                shippingCost: Math.abs(+requestDate.shippingCost),
+                stateId: +state,
+                id: data.id,
+            },
+            {
+                onSuccess: () => {
+                    {
+                        handleClose();
+                    }
                 },
-                {
-                    onSuccess: () => {
-                        {
-                            handleClose();
-                        }
-                    },
-                }
-            );
-        } else {
-            setError("state", {
-                message: "برجاء اختيار محافظه من الخيارات المتاحة ",
-            });
-            toast.warn("برجاء اختيار محافظه من الخيارات المتاحة ", {
-                position: toast.POSITION.BOTTOM_LEFT,
-                autoClose: 2000,
-                theme: "dark",
-            });
-        }
+            }
+        );
     };
     const onError = () => {
         toast.warn("برجاء اكمال الحقول الفارغة ", {
@@ -127,11 +113,16 @@ const EditCityDetails = ({
                 open={open}
                 onClose={handleClose}
             >
-                <div
+                <motion.div
+                    initial={{ scale: 0.4, opacity: 0 }}
+                    animate={{ x: 0, scale: 1, opacity: 1 }}
+                    transition={{
+                        duration: 0.3,
+                    }}
                     style={{ display: "flex", justifyContent: "space-between" }}
                 >
                     <DialogTitle width={{ xs: "230px", sm: "auto" }}>
-                        تعــديــل البيانات الخاصــة بمدينة : {state}
+                        تعــديــل البيانات الخاصــة بمدينة : {data.name}
                     </DialogTitle>
                     <DialogActions>
                         <IconButton onClick={handleClose}>
@@ -140,7 +131,7 @@ const EditCityDetails = ({
                             />
                         </IconButton>
                     </DialogActions>
-                </div>
+                </motion.div>
 
                 <DialogContent>
                     <form
@@ -165,64 +156,66 @@ const EditCityDetails = ({
                             }}
                         >
                             <Box sx={{ marginX: "auto", width: "90%" }}>
+                                {/* state name */}
                                 <div style={{ margin: "20px 0" }}>
-                                    <Autocomplete
-                                        value={selectedState}
-                                        onChange={(_e, value) =>
-                                            handelStateChange(value)
-                                        }
-                                        noOptionsText="هذه المحافظة غير متاحه حاليا"
-                                        id="state"
-                                        disablePortal
-                                        options={availableStates?.data.map(
-                                            (option: {
-                                                id: number;
-                                                name: string;
-                                            }) => option.name
-                                        )}
-                                        renderInput={(params) => (
-                                            <>
-                                                <TextField
-                                                    defaultValue={state}
-                                                    color="info"
-                                                    {...register("state")}
-                                                    error={!!errors.state}
-                                                    sx={{
-                                                        width: "90%",
-                                                    }}
-                                                    {...params}
-                                                    label="اسم المحافظة"
-                                                    InputProps={{
-                                                        ...params.InputProps,
-                                                        type: "text",
-                                                    }}
-                                                />
-                                                <FormHelperText
-                                                    error={!!errors.state}
-                                                    sx={{
-                                                        fontWeight: "bold",
-                                                        letterSpacing: "0.1rem",
-                                                    }}
-                                                    id="component-helper-text"
-                                                >
-                                                    {errors?.state?.message}
-                                                </FormHelperText>
-                                            </>
-                                        )}
-                                    />
+                                    <FormControl
+                                        sx={{
+                                            width: "90%",
+                                        }}
+                                    >
+                                        <InputLabel
+                                            error={!!errors.stateId}
+                                            color="info"
+                                            id="demo-simple-select-helper-label"
+                                        >
+                                            اسم المحافظة
+                                        </InputLabel>
+                                        <Select
+                                            {...register("stateId")}
+                                            labelId="demo-simple-select-helper-label"
+                                            id="demo-simple-select-helper"
+                                            value={state}
+                                            label="اسم المحافظة"
+                                            color="info"
+                                            onChange={handelStateChange}
+                                        >
+                                            {availableStates?.data.map(
+                                                (state: {
+                                                    id: number;
+                                                    name: string;
+                                                }) => (
+                                                    <MenuItem
+                                                        key={state.id}
+                                                        value={state.id.toString()}
+                                                    >
+                                                        {state.name}
+                                                    </MenuItem>
+                                                )
+                                            )}
+                                        </Select>
+                                        <FormHelperText
+                                            error={!!errors.stateId}
+                                        >
+                                            {errors?.stateId?.message}
+                                        </FormHelperText>
+                                    </FormControl>
                                 </div>
+
+                                {/* city */}
                                 <div style={{ margin: "20px 0" }}>
                                     <InputField
                                         register={register}
-                                        errors={errors.city}
-                                        fieldName="city"
+                                        errors={errors.name}
+                                        fieldName="name"
                                         label=" اسم المدينة "
                                         largeWidth="90%"
                                         smallWidth="90%"
                                     />
                                 </div>
+
+                                {/* shipping Cost */}
                                 <div style={{ margin: "20px 0" }}>
-                                    <InputField
+                                    <NumericInputField
                                         register={register}
                                         errors={errors.shippingCost}
                                         fieldName="shippingCost"
@@ -232,7 +225,6 @@ const EditCityDetails = ({
                                     />
                                 </div>
                             </Box>
-
                             <Button
                                 type="submit"
                                 sx={{
@@ -249,7 +241,16 @@ const EditCityDetails = ({
                         <DevTool control={control} />
                     </form>
                 </DialogContent>
-            </Dialog>
+            </Dialog>{" "}
+            <Backdrop
+                sx={{
+                    color: "#fff",
+                    zIndex: (theme) => theme.zIndex.drawer + 1,
+                }}
+                open={isLoading}
+            >
+                <CircularProgress color="inherit" />
+            </Backdrop>
         </>
     );
 };

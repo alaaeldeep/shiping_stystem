@@ -9,7 +9,7 @@ type permissionType = {
     rolePrivileges: any;
 };
 const addPermission = (data: permissionType) => {
-    return request({ url: "/permissions", method: "post", data: data });
+    return request({ url: "/RolesPrivileges", method: "post", data: data });
 };
 
 const UseMutate = () => {

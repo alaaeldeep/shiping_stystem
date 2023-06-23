@@ -5,9 +5,9 @@ import { request } from "../../lib/axios.utls";
 import { useMutation } from "react-query";
 
 /* types */
-import { TraderType } from "../../components/types";
+import { TraderPost } from "../../components/types";
 
-const addTrader = (data: TraderType) => {
+const addTrader = (data: TraderPost) => {
     return request({ url: "/traders", method: "post", data: data });
 };
 

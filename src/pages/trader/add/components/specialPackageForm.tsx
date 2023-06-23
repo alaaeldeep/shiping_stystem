@@ -45,7 +45,7 @@ import {
 
 type props = {
     open: boolean;
-    citiesToRepresentative: any;
+    avalCities: any;
     states: any;
     setSpecialPackage: any;
     handleCloseSpecialPackageForm: () => void;
@@ -53,47 +53,47 @@ type props = {
 const SpecialPackageForm = ({
     open,
     handleCloseSpecialPackageForm,
-    citiesToRepresentative,
+    avalCities,
     states,
     setSpecialPackage,
 }: props) => {
     /* state& city state */
     const stateRef = useRef("");
-    const cityRef = useRef("");
     const [availableCities, setAvailableCities] = useState<
         {
-            cityId: number;
+            id: number;
             stateId: number;
             name: string;
         }[]
     >();
 
     const [state, setState] = useState<string>();
+
     const handelStateChange = (event: SelectChangeEvent) => {
         stateRef.current = event.target.value as string;
         setState(event.target.value as string);
         setAvailableCities(handelCity(stateRef.current));
-        console.log(stateRef.current);
     };
 
     const handelCity = (stateId: string) => {
-        return citiesToRepresentative?.data.filter((city: any) => {
+        return avalCities?.data.filter((city: any) => {
             if (city.stateId.toString() === stateId) return city;
         });
-    };
+    }; /* /*  if (
+        handelCity(data.stateId).some(
+            (city: { id: string; stateId: string }) =>
+                city.id == data.cityId
+        )
+    ) */
+
+    const cityRef = useRef("");
 
     /* city state */
     const [city, setCity] = useState<string>();
     const handelCityChange = (event: SelectChangeEvent) => {
         setCity(event.target.value as string);
         cityRef.current = event.target.value as string;
-        console.log(cityRef.current);
     };
-    /* 
-    handelCity(stateRef.current).some(
-        (city: { cityId: number; stateId: number }) =>
-            city.stateId == +getValues("StateIdSpecialPackage")
-    ); */
 
     /* zod validation */
     const schema = z.object({
@@ -115,7 +115,6 @@ const SpecialPackageForm = ({
         formState,
         getFieldState,
         setError,
-        handleSubmit,
         getValues,
     } = useForm<FormValue>({
         defaultValues: {},
@@ -126,17 +125,7 @@ const SpecialPackageForm = ({
 
     const modalSubmit = (e: SyntheticEvent) => {
         e.preventDefault();
-        console.log();
-        // console.log(cityRef.current);
-        //  console.log(stateRef.current);
-        /*  console.log(getValues("shippingCostSpecialPackage")); */
 
-        console.log(
-            convertIDToCities(
-                citiesToRepresentative,
-                getValues("cityIdSpecialPackage")
-            )
-        );
         if (
             (getFieldState("StateIdSpecialPackage").isTouched &&
                 getFieldState("StateIdSpecialPackage").error) ||
@@ -160,29 +149,21 @@ const SpecialPackageForm = ({
             !getFieldState("cityIdSpecialPackage").error &&
             getFieldState("shippingCostSpecialPackage").isTouched &&
             !getFieldState("shippingCostSpecialPackage").error &&
-            handelCity(getValues("StateIdSpecialPackage")).some(
-                (city: { cityId: string; stateId: string }) =>
-                    city.cityId == getValues("cityIdSpecialPackage")
+            handelCity(stateRef.current).some(
+                (city: { id: string; stateId: string }) =>
+                    city.id == getValues("cityIdSpecialPackage")
             )
         ) {
-            console.log({
-                state: getValues("StateIdSpecialPackage"),
-                city: getValues("cityIdSpecialPackage"),
-                shippingCost: getValues("shippingCostSpecialPackage"),
-                id: uuidv4(),
-            });
-
             setSpecialPackage((prev: any) => {
                 const indx = prev.findIndex(
                     (specialPackage: any) =>
                         specialPackage.city ===
                         convertIDToCities(
-                            citiesToRepresentative,
+                            avalCities,
                             getValues("cityIdSpecialPackage")
                         )
                 );
-                console.log(indx + "index");
-                console.log(prev);
+
                 if (indx === -1) {
                     return [
                         ...prev,
@@ -192,7 +173,7 @@ const SpecialPackageForm = ({
                                 getValues("StateIdSpecialPackage")
                             ),
                             city: convertIDToCities(
-                                citiesToRepresentative,
+                                avalCities,
                                 getValues("cityIdSpecialPackage")
                             ),
                             shippingCost: getValues(
@@ -215,6 +196,15 @@ const SpecialPackageForm = ({
             resetField("StateIdSpecialPackage");
             setState(undefined);
             handleCloseSpecialPackageForm();
+        } else {
+            setError("cityIdSpecialPackage", {
+                message: "برجاء اختيار  مدينة من المدن المتاحة",
+            });
+            toast.warn("برجاء اختيار  مدينة من المدن المتاحة", {
+                position: toast.POSITION.BOTTOM_LEFT,
+                autoClose: 2000,
+                theme: "dark",
+            });
         }
     };
 
@@ -337,12 +327,12 @@ const SpecialPackageForm = ({
                                         >
                                             {availableCities?.map(
                                                 (city: {
-                                                    cityId: number;
+                                                    id: number;
                                                     name: string;
                                                 }) => (
                                                     <MenuItem
-                                                        key={city.cityId}
-                                                        value={city?.cityId.toString()}
+                                                        key={city.id}
+                                                        value={city?.id.toString()}
                                                     >
                                                         {city?.name}
                                                     </MenuItem>

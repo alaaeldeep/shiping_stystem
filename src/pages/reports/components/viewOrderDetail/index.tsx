@@ -140,9 +140,17 @@ const ViewOrderDetails = ({ open, handleClose, data }: OrderDetailsProps) => {
                                 justifyContent: "space-between",
                             }}
                         >
-                            <img src="./iti-logo.png" height={55} />
+                            <img
+                                src="./iti-logo.png"
+                                height={55}
+                                alt="iti logo in print screen"
+                            />
                             <h1>TEAM 4 </h1>
-                            <img src="./iconLogo.png" height={55} />
+                            <img
+                                src="./iconLogo.png"
+                                height={55}
+                                alt="iti logo in print screen"
+                            />
                         </Box>
 
                         {/* order data */}
@@ -212,7 +220,7 @@ const ViewOrderDetails = ({ open, handleClose, data }: OrderDetailsProps) => {
 
                         {/* client data */}
                         <Divider
-                            /* sx={{
+                        /* sx={{
                                 ":before": {
                                     borderTop: "thin solid red",
                                 },

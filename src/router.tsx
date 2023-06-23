@@ -49,8 +49,15 @@ import ViewOrders from "./pages/orders/view/viewOrders";
 import AddOrderPage from "./pages/orders/add/addOrderPage";
 import OrdersPage from "./pages/orders";
 
+/* settings */
 import ViewWeightSettings from "./pages/weightSetting";
 
+/* reports */
+import Reports from "./pages/reports";
+import ViewReports from "./pages/reports/view/viewReports";
+
+import { useOwnStore } from "./store";
+//const logged = useOwnStore((store) => store.user);
 export const router = createBrowserRouter([
     {
         path: "/",
@@ -122,6 +129,11 @@ export const router = createBrowserRouter([
                 ],
             },
             {
+                path: "reports",
+                element: <Reports />,
+                children: [{ path: "", element: <ViewReports /> }],
+            },
+            {
                 path: "weightSettings",
                 element: <ViewWeightSettings />,
             },
@@ -129,3 +141,232 @@ export const router = createBrowserRouter([
     },
     { path: "/login", element: <Login /> },
 ]);
+////////////////
+/* const canActivateEmployeeAdd = useOwnStore(
+    (store) => store.user.permissions?.Employees?.[0]
+);
+const canActivateEmployeeView = useOwnStore(
+    (store) => store.user.permissions?.Employees?.[1]
+);
+const canActivateEmployeeEdit = useOwnStore(
+    (store) => store.user.permissions?.Employees?.[2]
+);
+const canActivateEmployeeDelete = useOwnStore(
+    (store) => store.user.permissions?.Employees?.[3]
+);
+////////////////
+////////////////
+////////////////
+////////////////
+////////////////
+////////////////
+const canActivateBanksAdd = useOwnStore(
+    (store) => store.user.permissions?.Banks?.[0]
+);
+const canActivateBanksView = useOwnStore(
+    (store) => store.user.permissions?.Banks?.[1]
+);
+const canActivateBanksEdit = useOwnStore(
+    (store) => store.user.permissions?.Banks?.[2]
+);
+const canActivateBanksDelete = useOwnStore(
+    (store) => store.user.permissions?.Banks?.[3]
+);
+////////////////
+////////////////
+////////////////
+////////////////
+////////////////
+////////////////
+const canActivateBranchesAdd = useOwnStore(
+    (store) => store.user.permissions?.Branches?.[0]
+);
+const canActivateBranchesView = useOwnStore(
+    (store) => store.user.permissions?.Branches?.[1]
+);
+const canActivateBranchesEdit = useOwnStore(
+    (store) => store.user.permissions?.Branches?.[2]
+);
+const canActivateBranchesDelete = useOwnStore(
+    (store) => store.user.permissions?.Branches?.[3]
+);
+////////////////
+////////////////
+////////////////
+////////////////
+////////////////
+////////////////
+const canActivateCalculationsAdd = useOwnStore(
+    (store) => store.user.permissions?.Calculations?.[0]
+);
+const canActivateCalculationsView = useOwnStore(
+    (store) => store.user.permissions?.Calculations?.[1]
+);
+const canActivateCalculationsEdit = useOwnStore(
+    (store) => store.user.permissions?.Calculations?.[2]
+);
+const canActivateCalculationsDelete = useOwnStore(
+    (store) => store.user.permissions?.Calculations?.[3]
+);
+////////////////
+////////////////
+////////////////
+////////////////
+////////////////
+////////////////
+const canActivateCitiesAdd = useOwnStore(
+    (store) => store.user.permissions?.Cities?.[0]
+);
+const canActivateCitiesView = useOwnStore(
+    (store) => store.user.permissions?.Cities?.[1]
+);
+const canActivateCitiesEdit = useOwnStore(
+    (store) => store.user.permissions?.Cities?.[2]
+);
+const canActivateCitiesDelete = useOwnStore(
+    (store) => store.user.permissions?.Cities?.[3]
+);
+////////////////
+////////////////
+////////////////
+////////////////
+////////////////
+////////////////
+const canActivateOrdersAdd = useOwnStore(
+    (store) => store.user.permissions?.Orders?.[0]
+);
+const canActivateOrdersView = useOwnStore(
+    (store) => store.user.permissions?.Orders?.[1]
+);
+const canActivateOrdersEdit = useOwnStore(
+    (store) => store.user.permissions?.Orders?.[2]
+);
+const canActivateOrdersDelete = useOwnStore(
+    (store) => store.user.permissions?.Orders?.[3]
+);
+////////////////
+////////////////
+////////////////
+////////////////
+////////////////
+////////////////
+const canActivateOrdersReportsAdd = useOwnStore(
+    (store) => store.user.permissions?.OrdersReports?.[0]
+);
+const canActivateOrdersReportsView = useOwnStore(
+    (store) => store.user.permissions?.OrdersReports?.[1]
+);
+const canActivateOrdersReportsEdit = useOwnStore(
+    (store) => store.user.permissions?.OrdersReports?.[2]
+);
+const canActivateOrdersReportsDelete = useOwnStore(
+    (store) => store.user.permissions?.OrdersReports?.[3]
+);
+////////////////
+////////////////
+////////////////
+////////////////
+////////////////
+////////////////
+const canActivatePrivilegesAdd = useOwnStore(
+    (store) => store.user.permissions?.Privileges?.[0]
+);
+const canActivatePrivilegesView = useOwnStore(
+    (store) => store.user.permissions?.Privileges?.[1]
+);
+const canActivatePrivilegesEdit = useOwnStore(
+    (store) => store.user.permissions?.Privileges?.[2]
+);
+const canActivatePrivilegesDelete = useOwnStore(
+    (store) => store.user.permissions?.Privileges?.[3]
+);
+////////////////
+////////////////
+////////////////
+////////////////
+////////////////
+////////////////
+const canActivateRepresentativesAdd = useOwnStore(
+    (store) => store.user.permissions?.Representatives?.[0]
+);
+const canActivateRepresentativesView = useOwnStore(
+    (store) => store.user.permissions?.Representatives?.[1]
+);
+const canActivateRepresentativesEdit = useOwnStore(
+    (store) => store.user.permissions?.Representatives?.[2]
+);
+const canActivateRepresentativesDelete = useOwnStore(
+    (store) => store.user.permissions?.Representatives?.[3]
+);
+////////////////
+////////////////
+////////////////
+////////////////
+////////////////
+////////////////
+const canActivateSettingsAdd = useOwnStore(
+    (store) => store.user.permissions?.Settings?.[0]
+);
+const canActivateSettingsView = useOwnStore(
+    (store) => store.user.permissions?.Settings?.[1]
+);
+const canActivateSettingsEdit = useOwnStore(
+    (store) => store.user.permissions?.Settings?.[2]
+);
+const canActivateSettingsDelete = useOwnStore(
+    (store) => store.user.permissions?.Settings?.[3]
+);
+////////////////
+////////////////
+////////////////
+////////////////
+////////////////
+////////////////
+const canActivateStatesAdd = useOwnStore(
+    (store) => store.user.permissions?.States?.[0]
+);
+const canActivateStatesView = useOwnStore(
+    (store) => store.user.permissions?.States?.[1]
+);
+const canActivateStatesEdit = useOwnStore(
+    (store) => store.user.permissions?.States?.[2]
+);
+const canActivateStatesDelete = useOwnStore(
+    (store) => store.user.permissions?.States?.[3]
+);
+////////////////
+////////////////
+////////////////
+////////////////
+////////////////
+////////////////
+const canActivateTradersAdd = useOwnStore(
+    (store) => store.user.permissions?.Traders?.[0]
+);
+const canActivateTradersView = useOwnStore(
+    (store) => store.user.permissions?.Traders?.[1]
+);
+const canActivateTradersEdit = useOwnStore(
+    (store) => store.user.permissions?.Traders?.[2]
+);
+const canActivateTradersDelete = useOwnStore(
+    (store) => store.user.permissions?.Traders?.[3]
+);
+////////////////
+////////////////
+////////////////
+////////////////
+////////////////
+////////////////
+const canActivatesafesAdd = useOwnStore(
+    (store) => store.user.permissions?.safes?.[0]
+);
+const canActivatesafesView = useOwnStore(
+    (store) => store.user.permissions?.safes?.[1]
+);
+const canActivatesafesEdit = useOwnStore(
+    (store) => store.user.permissions?.safes?.[2]
+);
+const canActivatesafesDelete = useOwnStore(
+    (store) => store.user.permissions?.safes?.[3]
+); */

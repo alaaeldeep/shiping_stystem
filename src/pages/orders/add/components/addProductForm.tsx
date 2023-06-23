@@ -53,7 +53,7 @@ const AddProductForm = ({
         productName: z.string().nonempty("برجاء كتابة اسم المنتج"),
         productQuantity: z.string().nonempty("برجاء ادخال الكمية  "),
         productWeight: z.string().nonempty("برجاء ادخال الوزن بالكيلوجـرام "),
-        productPrice: z.string().nonempty("برجاء كتابة سعر المنتج "),
+        /*   productPrice: z.string().nonempty("برجاء كتابة سعر المنتج "), */
     });
 
     /*          */
@@ -75,7 +75,6 @@ const AddProductForm = ({
 
     const modalSubmit = (e: SyntheticEvent) => {
         e.preventDefault();
-        console.log();
 
         if (
             (getFieldState("productName").isTouched &&
@@ -86,10 +85,7 @@ const AddProductForm = ({
             (!getFieldState("productQuantity").isTouched &&
                 getFieldState("productWeight").isTouched &&
                 getFieldState("productWeight").error) ||
-            (!getFieldState("productWeight").isTouched &&
-                getFieldState("productPrice").isTouched &&
-                getFieldState("productPrice").error) ||
-            !getFieldState("productPrice").isTouched
+            !getFieldState("productWeight").isTouched
         ) {
             toast.warn("برجاء اكمال الحقول الفارغة ", {
                 position: toast.POSITION.BOTTOM_LEFT,
@@ -108,9 +104,9 @@ const AddProductForm = ({
                 ...prev,
                 {
                     productName: getValues("productName"),
-                    productQuantity: +getValues("productQuantity"),
-                    productWeight: +getValues("productWeight"),
-                    productPrice: +getValues("productPrice"),
+                    productQuantity: Math.abs(+getValues("productQuantity")),
+                    productWeight: Math.abs(+getValues("productWeight")),
+                    /*     productPrice: +getValues("productPrice"), */
                     id: uuidv4(),
                 },
             ]);
@@ -118,7 +114,7 @@ const AddProductForm = ({
             resetField("productName");
             resetField("productQuantity");
             resetField("productWeight");
-            resetField("productPrice");
+            /*   resetField("productPrice"); */
             handleCloseProductForm();
         }
     };
@@ -208,7 +204,7 @@ const AddProductForm = ({
                                 </FormControl>
                             </div>{" "}
                             {/* product Price*/}
-                            <div style={{ margin: "20px 0" }}>
+                            {/* <div style={{ margin: "20px 0" }}>
                                 <NumericInputField
                                     register={register}
                                     errors={errors.productPrice}
@@ -217,7 +213,7 @@ const AddProductForm = ({
                                     largeWidth="100%"
                                     smallWidth="100%"
                                 />
-                            </div>
+                            </div> */}
                             {/* product quantity*/}
                             <div style={{ margin: "20px 0" }}>
                                 <NumericInputField

@@ -2,7 +2,7 @@
 import { useNavigate } from "react-router";
 
 /* MUI */
-import { Box, Button, useMediaQuery } from "@mui/material";
+import { Backdrop, Box, Button, CircularProgress } from "@mui/material";
 
 /* hooks form */
 import { useForm } from "react-hook-form";
@@ -19,119 +19,37 @@ import UseMutate from "../../../hooks/branches/useAddMutate";
 import InputField from "../../../components/inputFields/textInputField/inputfield";
 import { TableToolbar } from "../../../components/table/tableToolBar";
 
+/* toast */
+import { toast } from "react-toastify";
+
+/* store */
+import { useOwnStore } from "../../../store";
+
 /* types */
-import { HeadCell } from "../../../components/types";
 
-export const headCells: HeadCell[] = [
-    {
-        id: "id",
-
-        label: "الرقم",
-    },
-    {
-        id: "name",
-
-        label: "الصلاحية",
-    },
-    {
-        id: "add",
-
-        label: "اضافه",
-    },
-    {
-        id: "view",
-
-        label: "عرض",
-    },
-    {
-        id: "edit",
-
-        label: "تعديل",
-    },
-    {
-        id: "delete",
-
-        label: "حذف",
-    },
-];
 /*  */
-const schema = z.object({
-    roleName: z.string().nonempty("برجاء كتابة اسم الصلاحية"),
-    Permissions: z.record(z.string(), z.array(z.string())),
-});
-export type FormValue = z.infer<typeof schema>;
-export const rows = [
-    {
-        id: 1,
-        permissionName: "الصلاحيات",
-    },
-    {
-        id: 2,
-        permissionName: "الاعدادات",
-    },
-    {
-        id: 3,
-        permissionName: "البنوك",
-    },
-    {
-        id: 4,
-        permissionName: "الخزن",
-    },
-    {
-        id: 5,
-        permissionName: "الافرع",
-    },
-    {
-        id: 6,
-        permissionName: "الموظفين",
-    },
-    {
-        id: 7,
-        permissionName: "التجار",
-    },
-    {
-        id: 8,
-        permissionName: "المناديب",
-    },
-    {
-        id: 9,
-        permissionName: "المحافظات",
-    },
-    {
-        id: 10,
-        permissionName: "المدن",
-    },
-
-    {
-        id: 11,
-        permissionName: "الطلبات",
-    },
-    {
-        id: 12,
-        permissionName: "الحسابات",
-    },
-    {
-        id: 13,
-        permissionName: "تقارير الطلبات",
-    },
-];
 
 const AddBranchesPage = () => {
+    /* store */
+    const canActivateBranchesAdd = useOwnStore(
+        (store) => store.user.permissions?.Branches?.[0]
+    );
+    const canActivateBranchesView = useOwnStore(
+        (store) => store.user.permissions?.Branches?.[1]
+    );
+
     const navigate = useNavigate();
-    const { mutate } = UseMutate();
+    const { mutate, isLoading } = UseMutate();
     const schema = z.object({
-        branch: z.string().nonempty(" برجاء كتابة اسم الفرع"),
+        name: z.string().nonempty(" برجاء كتابة اسم الفرع"),
     });
     type FormValue = z.infer<typeof schema>;
     const { register, control, handleSubmit, formState } = useForm<FormValue>({
-        defaultValues: {
-            branch: "",
-        },
         mode: "onTouched",
         resolver: zodResolver(schema),
     });
     const { errors } = formState;
-    const matches = useMediaQuery("(min-width:1070px)");
+
     /*  🚀 make the request 🚀  */
     const onSubmit = (data: FormValue) => {
         mutate(data, {
@@ -142,7 +60,13 @@ const AddBranchesPage = () => {
             },
         });
     };
-
+    const onError = () => {
+        toast.warn("برجاء اكمال الحقول الفارغة ", {
+            position: toast.POSITION.BOTTOM_LEFT,
+            autoClose: 2000,
+            theme: "dark",
+        });
+    };
     return (
         <>
             <TableToolbar
@@ -150,9 +74,10 @@ const AddBranchesPage = () => {
                 btnTitle="العودة للفروع"
                 destination="/branches  "
                 addIcon={false}
+                addBtn={!!canActivateBranchesAdd && !!canActivateBranchesView}
             />{" "}
             <form
-                onSubmit={handleSubmit(onSubmit)}
+                onSubmit={handleSubmit(onSubmit, onError)}
                 style={{
                     display: "flex",
                     justifyContent: "center",
@@ -176,8 +101,8 @@ const AddBranchesPage = () => {
                         <div style={{ margin: "20px 0" }}>
                             <InputField
                                 register={register}
-                                errors={errors.branch}
-                                fieldName="branch"
+                                errors={errors.name}
+                                fieldName="name"
                                 label="اسم الفرع"
                                 largeWidth="90%"
                                 smallWidth="90%"
@@ -199,7 +124,16 @@ const AddBranchesPage = () => {
                     </Button>
                 </Box>
                 <DevTool control={control} />
-            </form>
+            </form>{" "}
+            <Backdrop
+                sx={{
+                    color: "#fff",
+                    zIndex: (theme) => theme.zIndex.drawer + 1,
+                }}
+                open={isLoading}
+            >
+                <CircularProgress color="inherit" />
+            </Backdrop>
         </>
     );
 };

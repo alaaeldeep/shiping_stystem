@@ -2,11 +2,11 @@
 import { Paper } from "@mui/material";
 
 /* types */
-import { RepresentativeRow } from "../../../../../components/types";
+import { RepresentativeGET } from "../../../../../components/types";
 import RowInSmallScreen from "./row";
 
 type ViewRepresentativesSmallScreenProps = {
-    rows: RepresentativeRow[];
+    rows: RepresentativeGET[];
 };
 
 export const ViewRepresentativesSmallScreen = ({

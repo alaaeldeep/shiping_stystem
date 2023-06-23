@@ -15,6 +15,10 @@ import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import ZoomOutMapIcon from "@mui/icons-material/ZoomOutMap";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 
+/* date formatter */
+import moment from "moment";
+import "moment/dist/locale/ar";
+
 /* components */
 import ViewPermissionDetails from "../../../components/viewPermissionDetail";
 import EditPermissionDetails from "../../../components/editPermissionDetail";
@@ -66,7 +70,7 @@ const RowInMobile = ({ index, data }: props) => {
                 handleClose={handleCloseViewPermissionDetails}
                 id={data.id}
                 roleName={data.roleName}
-                selectedPermissions={data.rolePrivileges}
+                selectedPermissions={data.permissions}
             />
             {/*Edit Permission Details modal */}
             <EditPermissionDetails
@@ -74,7 +78,7 @@ const RowInMobile = ({ index, data }: props) => {
                 handleClose={handleCloseEditPermissionDetails}
                 id={data.id}
                 roleName={data.roleName}
-                selectedPermissions={data.rolePrivileges}
+                selectedPermissions={data.permissions}
             />
             {/* delete permission */}
             <DeleteHandler
@@ -97,6 +101,7 @@ const RowInMobile = ({ index, data }: props) => {
                     <Typography sx={{ width: "33%", flexShrink: 0 }}>
                         {index + 1}
                     </Typography>
+
                     {/* pemsion name */}
                     <Typography sx={{ color: "text.secondary" }}>
                         {data.roleName}
@@ -105,11 +110,19 @@ const RowInMobile = ({ index, data }: props) => {
 
                 <AccordionDetails>
                     {/* id */}
-                    <Typography>الرقم : {index + 1}</Typography>
+                    <Typography sx={{ marginBottom: "5px" }}>
+                        الرقم : {index + 1}
+                    </Typography>
                     {/* permission name */}
-                    <Typography> الصلاحية : {data.roleName}</Typography>
-                    <Typography> تاريخ الاضافه : {data.addedDate}</Typography>
-
+                    <Typography sx={{ marginBottom: "5px" }}>
+                        {" "}
+                        الصلاحية : {data.roleName}
+                    </Typography>
+                    <Typography sx={{ marginBottom: "5px" }}>
+                        {" "}
+                        تاريخ الاضافه :{" "}
+                        {moment(data.addedDate).locale("ar").format("LLLL")}
+                    </Typography>{" "}
                     {/* settings */}
                     <Box
                         sx={{
@@ -117,7 +130,9 @@ const RowInMobile = ({ index, data }: props) => {
                             alignItems: "center",
                         }}
                     >
-                        <Typography>الاعدادات : </Typography>
+                        <Typography sx={{ marginBottom: "5px" }}>
+                            الاعدادات :{" "}
+                        </Typography>
                         <Box>
                             <IconButton
                                 onClick={handleClickOpenViewPermissionDetails}

@@ -8,7 +8,7 @@ import EditPermissionDetailsSmallScreen from "./smallScreen";
 type EditPermissionDetailsProps = {
     open: boolean;
     roleName: string;
-    id: number;
+    id: string;
     selectedPermissions: any;
     handleClose: () => void;
 };

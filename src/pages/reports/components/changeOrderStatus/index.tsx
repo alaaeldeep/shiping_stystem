@@ -67,8 +67,6 @@ const ChangeOrderStatus = ({ open, handleClose, data }: OrderDetailsProps) => {
 
     /* 🚀 make the request 🚀  */
     const onSubmit = (requestData: FormValue) => {
-        console.log(requestData);
-        console.log(data.id);
         handleClose();
         /*  mutate(getValues(), {
             onSuccess: () => {

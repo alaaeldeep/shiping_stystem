@@ -5,11 +5,11 @@ import { request } from "../../lib/axios.utls";
 import { useMutation, useQueryClient } from "react-query";
 
 /* types */
-import { OrderPost } from "../../components/types";
+import { OrderPut } from "../../components/types";
 
-const updateOrder = (data: OrderPost) => {
+const updateOrder = (data: OrderPut) => {
     return request({
-        url: `/orders/${data.id}`,
+        url: `/Orders/UpdateAllOrder`,
         method: "put",
         data: data,
     });
@@ -25,3 +25,38 @@ const UseMutate = () => {
 };
 
 export default UseMutate;
+
+/* update status Order*/
+type OrderStatus = { id: number; orderStatus: number };
+const updateStatusOrder = (data: OrderStatus) => {
+    return request({
+        url: `/Orders/UpdateStatusOnlyByEmployee`,
+        method: "put",
+        data: data,
+    });
+};
+export const UseMutateStatus = () => {
+    const queryClient = useQueryClient();
+    return useMutation(updateStatusOrder, {
+        onSuccess: () => {
+            queryClient.invalidateQueries("/Employees");
+        },
+    });
+};
+/* assign Order to representative*/
+type assignOrderToRepresentative = { id: number; representativeID: string };
+const assignOrderToRepresentative = (data: assignOrderToRepresentative) => {
+    return request({
+        url: `/Orders/UpdateStatusGiveRepresentative`,
+        method: "put",
+        data: data,
+    });
+};
+export const UseMutateOrderAssign = () => {
+    const queryClient = useQueryClient();
+    return useMutation(assignOrderToRepresentative, {
+        onSuccess: () => {
+            queryClient.invalidateQueries("/Employees");
+        },
+    });
+};

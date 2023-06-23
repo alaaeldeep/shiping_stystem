@@ -15,10 +15,10 @@ import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 
 /* types */
-import { SpecialPackage } from "../../../../../components/types";
+import { SpecialPackagePost } from "../../../../../components/types";
 
 type Props = {
-    SpecialPackage: SpecialPackage[];
+    SpecialPackage: SpecialPackagePost[];
     setSpecialPackage: any;
 };
 
@@ -33,10 +33,10 @@ export default function SpecialPackageInSmallScreen({
             setExpanded(isExpanded ? panel : false);
         };
 
-    const handelDeleteSpecialPackage = (row: SpecialPackage) => {
-        setSpecialPackage((prev: SpecialPackage) =>
+    const handelDeleteSpecialPackage = (row: SpecialPackagePost) => {
+        setSpecialPackage((prev: SpecialPackagePost[]) =>
             prev.filter(
-                (oldPackage: SpecialPackage) => oldPackage.id !== row.id
+                (oldPackage: SpecialPackagePost) => oldPackage.id !== row.id
             )
         );
     };
@@ -44,7 +44,7 @@ export default function SpecialPackageInSmallScreen({
     return (
         <Paper sx={{ width: "100%" }}>
             {/* view States*/}
-            {SpecialPackage.map((row: SpecialPackage, index: number) => (
+            {SpecialPackage.map((row: SpecialPackagePost, index: number) => (
                 <Accordion
                     key={index}
                     sx={{ px: 5 }}
@@ -63,7 +63,7 @@ export default function SpecialPackageInSmallScreen({
 
                         {/* city name */}
                         <Typography sx={{ color: "text.secondary" }}>
-                            {row.city.name ? row.city.name : row.city}
+                            {row.city}
                         </Typography>
                     </AccordionSummary>
 
@@ -72,16 +72,9 @@ export default function SpecialPackageInSmallScreen({
                         <Typography>الرقم : {index + 1}</Typography>
 
                         {/* city name */}
-                        <Typography>
-                            {" "}
-                            المدينة : {row.city.name ? row.city.name : row.city}
-                        </Typography>
+                        <Typography> المدينة : {row.city}</Typography>
                         {/* state name */}
-                        <Typography>
-                            {" "}
-                            المحافظة :{" "}
-                            {row.state.name ? row.state.name : row.state}
-                        </Typography>
+                        <Typography> المحافظة : {row.state}</Typography>
                         {/* state name */}
                         <Typography>
                             {" "}

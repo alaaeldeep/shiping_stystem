@@ -7,21 +7,22 @@ import {
     AccordionDetails,
     AccordionSummary,
     Box,
+    FormControlLabel,
     IconButton,
     Typography,
 } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
-import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import ZoomOutMapIcon from "@mui/icons-material/ZoomOutMap";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 
 /* components */
+import ViewRepresentativeDetails from "../../../components/viewPersentativeDetail";
 import EditRepresentativeDetail from "../../../components/editRepresentativeDetail";
-import DeleteHandler from "../../../components/deleteHandeler";
+import ChangeStatusHandler from "../../../components/ChangeStatusHandeler";
+import { StatusSwitch } from "../../../../employes/view/components/viewEmployeeLargeScreen/row";
 
 /* types */
 import { RepresentativeGET } from "../../../../../components/types";
-import ViewRepresentativeDetails from "../../../components/viewPersentativeDetail";
 
 type props = {
     index: number;
@@ -36,28 +37,35 @@ const RowInSmallScreen = ({ index, data }: props) => {
         (event: React.SyntheticEvent, isExpanded: boolean) => {
             setExpanded(isExpanded ? panel : false);
         };
+    /* status */
+    const handleChangeStatus = () => {
+        handleClickOpenChangeStatus();
+    };
+    /* view */
     const [openViewRepresentativeDetails, setOpenViewRepresentativeDetails] =
         useState(false);
-    const [openEditRepresentativeDetails, setOpenEditRepresentativeDetails] =
-        useState(false);
-    const [openDeleteHandler, setOpenDeleteHandler] = useState(false);
-    const handleDeleteHandlerOpen = () => {
-        setOpenDeleteHandler(true);
-    };
-    const handleDeleteHandlerClose = () => {
-        setOpenDeleteHandler(false);
-    };
     const handleClickOpenViewRepresentativeDetails = () => {
         setOpenViewRepresentativeDetails(true);
-    };
-    const handleClickOpenEditRepresentativeDetails = () => {
-        setOpenEditRepresentativeDetails(true);
     };
     const handleCloseViewRepresentativeDetails = () => {
         setOpenViewRepresentativeDetails(false);
     };
+    /* edit */
+    const [openEditRepresentativeDetails, setOpenEditRepresentativeDetails] =
+        useState(false);
+    const handleClickOpenEditRepresentativeDetails = () => {
+        setOpenEditRepresentativeDetails(true);
+    };
     const handleCloseEditRepresentativeDetails = () => {
         setOpenEditRepresentativeDetails(false);
+    };
+    /* change status representative */
+    const [openChangeStatus, setOpenChangeStatus] = useState(false);
+    const handleClickOpenChangeStatus = () => {
+        setOpenChangeStatus(true);
+    };
+    const handleCloseOpenChangeStatus = () => {
+        setOpenChangeStatus(false);
     };
     return (
         <>
@@ -73,12 +81,11 @@ const RowInSmallScreen = ({ index, data }: props) => {
                 open={openViewRepresentativeDetails}
                 handleClose={handleCloseViewRepresentativeDetails}
             />
-            {/*delete State Details modal */}
-            <DeleteHandler
-                userName={data.userName}
-                id={data.id}
-                openDeleteHandler={openDeleteHandler}
-                handleDeleteHandlerClose={handleDeleteHandlerClose}
+            {/* change status */}
+            <ChangeStatusHandler
+                data={data}
+                handleClose={handleCloseOpenChangeStatus}
+                openStatusHandler={openChangeStatus}
             />
             <Accordion
                 sx={{ px: 5 }}
@@ -100,11 +107,38 @@ const RowInSmallScreen = ({ index, data }: props) => {
                     </Typography>
                 </AccordionSummary>
                 <AccordionDetails>
-                    <Typography>الاسم : {data.userName}</Typography>
-                    <Typography>رقم الهاتف : {data.phoneNumber}</Typography>
-                    <Typography>الفرع : {data.branch.name}</Typography>
+                    <Typography sx={{ marginBottom: "5px" }}>
+                        الاسم : {data.userName}
+                    </Typography>
+                    <Typography sx={{ marginBottom: "5px" }}>
+                        رقم الهاتف : {data.phoneNumber}
+                    </Typography>
+                    <Typography sx={{ marginBottom: "5px" }}>
+                        الفرع : {data.branch.name}
+                    </Typography>
 
-                    <Typography>الحاله : {"//"}</Typography>
+                    <Typography sx={{ marginBottom: "5px" }}>
+                        الحاله :{" "}
+                        <FormControlLabel
+                            control={
+                                <StatusSwitch sx={{ m: 1 }} defaultChecked />
+                            }
+                            label={
+                                data.status ? (
+                                    <Typography sx={{ color: "#65C466" }}>
+                                        نشط
+                                    </Typography>
+                                ) : (
+                                    <Typography sx={{ color: "#FEA1A1" }}>
+                                        غير نشط
+                                    </Typography>
+                                )
+                            }
+                            checked={data.status}
+                            onChange={handleChangeStatus}
+                            /*  checked={false} */
+                        />
+                    </Typography>
                     <Box>
                         الاعدادات :{" "}
                         <IconButton
@@ -122,13 +156,6 @@ const RowInSmallScreen = ({ index, data }: props) => {
                             <EditIcon
                                 style={{
                                     color: "#7AA874",
-                                }}
-                            />
-                        </IconButton>
-                        <IconButton onClick={handleDeleteHandlerOpen}>
-                            <DeleteForeverIcon
-                                style={{
-                                    color: "#DF2E38",
                                 }}
                             />
                         </IconButton>

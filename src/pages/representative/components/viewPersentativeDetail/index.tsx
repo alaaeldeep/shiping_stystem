@@ -7,8 +7,13 @@ import {
     IconButton,
     Box,
     Typography,
+    Divider,
+    Chip,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
+
+/* motion */
+import { motion } from "framer-motion";
 
 /* types */
 import { RepresentativeGET } from "../../../../components/types";
@@ -31,7 +36,14 @@ const ViewRepresentativeDetails = ({
             open={open}
             onClose={handleClose}
         >
-            <div style={{ display: "flex", justifyContent: "space-between" }}>
+            <motion.div
+                initial={{ scale: 0.4, opacity: 0 }}
+                animate={{ x: 0, scale: 1, opacity: 1 }}
+                transition={{
+                    duration: 0.3,
+                }}
+                style={{ display: "flex", justifyContent: "space-between" }}
+            >
                 {/* title */}
                 <DialogTitle width={{ xs: "230px", sm: "auto" }}>
                     عـرض البيانات الخاصــة بالمندوب : {data.userName}
@@ -42,7 +54,7 @@ const ViewRepresentativeDetails = ({
                         <CloseIcon sx={{ color: "red", fontSize: "1.7rem" }} />
                     </IconButton>
                 </DialogActions>
-            </div>
+            </motion.div>
 
             {/* content=> view RepresentativeDetails */}
             <DialogContent>
@@ -82,7 +94,7 @@ const ViewRepresentativeDetails = ({
                     </Typography>
 
                     <Typography>
-                        <span style={{ fontWeight: "600" }}>العنوان</span>{" "}
+                        <span style={{ fontWeight: "600" }}>العنوان : </span>{" "}
                         {data.address}
                     </Typography>
                     <Typography>
@@ -94,7 +106,8 @@ const ViewRepresentativeDetails = ({
                         <span style={{ fontWeight: "600" }}>
                             نسبة الشركة من الطلب :
                         </span>{" "}
-                        {data.companyOrderRatio} %
+                        {data.companyOrderRatio}{" "}
+                        {data.discountType.toString() === "0" ? "جنية" : "%"}
                     </Typography>
                     <Typography>
                         <span style={{ fontWeight: "600" }}> نوع الخصم :</span>{" "}
@@ -104,15 +117,20 @@ const ViewRepresentativeDetails = ({
                     </Typography>
 
                     <div>
-                        {" "}
-                        <span style={{ fontWeight: "600" }}>
-                            المحافظات :
-                        </span>{" "}
+                        <Divider>
+                            <Chip
+                                label="المحافظات "
+                                sx={{ fontWeight: "bold", padding: "20px" }}
+                            />
+                        </Divider>
                         <ul
                             style={{ listStyle: "none", marginRight: "5.5rem" }}
                         >
                             {data.states.map((state, index) => (
-                                <li key={index}> 📌 {state.name}</li>
+                                <li key={index}>
+                                    {" "}
+                                    {index + 1} - {state.state}
+                                </li>
                             ))}
                         </ul>
                     </div>

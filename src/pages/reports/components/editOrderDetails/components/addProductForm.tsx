@@ -75,7 +75,6 @@ const AddProductForm = ({
 
     const modalSubmit = (e: SyntheticEvent) => {
         e.preventDefault();
-        console.log();
 
         if (
             (getFieldState("productName").isTouched &&
@@ -145,14 +144,12 @@ const AddProductForm = ({
                     style={{
                         display: "flex",
                         justifyContent: "center",
-                        /*  padding: "50px", */
                     }}
                     noValidate
                 >
                     <Box
                         sx={{
                             width: "100%",
-                            /*    backgroundColor: "secondary.main", */
                             padding: "10px 0px",
                             borderRadius: "25px",
                             display: "flex",

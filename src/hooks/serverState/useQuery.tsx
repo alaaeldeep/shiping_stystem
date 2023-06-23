@@ -12,9 +12,3 @@ const UseQuery = (endpoint: string) => {
 };
 
 export default UseQuery;
-
-export const UseQuery2 = (endpoint: string) => {
-    return useQuery([endpoint], () => fetch(endpoint), {
-        enabled: false,
-    });
-};

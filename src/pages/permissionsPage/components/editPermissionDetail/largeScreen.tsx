@@ -16,8 +16,17 @@ import {
     TableBody,
     Table,
     TableContainer,
+    Backdrop,
+    CircularProgress,
+    FormHelperText,
+    FormControl,
+    OutlinedInput,
+    InputLabel,
 } from "@mui/material"; /* rect-form */
 import CloseIcon from "@mui/icons-material/Close";
+
+/* motion */
+import { motion } from "framer-motion";
 
 /* hook form */
 import { useForm } from "react-hook-form";
@@ -31,9 +40,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import UseMutate from "../../../../hooks/permissions/useEditMutate";
 
 /* components */
-import { headCells } from "../../add/addPermissionPage";
+//import { headCells } from "../../add/addPermissionPage";
 
-import InputField from "../../../../components/inputFields/textInputField/inputfield";
 import CustomTableHead from "../../../../components/table/tableHead";
 
 /* toast */
@@ -44,11 +52,37 @@ import {
     convertPermissionToID,
     permissions,
 } from "../../../../utils/converter";
+export const headCells: any = [
+    {
+        id: "name",
 
+        label: "الصلاحية",
+    },
+    {
+        id: "add",
+
+        label: "اضافه",
+    },
+    {
+        id: "view",
+
+        label: "عرض",
+    },
+    {
+        id: "edit",
+
+        label: "تعديل",
+    },
+    {
+        id: "delete",
+
+        label: "حذف",
+    },
+];
 type EditPermissionDetailsProps = {
     open: boolean;
     roleName: string;
-    id: number;
+    id: string;
     selectedPermissions: any;
     handleClose: () => void;
 };
@@ -64,7 +98,7 @@ const EditPermissionDetailsLargeScreen = ({
     selectedPermissions,
     id,
 }: EditPermissionDetailsProps) => {
-    const { mutate } = UseMutate();
+    const { mutate, isLoading } = UseMutate();
 
     /*  zod */
     const schema = z.object({
@@ -74,9 +108,9 @@ const EditPermissionDetailsLargeScreen = ({
     type FormValue = z.infer<typeof schema>;
 
     /* hooks form */
-    const { register, control, formState, getValues, getFieldState } =
+    const { register, control, formState, getValues, getFieldState, setError } =
         useForm<FormValue>({
-            defaultValues: { roleName: roleName },
+            /*   defaultValues: { roleName }, */
             mode: "onTouched",
             resolver: zodResolver(schema),
         });
@@ -103,7 +137,7 @@ const EditPermissionDetailsLargeScreen = ({
 
                 permissions: [],
             };
-            //console.log(getValues().Permissions);
+
             for (const Permission in getValues().Permissions) {
                 /* transform from string to true,false */
 
@@ -146,6 +180,22 @@ const EditPermissionDetailsLargeScreen = ({
                         onSuccess() {
                             handleClose();
                         },
+                        onError: (err: any) => {
+                            if (err.message.includes("Role name")) {
+                                setError("roleName", {
+                                    message:
+                                        "اسم الصلاحية موجود بالفعل, برجاء كتابه اسم جديد",
+                                });
+                                toast.error(
+                                    "اسم الصلاحية موجود بالفعل, برجاء كتابه اسم جديد",
+                                    {
+                                        position: toast.POSITION.BOTTOM_LEFT,
+                                        autoClose: 2000,
+                                        theme: "dark",
+                                    }
+                                );
+                            }
+                        },
                     }
                 );
             } else {
@@ -158,330 +208,355 @@ const EditPermissionDetailsLargeScreen = ({
         }
     };
     return (
-        <>
-            <Dialog
-                fullWidth={true}
-                maxWidth={"xl"}
-                open={open}
-                onClose={handleClose}
+        <Dialog
+            fullWidth={true}
+            maxWidth={"xl"}
+            open={open}
+            onClose={handleClose}
+        >
+            <motion.div
+                initial={{ scale: 0.4, opacity: 0 }}
+                animate={{ x: 0, scale: 1, opacity: 1 }}
+                transition={{
+                    duration: 0.3,
+                }}
+                style={{ display: "flex", justifyContent: "space-between" }}
             >
-                <div
-                    style={{ display: "flex", justifyContent: "space-between" }}
+                <DialogTitle width={{ xs: "230px", sm: "auto" }}>
+                    تعــديــل الصـــلاحـيــات الخاصــة بــــ : {roleName}
+                </DialogTitle>
+                <DialogActions>
+                    <IconButton onClick={handleClose}>
+                        <CloseIcon sx={{ color: "red", fontSize: "1.7rem" }} />
+                    </IconButton>
+                </DialogActions>
+            </motion.div>
+
+            <DialogContent>
+                <form
+                    onSubmit={(e) => handleEditSubmit(e)}
+                    style={{
+                        display: "flex",
+                        justifyContent: "center",
+                    }}
+                    noValidate
                 >
-                    <DialogTitle width={{ xs: "230px", sm: "auto" }}>
-                        تعــديــل الصـــلاحـيــات الخاصــة بــــ : {roleName}
-                    </DialogTitle>
-                    <DialogActions>
-                        <IconButton onClick={handleClose}>
-                            <CloseIcon
-                                sx={{ color: "red", fontSize: "1.7rem" }}
-                            />
-                        </IconButton>
-                    </DialogActions>
-                </div>
-
-                <DialogContent>
-                    <form
-                        onSubmit={(e) => handleEditSubmit(e)}
-                        style={{
+                    <Box
+                        sx={{
+                            width: "100%",
+                            /*     backgroundColor: "secondary.main", */
+                            padding: "15px 0px",
+                            borderRadius: "25px",
                             display: "flex",
+                            flexDirection: "column",
+                            gap: "2rem",
                             justifyContent: "center",
+                            mb: 3,
+                            /*    border: "1px solid #9ba4b5b7", */
+                            boxShadow:
+                                "rgba(17, 17, 26, 0.1) 0px 1px 0px, rgba(17, 17, 26, 0.1) 0px 8px 24px, rgba(17, 17, 26, 0.1) 0px 16px 48px",
                         }}
-                        noValidate
                     >
-                        <Box
-                            sx={{
-                                width: "100%",
-                                /*     backgroundColor: "secondary.main", */
-                                padding: "15px 0px",
-                                borderRadius: "25px",
-                                display: "flex",
-                                flexDirection: "column",
-                                gap: "2rem",
-                                justifyContent: "center",
-                                mb: 3,
-                                border: "1px solid #9ba4b5b7",
-                            }}
-                        >
-                            {/* role name with default value */}
-                            <Box sx={{ marginX: "auto", width: "90%" }}>
-                                <InputField
-                                    register={register}
-                                    errors={errors.roleName}
-                                    fieldName="roleName"
-                                    label=" اسم الصلاحية "
-                                    largeWidth="90%"
-                                    smallWidth="90%"
-                                />
-                            </Box>
-
-                            <Box>
-                                <TableContainer>
-                                    <Table
-                                        sx={{ minWidth: 750 }}
-                                        aria-labelledby="tableTitle"
-                                        size={"medium"}
-                                    >
-                                        <CustomTableHead headCell={headCells} />
-                                        <TableBody>
-                                            {/* old selected permissions */}
-                                            {selectedPermissions.map(
-                                                (
-                                                    row: {
-                                                        privilegeId: number;
-                                                        id: number;
-                                                        permissions: boolean[];
-                                                    },
-                                                    index: number
-                                                ) => {
-                                                    /* save the select persimmons ,  to exclude theme from the other permission options */
-
-                                                    selected.push(
-                                                        convertIdToPermission(
-                                                            row.privilegeId
-                                                        )
-                                                    );
-                                                    const labelId = `enhanced-table-checkbox-${index}`;
-                                                    return (
-                                                        /* represent old row */
-                                                        <TableRow
-                                                            hover
-                                                            tabIndex={-1}
-                                                            key={index}
-                                                            sx={{
-                                                                cursor: "pointer",
-                                                            }}
-                                                        >
-                                                            {
-                                                                <>
-                                                                    {/* id */}
-                                                                    <TableCell
-                                                                        align="center"
-                                                                        component="th"
-                                                                        id={
-                                                                            labelId
-                                                                        }
-                                                                        scope="row"
-                                                                        padding="none"
-                                                                    >
-                                                                        {index +
-                                                                            1}
-                                                                    </TableCell>
-
-                                                                    {/* permision name */}
-                                                                    <TableCell align="center">
-                                                                        {convertIdToPermission(
-                                                                            row.privilegeId
-                                                                        )}
-                                                                    </TableCell>
-
-                                                                    {/* add */}
-                                                                    <TableCell align="center">
-                                                                        <Checkbox
-                                                                            value="add"
-                                                                            {...register(
-                                                                                `Permissions.${convertIdToPermission(
-                                                                                    row.privilegeId
-                                                                                )}`
-                                                                            )}
-                                                                            size="small"
-                                                                            color="success"
-                                                                            defaultChecked={
-                                                                                row
-                                                                                    .permissions[0]
-                                                                            }
-                                                                        />
-                                                                    </TableCell>
-
-                                                                    {/* edit */}
-                                                                    <TableCell align="center">
-                                                                        <Checkbox
-                                                                            value="view"
-                                                                            {...register(
-                                                                                `Permissions.${convertIdToPermission(
-                                                                                    row.privilegeId
-                                                                                )}`
-                                                                            )}
-                                                                            size="small"
-                                                                            color="success"
-                                                                            defaultChecked={
-                                                                                row
-                                                                                    .permissions[1]
-                                                                            }
-                                                                        />
-                                                                    </TableCell>
-
-                                                                    {/* view */}
-                                                                    <TableCell align="center">
-                                                                        <Checkbox
-                                                                            value="edit"
-                                                                            {...register(
-                                                                                `Permissions.${convertIdToPermission(
-                                                                                    row.privilegeId
-                                                                                )}`
-                                                                            )}
-                                                                            size="small"
-                                                                            color="success"
-                                                                            defaultChecked={
-                                                                                row
-                                                                                    .permissions[2]
-                                                                            }
-                                                                        />
-                                                                    </TableCell>
-
-                                                                    {/* delete */}
-                                                                    <TableCell align="center">
-                                                                        <Checkbox
-                                                                            value="delete"
-                                                                            {...register(
-                                                                                `Permissions.${convertIdToPermission(
-                                                                                    row.privilegeId
-                                                                                )}`
-                                                                            )}
-                                                                            size="small"
-                                                                            color="success"
-                                                                            defaultChecked={
-                                                                                row
-                                                                                    .permissions[3]
-                                                                            }
-                                                                        />
-                                                                    </TableCell>
-                                                                </>
-                                                            }
-                                                        </TableRow>
-                                                    );
-                                                }
-                                            )}
-
-                                            {/* other permission options can select from it  */}
-                                            {permissions.map((row, index) => {
-                                                const labelId = `enhanced-table-checkbox-${index}`;
-                                                /* show only available options ,after we already displayed the selected permissions*/
-                                                if (
-                                                    !selected.includes(
-                                                        convertIdToPermission(
-                                                            row.privilegeId
-                                                        )
-                                                    )
-                                                ) {
-                                                    return (
-                                                        /* represent not selected row  */
-                                                        <TableRow
-                                                            hover
-                                                            tabIndex={-1}
-                                                            key={index}
-                                                            sx={{
-                                                                cursor: "pointer",
-                                                            }}
-                                                        >
-                                                            {
-                                                                <>
-                                                                    {/* id */}
-                                                                    <TableCell
-                                                                        align="center"
-                                                                        component="th"
-                                                                        id={
-                                                                            labelId
-                                                                        }
-                                                                        scope="row"
-                                                                        padding="none"
-                                                                    >
-                                                                        {index +
-                                                                            1}
-                                                                    </TableCell>
-
-                                                                    {/* permision name */}
-                                                                    <TableCell align="center">
-                                                                        {convertIdToPermission(
-                                                                            row.privilegeId
-                                                                        )}
-                                                                    </TableCell>
-
-                                                                    {/* add */}
-                                                                    <TableCell align="center">
-                                                                        <Checkbox
-                                                                            value="add"
-                                                                            {...register(
-                                                                                `Permissions.${convertIdToPermission(
-                                                                                    row.privilegeId
-                                                                                )}`
-                                                                            )}
-                                                                            size="small"
-                                                                            color="success"
-                                                                        />
-                                                                    </TableCell>
-
-                                                                    {/* edit */}
-                                                                    <TableCell align="center">
-                                                                        <Checkbox
-                                                                            value="view"
-                                                                            {...register(
-                                                                                `Permissions.${convertIdToPermission(
-                                                                                    row.privilegeId
-                                                                                )}`
-                                                                            )}
-                                                                            size="small"
-                                                                            color="success"
-                                                                        />
-                                                                    </TableCell>
-
-                                                                    {/* view */}
-                                                                    <TableCell align="center">
-                                                                        <Checkbox
-                                                                            value="edit"
-                                                                            {...register(
-                                                                                `Permissions.${convertIdToPermission(
-                                                                                    row.privilegeId
-                                                                                )}`
-                                                                            )}
-                                                                            size="small"
-                                                                            color="success"
-                                                                        />
-                                                                    </TableCell>
-
-                                                                    {/* delete */}
-                                                                    <TableCell align="center">
-                                                                        <Checkbox
-                                                                            value="delete"
-                                                                            {...register(
-                                                                                `Permissions.${convertIdToPermission(
-                                                                                    row.privilegeId
-                                                                                )}`
-                                                                            )}
-                                                                            size="small"
-                                                                            color="success"
-                                                                        />
-                                                                    </TableCell>
-                                                                </>
-                                                            }
-                                                        </TableRow>
-                                                    );
-                                                }
-                                            })}
-                                        </TableBody>
-                                    </Table>
-                                </TableContainer>
-                            </Box>
-
-                            {/* update btn */}
-                            <Button
-                                type="submit"
-                                sx={{
-                                    width: "80%",
-                                    marginX: "auto",
-                                    height: "40px",
-                                    fontWeight: "bold",
-                                }}
-                                variant="contained"
+                        {/* role name with default value */}
+                        <Box sx={{ marginX: "auto", width: "90%" }}>
+                            <FormControl
+                                error={!!errors.roleName}
+                                fullWidth
+                                sx={{ width: { xs: "90%", md: "90%" } }}
+                                variant="outlined"
                             >
-                                تحديث
-                            </Button>
+                                <InputLabel
+                                    color="info"
+                                    htmlFor="outlined-adornment-password"
+                                >
+                                    اسم الصلاحية
+                                </InputLabel>
+                                <OutlinedInput
+                                    defaultValue={roleName}
+                                    {...register("roleName")}
+                                    color="info"
+                                    id={`outlined-adornment-roleName`}
+                                    type={"text"}
+                                    label={"اسم الصلاحية "}
+                                />
+                                <FormHelperText
+                                    sx={{
+                                        fontWeight: "bold",
+                                        letterSpacing: "0.1rem",
+                                    }}
+                                    id="component-helper-text"
+                                >
+                                    {errors.roleName?.message}
+                                </FormHelperText>
+                            </FormControl>
                         </Box>
-                        <DevTool control={control} />
-                    </form>
-                </DialogContent>
-            </Dialog>
-        </>
+
+                        {/* permissions checkBox */}
+                        <Box>
+                            <TableContainer>
+                                <Table
+                                    sx={{ minWidth: 750 }}
+                                    aria-labelledby="tableTitle"
+                                    size={"medium"}
+                                >
+                                    <CustomTableHead headCell={headCells} />
+                                    <TableBody>
+                                        {/* old selected permissions */}
+                                        {selectedPermissions.map(
+                                            (row: {
+                                                privilegeId: number;
+                                                id: number;
+                                                permissions: boolean[];
+                                            }) => {
+                                                /* save the select persimmons ,  to exclude theme from the other permission options */
+
+                                                selected.push(
+                                                    convertIdToPermission(
+                                                        row.privilegeId
+                                                    )
+                                                );
+
+                                                return (
+                                                    /* represent old row */
+                                                    <TableRow
+                                                        hover
+                                                        tabIndex={-1}
+                                                        key={row.id}
+                                                        sx={{
+                                                            cursor: "pointer",
+                                                        }}
+                                                    >
+                                                        {
+                                                            <>
+                                                                {/* id */}
+                                                                {/* <TableCell
+                                                                    align="center"
+                                                                    component="th"
+                                                                    id={labelId}
+                                                                    scope="row"
+                                                                    padding="none"
+                                                                >
+                                                                    {index + 1}
+                                                                </TableCell> */}
+
+                                                                {/* permision name */}
+                                                                <TableCell align="center">
+                                                                    {convertIdToPermission(
+                                                                        row.privilegeId
+                                                                    )}
+                                                                </TableCell>
+
+                                                                {/* add */}
+                                                                <TableCell align="center">
+                                                                    <Checkbox
+                                                                        value="add"
+                                                                        {...register(
+                                                                            `Permissions.${convertIdToPermission(
+                                                                                row.privilegeId
+                                                                            )}`
+                                                                        )}
+                                                                        size="small"
+                                                                        color="success"
+                                                                        defaultChecked={
+                                                                            row
+                                                                                .permissions[0]
+                                                                        }
+                                                                    />
+                                                                </TableCell>
+
+                                                                {/*  view*/}
+                                                                <TableCell align="center">
+                                                                    <Checkbox
+                                                                        value="view"
+                                                                        {...register(
+                                                                            `Permissions.${convertIdToPermission(
+                                                                                row.privilegeId
+                                                                            )}`
+                                                                        )}
+                                                                        size="small"
+                                                                        color="success"
+                                                                        defaultChecked={
+                                                                            row
+                                                                                .permissions[1]
+                                                                        }
+                                                                    />
+                                                                </TableCell>
+
+                                                                {/* edit */}
+                                                                <TableCell align="center">
+                                                                    <Checkbox
+                                                                        value="edit"
+                                                                        {...register(
+                                                                            `Permissions.${convertIdToPermission(
+                                                                                row.privilegeId
+                                                                            )}`
+                                                                        )}
+                                                                        size="small"
+                                                                        color="success"
+                                                                        defaultChecked={
+                                                                            row
+                                                                                .permissions[2]
+                                                                        }
+                                                                    />
+                                                                </TableCell>
+
+                                                                {/* delete */}
+                                                                <TableCell align="center">
+                                                                    <Checkbox
+                                                                        value="delete"
+                                                                        {...register(
+                                                                            `Permissions.${convertIdToPermission(
+                                                                                row.privilegeId
+                                                                            )}`
+                                                                        )}
+                                                                        size="small"
+                                                                        color="success"
+                                                                        defaultChecked={
+                                                                            row
+                                                                                .permissions[3]
+                                                                        }
+                                                                    />
+                                                                </TableCell>
+                                                            </>
+                                                        }
+                                                    </TableRow>
+                                                );
+                                            }
+                                        )}
+
+                                        {/* other permission options can select from it  */}
+                                        {permissions.map((row, index) => {
+                                            /* show only available options ,after we already displayed the selected permissions*/
+                                            if (
+                                                !selected.includes(
+                                                    convertIdToPermission(
+                                                        row.privilegeId
+                                                    )
+                                                )
+                                            ) {
+                                                return (
+                                                    /* represent not selected row  */
+                                                    <TableRow
+                                                        hover
+                                                        tabIndex={-1}
+                                                        key={index}
+                                                        sx={{
+                                                            cursor: "pointer",
+                                                        }}
+                                                    >
+                                                        {
+                                                            <>
+                                                                {/* id */}
+                                                                {/*         <TableCell
+                                                                    align="center"
+                                                                    component="th"
+                                                                    id={labelId}
+                                                                    scope="row"
+                                                                    padding="none"
+                                                                >
+                                                                    {index + 1}
+                                                                </TableCell> */}
+
+                                                                {/* permision name */}
+                                                                <TableCell align="center">
+                                                                    {convertIdToPermission(
+                                                                        row.privilegeId
+                                                                    )}
+                                                                </TableCell>
+
+                                                                {/* add */}
+                                                                <TableCell align="center">
+                                                                    <Checkbox
+                                                                        value="add"
+                                                                        {...register(
+                                                                            `Permissions.${convertIdToPermission(
+                                                                                row.privilegeId
+                                                                            )}`
+                                                                        )}
+                                                                        size="small"
+                                                                        color="success"
+                                                                    />
+                                                                </TableCell>
+
+                                                                {/* edit */}
+                                                                <TableCell align="center">
+                                                                    <Checkbox
+                                                                        value="view"
+                                                                        {...register(
+                                                                            `Permissions.${convertIdToPermission(
+                                                                                row.privilegeId
+                                                                            )}`
+                                                                        )}
+                                                                        size="small"
+                                                                        color="success"
+                                                                    />
+                                                                </TableCell>
+
+                                                                {/* view */}
+                                                                <TableCell align="center">
+                                                                    <Checkbox
+                                                                        value="edit"
+                                                                        {...register(
+                                                                            `Permissions.${convertIdToPermission(
+                                                                                row.privilegeId
+                                                                            )}`
+                                                                        )}
+                                                                        size="small"
+                                                                        color="success"
+                                                                    />
+                                                                </TableCell>
+
+                                                                {/* delete */}
+                                                                <TableCell align="center">
+                                                                    <Checkbox
+                                                                        value="delete"
+                                                                        {...register(
+                                                                            `Permissions.${convertIdToPermission(
+                                                                                row.privilegeId
+                                                                            )}`
+                                                                        )}
+                                                                        size="small"
+                                                                        color="success"
+                                                                    />
+                                                                </TableCell>
+                                                            </>
+                                                        }
+                                                    </TableRow>
+                                                );
+                                            }
+                                        })}
+                                    </TableBody>
+                                </Table>
+                            </TableContainer>
+                        </Box>
+
+                        {/* update btn */}
+                        <Button
+                            type="submit"
+                            sx={{
+                                width: "80%",
+                                marginX: "auto",
+                                height: "40px",
+                                fontWeight: "bold",
+                            }}
+                            variant="contained"
+                        >
+                            تحديث
+                        </Button>
+                    </Box>
+                    <DevTool control={control} />{" "}
+                    <Backdrop
+                        sx={{
+                            color: "#fff",
+                            zIndex: (theme) => theme.zIndex.drawer + 1,
+                        }}
+                        open={isLoading}
+                    >
+                        <CircularProgress color="inherit" />
+                    </Backdrop>
+                </form>
+            </DialogContent>
+        </Dialog>
     );
 };
 

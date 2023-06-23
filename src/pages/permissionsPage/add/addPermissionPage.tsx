@@ -5,7 +5,14 @@ import { SyntheticEvent } from "react";
 import { useNavigate } from "react-router";
 
 /* MUI */
-import { Box, Button, Typography, useMediaQuery } from "@mui/material";
+import {
+    Backdrop,
+    Box,
+    Button,
+    CircularProgress,
+    Typography,
+    useMediaQuery,
+} from "@mui/material";
 
 /* hooks form */
 import { useForm } from "react-hook-form";
@@ -18,9 +25,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 /* react query */
 import UseMutate from "../../../hooks/permissions/useAddMutate";
 
-/* store */
-import { useOwnStore } from "../../../store";
-
 /* toast */
 import { toast } from "react-toastify";
 
@@ -31,7 +35,7 @@ import { AddPermissionSmallScreen } from "./addPermissionSmallScreen";
 import { TableToolbar } from "../../../components/table/tableToolBar";
 
 /* utils */
-import { convertPermissionToID, permissions } from "../../../utils/converter";
+import { convertPermissionToID } from "../../../utils/converter";
 
 export const headCells: any = [
     {
@@ -73,13 +77,12 @@ type permissionType = {
     permissions: any;
 };
 const AddPermissionPage = () => {
-    const mode = useOwnStore((Store) => Store.mode);
     const navigate = useNavigate();
     /* controll mobile view */
     const matches = useMediaQuery("(min-width:1070px)");
 
     /*  */
-    const { mutate } = UseMutate();
+    const { mutate, isLoading } = UseMutate();
 
     const schema = z.object({
         roleName: z.string().nonempty("برجاء كتابة اسم الصلاحية"),
@@ -88,11 +91,18 @@ const AddPermissionPage = () => {
     type FormValue = z.infer<typeof schema>;
 
     /* handel form */
-    const { register, control, formState, getValues, getFieldState, setFocus } =
-        useForm<FormValue>({
-            mode: "onTouched",
-            resolver: zodResolver(schema),
-        });
+    const {
+        register,
+        control,
+        formState,
+        getValues,
+        getFieldState,
+        setFocus,
+        setError,
+    } = useForm<FormValue>({
+        mode: "onTouched",
+        resolver: zodResolver(schema),
+    });
     const { errors } = formState;
 
     /* onsubmit add permission */
@@ -158,14 +168,30 @@ const AddPermissionPage = () => {
             if (newPermission.permissions.length > 0) {
                 /*🚀 make the request 🚀*/
 
-                const test = {
+                const addRole = {
                     roleName: newPermission.roleName,
                     rolePrivileges: newPermission.permissions,
                 };
 
-                mutate(test, {
+                mutate(addRole, {
                     onSuccess() {
                         navigate("/Permissions");
+                    },
+                    onError: (err: any) => {
+                        if (err.message.includes("Role name")) {
+                            setError("roleName", {
+                                message:
+                                    "اسم الصلاحية موجود بالفعل, برجاء كتابه اسم جديد",
+                            });
+                            toast.error(
+                                "اسم الصلاحية موجود بالفعل, برجاء كتابه اسم جديد",
+                                {
+                                    position: toast.POSITION.BOTTOM_LEFT,
+                                    autoClose: 2000,
+                                    theme: "dark",
+                                }
+                            );
+                        }
                     },
                 });
             } else {
@@ -175,7 +201,6 @@ const AddPermissionPage = () => {
                     theme: "dark",
                 });
             }
-            console.log(newPermission.permissions.length);
         }
     };
 
@@ -263,6 +288,15 @@ const AddPermissionPage = () => {
                     </Button>
                 </Box>
                 <DevTool control={control} />
+                <Backdrop
+                    sx={{
+                        color: "#fff",
+                        zIndex: (theme) => theme.zIndex.drawer + 1,
+                    }}
+                    open={isLoading}
+                >
+                    <CircularProgress color="inherit" />
+                </Backdrop>
             </form>{" "}
         </>
     );

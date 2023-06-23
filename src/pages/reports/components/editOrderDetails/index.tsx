@@ -94,13 +94,13 @@ const EditOrderDetails = ({ open, handleClose, data }: props) => {
     const stateRef = useRef(data.state.id.toString());
     const [availableCities, setAvailableCities] = useState<
         {
-            cityId: number;
+            id: number;
             stateId: number;
             name: string;
         }[]
     >([
         {
-            cityId: data.city.cityId,
+            id: data.city.id,
             stateId: data.state.id,
             name: data.city.name,
         },
@@ -123,15 +123,13 @@ const EditOrderDetails = ({ open, handleClose, data }: props) => {
         setBranch(event.target.value as string);
     };
     /* city state */
-    const [city, setCity] = useState<string>(data.city.cityId.toString());
+    const [city, setCity] = useState<string>(data.city.id.toString());
     const handelCityChange = (event: SelectChangeEvent) => {
         setCity(event.target.value as string);
     };
 
     /* select delivery input */
-    const [delivery, setDelivery] = useState(
-        data.shippingType.shippingTypeId.toString()
-    );
+    const [delivery, setDelivery] = useState(data.shippingType.id.toString());
     const handleDeliveryChange = (event: SelectChangeEvent) => {
         setDelivery(event.target.value as string);
     };
@@ -162,11 +160,11 @@ const EditOrderDetails = ({ open, handleClose, data }: props) => {
         /* step 1 */
         clientName: z.string().nonempty("برجاء كتابة اسم العميل بالكامل"),
 
-        Phone1: z
+        phone1: z
             .string()
             .nonempty("برجاء كتابه رقم الهاتف")
             .length(11, " تاكد من كتابه رقم صحيح مكون من 11 رقم"),
-        Phone2: z.string().optional(),
+        phone2: z.string().optional(),
 
         email: z
             .string()
@@ -227,17 +225,17 @@ const EditOrderDetails = ({ open, handleClose, data }: props) => {
         useForm<FormValue>({
             defaultValues: {
                 clientName: data.clientName,
-                Phone1: data.phone1,
-                Phone2: data?.phone2,
+                phone1: data.phone1,
+                phone2: data?.phone2,
                 email: data.email,
                 orderType: data.orderType.toString(),
                 paymentType: data.paymentType.toString(),
                 stateId: data.state.id.toString(),
-                cityId: data.city.cityId.toString(),
+                cityId: data.city.id.toString(),
                 adressDetails: data.adressDetails,
                 isVillage: data.isVillage === true ? "0" : "1",
                 branchId: data.branch.id.toString(),
-                shippingTypeId: data.shippingType.shippingTypeId.toString(),
+                shippingTypeId: data.shippingType.id.toString(),
                 comments: data?.comments,
             },
             mode: "onTouched",
@@ -266,7 +264,6 @@ const EditOrderDetails = ({ open, handleClose, data }: props) => {
                 isVillage: requestData.isVillage === "0" ? true : false,
                 orderItems: products,
             };
-            console.log(dta);
         } else {
             setError("cityId", { message: "برجاء اختيار مدينة" });
             toast.warn("برجاء   اختيار مدينة ", {

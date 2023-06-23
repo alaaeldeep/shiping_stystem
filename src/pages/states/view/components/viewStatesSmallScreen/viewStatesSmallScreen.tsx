@@ -16,12 +16,7 @@ export const ViewStatesSmallScreen = ({ rows }: ViewStatesSmallScreenProps) => {
         <Paper sx={{ width: "100%" }}>
             {/* view States*/}
             {rows.map((row, index) => (
-                <RowInMobile
-                    key={index}
-                    id={row.id}
-                    index={index}
-                    state={row.state}
-                />
+                <RowInMobile key={index} index={index} data={row} />
             ))}
         </Paper>
     );

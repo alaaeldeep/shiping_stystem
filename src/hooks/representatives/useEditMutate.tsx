@@ -5,26 +5,39 @@ import { request } from "../../lib/axios.utls";
 import { useMutation, useQueryClient } from "react-query";
 
 /* types */
-import { RepresentativeGET } from "../../components/types";
+import { RepresentativeUpdate } from "../../components/types";
 
-type RepresentativeID = {
-    id: number;
-};
-const updateRepresentative = (data: RepresentativeGET & RepresentativeID) => {
+const updateRepresentative = (data: RepresentativeUpdate) => {
     return request({
         url: `/representatives/${data.id}`,
         method: "put",
         data: data,
     });
 };
-
 const UseMutate = () => {
     const queryClient = useQueryClient();
     return useMutation(updateRepresentative, {
         onSuccess: () => {
-            queryClient.invalidateQueries("/representatives");
+            queryClient.invalidateQueries("/Representatives");
         },
     });
 };
-
 export default UseMutate;
+
+/* update status */
+type RepresentativeStatus = { id: string; status: boolean };
+const updateStatusRepresentative = (data: RepresentativeStatus) => {
+    return request({
+        url: `/representatives/status/${data.id}`,
+        method: "put",
+        data: data,
+    });
+};
+export const UseMutateStatus = () => {
+    const queryClient = useQueryClient();
+    return useMutation(updateStatusRepresentative, {
+        onSuccess: () => {
+            queryClient.invalidateQueries("/Representatives");
+        },
+    });
+};

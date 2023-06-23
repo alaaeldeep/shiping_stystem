@@ -3,8 +3,10 @@ import { useRef, useState } from "react";
 
 /* MUI */
 import {
+    Backdrop,
     Box,
     Button,
+    CircularProgress,
     Dialog,
     DialogActions,
     DialogContent,
@@ -28,6 +30,8 @@ import {
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import { useMediaQuery } from "@mui/material";
+/* motion */
+import { motion } from "framer-motion";
 
 /* toast */
 import { toast } from "react-toastify";
@@ -69,13 +73,11 @@ type props = {
 };
 const EditOrderDetails = ({ open, handleClose, data }: props) => {
     /* API */
-    const { data: branches } = UseQuery("/branches");
-    const { data: typesOfShipping } = UseQuery("/typeOfShipping");
-    const { mutate } = UseMutate();
-    const { data: states } = UseQuery("/states");
-    const { data: citiesToRepresentative } = UseQuery(
-        "/citiesToRepresentative"
-    );
+    const { data: branches } = UseQuery("/Branches/active");
+    const { data: typesOfShipping } = UseQuery("/ShippingTypeSettings");
+    const { mutate, isLoading } = UseMutate();
+    const { data: states } = UseQuery("/states/HavingCities");
+    const { data: citiesToRepresentative } = UseQuery("/Cities");
 
     /* steps form */
     const [activeStep, setActiveStep] = useState(0);
@@ -94,13 +96,13 @@ const EditOrderDetails = ({ open, handleClose, data }: props) => {
     const stateRef = useRef(data.state.id.toString());
     const [availableCities, setAvailableCities] = useState<
         {
-            cityId: number;
+            id: number;
             stateId: number;
             name: string;
         }[]
     >([
         {
-            cityId: data.city.cityId,
+            id: data.city.id,
             stateId: data.state.id,
             name: data.city.name,
         },
@@ -123,15 +125,13 @@ const EditOrderDetails = ({ open, handleClose, data }: props) => {
         setBranch(event.target.value as string);
     };
     /* city state */
-    const [city, setCity] = useState<string>(data.city.cityId.toString());
+    const [city, setCity] = useState<string>(data.city.id.toString());
     const handelCityChange = (event: SelectChangeEvent) => {
         setCity(event.target.value as string);
     };
 
     /* select delivery input */
-    const [delivery, setDelivery] = useState(
-        data.shippingType.shippingTypeId.toString()
-    );
+    const [delivery, setDelivery] = useState(data.shippingType.id.toString());
     const handleDeliveryChange = (event: SelectChangeEvent) => {
         setDelivery(event.target.value as string);
     };
@@ -162,11 +162,11 @@ const EditOrderDetails = ({ open, handleClose, data }: props) => {
         /* step 1 */
         clientName: z.string().nonempty("برجاء كتابة اسم العميل بالكامل"),
 
-        Phone1: z
+        phone1: z
             .string()
             .nonempty("برجاء كتابه رقم الهاتف")
             .length(11, " تاكد من كتابه رقم صحيح مكون من 11 رقم"),
-        Phone2: z.string().optional(),
+        phone2: z.string().optional(),
 
         email: z
             .string()
@@ -227,17 +227,17 @@ const EditOrderDetails = ({ open, handleClose, data }: props) => {
         useForm<FormValue>({
             defaultValues: {
                 clientName: data.clientName,
-                Phone1: data.phone1,
-                Phone2: data?.phone2,
+                phone1: data.phone1,
+                phone2: data?.phone2,
                 email: data.email,
                 orderType: data.orderType.toString(),
                 paymentType: data.paymentType.toString(),
                 stateId: data.state.id.toString(),
-                cityId: data.city.cityId.toString(),
+                cityId: data.city.id.toString(),
                 adressDetails: data.adressDetails,
                 isVillage: data.isVillage === true ? "0" : "1",
                 branchId: data.branch.id.toString(),
-                shippingTypeId: data.shippingType.shippingTypeId.toString(),
+                shippingTypeId: data.shippingType.id.toString(),
                 comments: data?.comments,
             },
             mode: "onTouched",
@@ -246,27 +246,34 @@ const EditOrderDetails = ({ open, handleClose, data }: props) => {
     const { errors } = formState;
     const matches = useMediaQuery("(min-width:1070px)");
 
-    const onSubmit = (requestData: FormValue) => {
+    const onSubmit = (fieldData: FormValue) => {
         if (
-            handelCity(requestData.stateId).some(
-                (city: { cityId: string; stateId: string }) =>
-                    city.cityId == requestData.cityId
+            handelCity(fieldData.stateId).some(
+                (city: { id: string; stateId: string }) =>
+                    city.id == fieldData.cityId
             )
         ) {
             /*🚀 make request 🚀*/
-            const dta = {
-                ...requestData,
-                orderType: +requestData.orderType,
-                shippingTypeId: +requestData.shippingTypeId,
-                cityId: +requestData.cityId,
-                stateId: +requestData.stateId,
-                paymentType: +requestData.paymentType,
-                branchId: +requestData.branchId,
+            const requestData = {
+                ...fieldData,
+                orderType: +fieldData.orderType,
+                shippingTypeId: +fieldData.shippingTypeId,
+                cityId: +fieldData.cityId,
+                stateId: +fieldData.stateId,
+                paymentType: +fieldData.paymentType,
+                branchId: +fieldData.branchId,
                 orderStatus: 0,
-                isVillage: requestData.isVillage === "0" ? true : false,
+                isVillage: fieldData.isVillage === "0" ? true : false,
                 orderItems: products,
+                traderId: data.traderId,
+                id: data.id,
             };
-            console.log(dta);
+            console.log(requestData);
+            mutate(requestData, {
+                onSuccess: () => {
+                    handleClose();
+                },
+            });
         } else {
             setError("cityId", { message: "برجاء اختيار مدينة" });
             toast.warn("برجاء   اختيار مدينة ", {
@@ -291,7 +298,14 @@ const EditOrderDetails = ({ open, handleClose, data }: props) => {
             open={open}
             onClose={handleClose}
         >
-            <div style={{ display: "flex", justifyContent: "space-between" }}>
+            <motion.div
+                initial={{ scale: 0.4, opacity: 0 }}
+                animate={{ x: 0, scale: 1, opacity: 1 }}
+                transition={{
+                    duration: 0.3,
+                }}
+                style={{ display: "flex", justifyContent: "space-between" }}
+            >
                 <DialogTitle width={{ xs: "230px", sm: "auto" }}>
                     تعــديــل بيانات الخاصــة بالطلب رقم : {data.id}
                 </DialogTitle>
@@ -300,7 +314,7 @@ const EditOrderDetails = ({ open, handleClose, data }: props) => {
                         <CloseIcon sx={{ color: "red", fontSize: "1.7rem" }} />
                     </IconButton>
                 </DialogActions>
-            </div>
+            </motion.div>
 
             <DialogContent>
                 <Box
@@ -377,8 +391,8 @@ const EditOrderDetails = ({ open, handleClose, data }: props) => {
                                         {/* Phone1 */}
                                         <NumericInputField
                                             register={register}
-                                            errors={errors.Phone1}
-                                            fieldName="Phone1"
+                                            errors={errors.phone1}
+                                            fieldName="phone1"
                                             label=" رقم الهاتف الاساسي"
                                             largeWidth="49%"
                                             smallWidth="100%"
@@ -386,8 +400,8 @@ const EditOrderDetails = ({ open, handleClose, data }: props) => {
                                         {/* optional Phone1 */}
                                         <NumericInputField
                                             register={register}
-                                            errors={errors.Phone2}
-                                            fieldName="Phone2"
+                                            errors={errors.phone2}
+                                            fieldName="phone2"
                                             label=" رقم الهاتف الاحتياطي"
                                             largeWidth="49%"
                                             smallWidth="100%"
@@ -589,15 +603,13 @@ const EditOrderDetails = ({ open, handleClose, data }: props) => {
                                                 >
                                                     {availableCities?.map(
                                                         (city: {
-                                                            cityId: number;
+                                                            id: number;
                                                             name: string;
                                                         }) => (
                                                             <MenuItem
-                                                                key={
-                                                                    city.cityId
-                                                                }
+                                                                key={city.id}
                                                                 defaultChecked
-                                                                value={city?.cityId.toString()}
+                                                                value={city?.id.toString()}
                                                             >
                                                                 {city?.name}
                                                             </MenuItem>
@@ -711,14 +723,14 @@ const EditOrderDetails = ({ open, handleClose, data }: props) => {
                                                 {branches?.data.map(
                                                     (branch: {
                                                         id: number;
-                                                        branch: string;
+                                                        name: string;
                                                     }) => (
                                                         <MenuItem
                                                             key={branch.id}
                                                             defaultChecked
                                                             value={branch.id.toString()}
                                                         >
-                                                            {branch.branch}
+                                                            {branch.name}
                                                         </MenuItem>
                                                     )
                                                 )}
@@ -756,13 +768,13 @@ const EditOrderDetails = ({ open, handleClose, data }: props) => {
                                                 {typesOfShipping?.data.map(
                                                     (shiping: {
                                                         id: number;
-                                                        type: string;
+                                                        name: string;
                                                     }) => (
                                                         <MenuItem
                                                             key={shiping.id}
                                                             value={shiping.id.toString()}
                                                         >
-                                                            {shiping.type}
+                                                            {shiping.name}
                                                         </MenuItem>
                                                     )
                                                 )}
@@ -850,22 +862,6 @@ const EditOrderDetails = ({ open, handleClose, data }: props) => {
                                 }}
                             >
                                 <Box sx={{ marginX: "auto", width: "90%" }}>
-                                    {/* orderCost */}
-                                    {/*   <div
-                                 style={{
-                                     margin: "20px 0",
-                                 }}
-                             >
-                                 <NumericInputField
-                                     register={register}
-                                     errors={errors.OrderCost}
-                                     fieldName="OrderCost"
-                                     label="تكلفة الطلب"
-                                     largeWidth="90%"
-                                     smallWidth="90%"
-                                 />{" "}
-                             </div> */}
-
                                     {/* comments */}
                                     <div style={{ margin: "20px 0" }}>
                                         <FormControl
@@ -901,22 +897,6 @@ const EditOrderDetails = ({ open, handleClose, data }: props) => {
                                         </FormControl>
                                     </div>
 
-                                    {/* total price */}
-                                    <Typography
-                                        fontWeight={"bold"}
-                                        marginY={"10px"}
-                                    >
-                                        اجمالي السعر :{" "}
-                                        {products.reduce(
-                                            (acc, product) =>
-                                                (Number(product.productPrice) *
-                                                    10 +
-                                                    acc * 10) /
-                                                10,
-                                            0
-                                        )}{" "}
-                                        جــــنيه
-                                    </Typography>
                                     {/* total weight */}
                                     <Typography fontWeight={"bold"}>
                                         اجمالي الوزن :{" "}
@@ -987,6 +967,15 @@ const EditOrderDetails = ({ open, handleClose, data }: props) => {
                             )}
                         </Box>
                         <DevTool control={control} />
+                        <Backdrop
+                            sx={{
+                                color: "#fff",
+                                zIndex: (theme) => theme.zIndex.drawer + 1,
+                            }}
+                            open={isLoading}
+                        >
+                            <CircularProgress color="inherit" />
+                        </Backdrop>
                     </form>
                 </Box>
             </DialogContent>

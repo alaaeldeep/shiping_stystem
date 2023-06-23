@@ -8,7 +8,7 @@ import { useMutation } from "react-query";
 import { OrderPost } from "../../components/types";
 
 const addOrder = (data: OrderPost) => {
-    return request({ url: "/orders", method: "post", data: data });
+    return request({ url: "/Orders/Insert", method: "post", data: data });
 };
 
 const UseMutate = () => {

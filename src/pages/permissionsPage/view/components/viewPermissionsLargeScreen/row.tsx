@@ -4,8 +4,9 @@ import EditIcon from "@mui/icons-material/Edit";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import ZoomOutMapIcon from "@mui/icons-material/ZoomOutMap";
 
-/* types */
-import { PermissionGET } from "../../../../../components/types";
+/* date formatter */
+import moment from "moment";
+import "moment/dist/locale/ar";
 
 /* components */
 import ViewPermissionDetails from "../../../components/viewPermissionDetail";
@@ -15,7 +16,11 @@ import DeleteHandler from "../../../components/deleteHandeler";
 /* react staff */
 import { useState } from "react";
 
+/* types */
+import { PermissionGET } from "../../../../../components/types";
+
 type props = { index: number; data: PermissionGET };
+
 const Row = ({ index, data }: props) => {
     /* delete permissions */
     const [openDeleteHandler, setOpenDeleteHandler] = useState(false);
@@ -45,6 +50,7 @@ const Row = ({ index, data }: props) => {
     const handleCloseEditPermissionDetails = () => {
         setOpenEditPermissionDetails(false);
     };
+
     return (
         <TableRow hover tabIndex={-1} sx={{ cursor: "pointer" }}>
             {/*View Permission Details modal */}
@@ -53,7 +59,7 @@ const Row = ({ index, data }: props) => {
                 handleClose={handleCloseViewPermissionDetails}
                 id={data.id}
                 roleName={data.roleName}
-                selectedPermissions={data.rolePrivileges}
+                selectedPermissions={data.permissions}
             />
             {/*Edit Permission Details modal */}
             <EditPermissionDetails
@@ -61,7 +67,7 @@ const Row = ({ index, data }: props) => {
                 handleClose={handleCloseEditPermissionDetails}
                 id={data.id}
                 roleName={data.roleName}
-                selectedPermissions={data.rolePrivileges}
+                selectedPermissions={data.permissions}
             />
             {/* view all permisions */}
             {
@@ -81,7 +87,9 @@ const Row = ({ index, data }: props) => {
                     <TableCell align="center">{data.roleName}</TableCell>
 
                     {/* added date */}
-                    <TableCell align="center">{data.addedDate}</TableCell>
+                    <TableCell align="center">
+                        {moment(data.addedDate).locale("ar").format("LLLL")}
+                    </TableCell>
 
                     {/* settings */}
                     <TableCell align="center">

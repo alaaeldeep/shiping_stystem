@@ -11,6 +11,9 @@ import {
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 
+/* motion */
+import { motion } from "framer-motion";
+
 /* types */
 import { EmployeeGET } from "../../../../components/types";
 
@@ -34,7 +37,14 @@ const ViewEmployeeDetails = ({
             open={open}
             onClose={handleClose}
         >
-            <div style={{ display: "flex", justifyContent: "space-between" }}>
+            <motion.div
+                initial={{ scale: 0.4, opacity: 0 }}
+                animate={{ x: 0, scale: 1, opacity: 1 }}
+                transition={{
+                    duration: 0.3,
+                }}
+                style={{ display: "flex", justifyContent: "space-between" }}
+            >
                 {/* title */}
                 <DialogTitle width={{ xs: "230px", sm: "auto" }}>
                     عـرض البيانات الخاصــة بالموظف : {data.userName}
@@ -45,7 +55,7 @@ const ViewEmployeeDetails = ({
                         <CloseIcon sx={{ color: "red", fontSize: "1.7rem" }} />
                     </IconButton>
                 </DialogActions>
-            </div>
+            </motion.div>
 
             {/* content=> view EmployeeDetails */}
             <DialogContent>
@@ -85,11 +95,11 @@ const ViewEmployeeDetails = ({
                     </Typography>
                     <Typography>
                         <span style={{ fontWeight: "600" }}>اسم الفرع :</span>{" "}
-                        {data.branch.branch}
+                        {data.branch.name}
                     </Typography>
                     <Typography>
                         <span style={{ fontWeight: "600" }}>الصلاحية :</span>{" "}
-                        {data.role.role}
+                        {data.role.name}
                     </Typography>
                     <Typography>
                         <span style={{ fontWeight: "600" }}>العنوان</span>{" "}
