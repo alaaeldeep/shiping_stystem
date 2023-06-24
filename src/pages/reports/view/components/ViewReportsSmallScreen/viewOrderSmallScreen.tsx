@@ -5,11 +5,11 @@ import { useState } from "react";
 import { Paper } from "@mui/material";
 
 /* types */
-import { OrderRow } from "../../../../../components/types";
+import { ReportRow } from "../../../../../components/types";
 import RowInSmallScreen from "./row";
 
 type ViewEmployeeSmallScreenProps = {
-    rows: OrderRow[];
+    rows: ReportRow[];
 };
 
 export const ViewReportsSmallScreen = ({
@@ -18,7 +18,7 @@ export const ViewReportsSmallScreen = ({
     return (
         <Paper sx={{ width: "100%" }}>
             {/* view employees*/}
-            {rows.map((row, index) => (
+            {rows?.map((row, index) => (
                 <RowInSmallScreen key={index} index={index} data={row} />
             ))}
         </Paper>

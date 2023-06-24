@@ -17,6 +17,9 @@ import {
 /* react query */
 import UseQuery from "../../../hooks/serverState/useQuery";
 
+/* store */
+import { useOwnStore } from "../../../store";
+
 /* components */
 import { ViewCitiesLargeScreen } from "./components/viewViewCitiesLargeScreen/viewCitiesLargeScreen";
 import { ViewCitiesSmallScreen } from "./components/viewCitiesSmallScreen/viewCitiesSmallScreen";
@@ -61,9 +64,15 @@ const ViewCities = () => {
 
     /* fetch */
     const { data, isLoading, isError } = UseQuery(
-        "/Cities/GetCitiesWithShippingCost"
+        `Cities/paginate?pageNumber=${pageNumber}`
     );
-
+    /* store */
+    const canActivateCitiesAdd = useOwnStore(
+        (store) => store.user.permissions?.Cities?.[0]
+    );
+    const canActivateCitiesView = useOwnStore(
+        (store) => store.user.permissions?.Cities?.[1]
+    );
     /* mobile view */
     const matches = useMediaQuery("(min-width:1070px)");
 
@@ -81,6 +90,7 @@ const ViewCities = () => {
                 btnTitle="اضف مدينة"
                 destination="/cities/add"
                 addIcon={true}
+                addBtn={!!canActivateCitiesView && !!canActivateCitiesAdd}
             />
             {isLoading ? (
                 <Stack spacing={1}>
@@ -88,11 +98,11 @@ const ViewCities = () => {
                 </Stack>
             ) : matches ? (
                 <ViewCitiesLargeScreen
-                    rows={data?.data}
+                    rows={data?.data.data}
                     headCell={citiesHeadCells}
                 />
             ) : (
-                <ViewCitiesSmallScreen rows={data?.data} />
+                <ViewCitiesSmallScreen rows={data?.data.data} />
             )}
             {data?.data.length === 0 && (
                 <Typography
@@ -107,6 +117,7 @@ const ViewCities = () => {
                     لم يتم اضافة مدن حتي الان
                 </Typography>
             )}{" "}
+            {/* pagination */}
             <Box
                 sx={{
                     display: "flex",
@@ -114,14 +125,14 @@ const ViewCities = () => {
                     padding: " 20px",
                 }}
             >
-                {/* **CHECK FIRST IF TOTAL_PAGES > 1 SHOW THE PAGINATIOn */}
-                <Pagination
-                    /*   count={data?.data.totalPages} */
-                    count={1}
-                    size={matches ? "large" : "small"}
-                    page={pageNumber}
-                    onChange={(_e, value) => handlePageNumber(value)}
-                />
+                {data?.data.totalPages > 1 && (
+                    <Pagination
+                        count={data?.data.totalPages}
+                        size={matches ? "large" : "small"}
+                        page={pageNumber}
+                        onChange={(_e, value) => handlePageNumber(value)}
+                    />
+                )}
             </Box>
         </>
     );

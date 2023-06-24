@@ -52,7 +52,9 @@ const ViewPermissions = () => {
     };
 
     /* fetch */
-    const { data, isLoading, isError } = UseQuery("/RolesPrivileges");
+    const { data, isLoading, isError } = UseQuery(
+        `/RolesPrivileges/paginate?pageNumber=${pageNumber}`
+    );
 
     /* mobile view */
     const matches = useMediaQuery("(min-width:1070px)");
@@ -75,12 +77,13 @@ const ViewPermissions = () => {
                 <Skeleton variant="rounded" width={"100%"} height={500} />
             ) : matches ? (
                 <ViewPermissionsLargeScreen
-                    rows={data?.data}
+                    rows={data?.data.data}
                     headCell={headCells}
                 />
             ) : (
-                <ViewPermissionsSmallScreen rows={data?.data} />
+                <ViewPermissionsSmallScreen rows={data?.data.data} />
             )}{" "}
+            {/* pagination */}
             <Box
                 sx={{
                     display: "flex",
@@ -88,15 +91,15 @@ const ViewPermissions = () => {
                     padding: " 20px",
                 }}
             >
-                {/* **CHECK FIRST IF TOTAL_PAGES > 1 SHOW THE PAGINATIOn */}
-                <Pagination
-                    /*   count={data?.data.totalPages} */
-                    count={1}
-                    size={matches ? "large" : "small"}
-                    page={pageNumber}
-                    onChange={(_e, value) => handlePageNumber(value)}
-                />
-            </Box>{" "}
+                {data?.data.totalPages > 1 && (
+                    <Pagination
+                        count={data?.data.totalPages}
+                        size={matches ? "large" : "small"}
+                        page={pageNumber}
+                        onChange={(_e, value) => handlePageNumber(value)}
+                    />
+                )}
+            </Box>
             {data?.data.length === 0 && (
                 <Typography
                     height={"150px"}

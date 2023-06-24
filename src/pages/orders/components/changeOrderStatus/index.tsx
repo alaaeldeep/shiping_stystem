@@ -46,6 +46,7 @@ import { statuses } from "../../../../utils/converter";
 
 /* types */
 import { OrderRow } from "../../../../components/types";
+import NumericInputField from "../../../../components/inputFields/numericInputField";
 
 type OrderDetailsProps = {
     open: boolean;
@@ -64,18 +65,57 @@ const ChangeOrderStatus = ({ open, handleClose, data }: OrderDetailsProps) => {
     };
     const schema = z.object({
         orderStatus: z.string().nonempty({ message: "برجاء تحديد حالة الطلب" }),
+        receivedCost: z.any(),
+        receivedShippingCost: z.any(),
     });
     type FormValue = z.infer<typeof schema>;
-    const { register, control, handleSubmit, formState } = useForm<FormValue>({
-        defaultValues: {},
-        mode: "onTouched",
-        resolver: zodResolver(schema),
-    });
+    const { register, control, handleSubmit, formState, getValues, setError } =
+        useForm<FormValue>({
+            defaultValues: {},
+            mode: "onTouched",
+            resolver: zodResolver(schema),
+        });
     const { errors } = formState;
 
     /* 🚀 make the request 🚀  */
     const onSubmit = (requestData: FormValue) => {
-        mutate(
+        if (
+            !Math.abs(+getValues("receivedCost")) &&
+            ["3", "6"].includes(status)
+        ) {
+            /* setError("receivedCost", {
+                message: " برجاء ادخال المبلغ المستلم ",
+            }); */
+
+            toast.warn(" برجاء ادخال المبلغ المستلم ", {
+                position: toast.POSITION.BOTTOM_LEFT,
+                autoClose: 2000,
+                theme: "dark",
+            });
+        }
+        if (
+            !Math.abs(+getValues("receivedShippingCost")) &&
+            ["3", "6", "8", "9"].includes(status)
+        ) {
+            /*  setError("receivedShippingCost", {
+                message: " برجاء ادخال مبلغ الشحن المستلم ",
+            }); */ toast.warn(" برجاء ادخال مبلغ الشحن المستلم ", {
+                position: toast.POSITION.BOTTOM_LEFT,
+                autoClose: 2000,
+                theme: "dark",
+            });
+        }
+        if (!["3", "6", "8", "9"].includes(status)) {
+            console.log(requestData);
+        }
+        if (
+            ["3", "6", "8", "9"].includes(status) &&
+            Math.abs(+getValues("receivedShippingCost")) &&
+            Math.abs(+getValues("receivedCost"))
+        ) {
+            console.log(requestData);
+        }
+        /* mutate(
             { id: data.id, orderStatus: +requestData.orderStatus },
             {
                 onSuccess: () => {
@@ -84,8 +124,9 @@ const ChangeOrderStatus = ({ open, handleClose, data }: OrderDetailsProps) => {
                     }
                 },
             }
-        );
+        ); */
     };
+
     const onError = () => {
         toast.warn("برجاء اختيار حالة الطلب ", {
             position: toast.POSITION.BOTTOM_LEFT,
@@ -93,6 +134,7 @@ const ChangeOrderStatus = ({ open, handleClose, data }: OrderDetailsProps) => {
             theme: "dark",
         });
     };
+
     return (
         <Dialog
             fullWidth={true}
@@ -121,11 +163,12 @@ const ChangeOrderStatus = ({ open, handleClose, data }: OrderDetailsProps) => {
             </motion.div>
 
             {/* content=> view OrderDetails */}
-            <DialogContent sx={{ height: "300px" }}>
+            <DialogContent>
                 <Box
                     sx={{
                         marginX: "20px",
                         paddingX: "20px",
+
                         display: "flex",
                         flexDirection: "column",
                         gap: "1rem",
@@ -183,13 +226,13 @@ const ChangeOrderStatus = ({ open, handleClose, data }: OrderDetailsProps) => {
                                             {statuses.map(
                                                 (status: {
                                                     id: number;
-                                                    status: string;
+                                                    orderStatus: string;
                                                 }) => (
                                                     <MenuItem
                                                         key={status.id}
                                                         value={status.id.toString()}
                                                     >
-                                                        {status.status}
+                                                        {status.orderStatus}
                                                     </MenuItem>
                                                 )
                                             )}
@@ -201,6 +244,35 @@ const ChangeOrderStatus = ({ open, handleClose, data }: OrderDetailsProps) => {
                                         </FormHelperText>
                                     </FormControl>
                                 </div>
+
+                                {/* received Cost*/}
+                                {["3", "6", "8", "9"].includes(status) && (
+                                    <>
+                                        <div style={{ margin: "20px 0" }}>
+                                            <NumericInputField
+                                                register={register}
+                                                errors={errors.receivedCost}
+                                                fieldName="receivedCost"
+                                                label="المبلغ المستلم"
+                                                largeWidth="90%"
+                                                smallWidth="90%"
+                                            />
+                                        </div>
+                                        {/* received Cost*/}
+                                        <div style={{ margin: "20px 0" }}>
+                                            <NumericInputField
+                                                register={register}
+                                                errors={
+                                                    errors.receivedShippingCost
+                                                }
+                                                fieldName="receivedShippingCost"
+                                                label="مبلغ الشحن المستلم"
+                                                largeWidth="90%"
+                                                smallWidth="90%"
+                                            />
+                                        </div>
+                                    </>
+                                )}
                             </Box>
 
                             {/* update btn */}

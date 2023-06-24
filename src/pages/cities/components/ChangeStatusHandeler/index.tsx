@@ -1,5 +1,12 @@
 /* MUI */
-import { Button, Dialog, DialogActions, DialogTitle } from "@mui/material";
+import {
+    Backdrop,
+    Button,
+    CircularProgress,
+    Dialog,
+    DialogActions,
+    DialogTitle,
+} from "@mui/material";
 
 /* motion */
 import { motion } from "framer-motion";
@@ -23,11 +30,31 @@ const ChangeStatusHandler = ({
     openStatusHandler,
     handleClose,
 }: props) => {
-    const { mutate } = UseMutate();
+    const { mutate, isLoading } = UseMutate();
 
     const handelChangeStatusSubmit = () => {
+        console.log({
+            id: data.id,
+            name: data.name,
+            shippingCost: data.shippingCost,
+            status: !data.status,
+            stateId: data.state.id,
+        });
         /*    console.log(data, "updating status"); */
-        handleClose();
+        mutate(
+            {
+                id: data.id,
+                name: data.name,
+                shippingCost: data.shippingCost,
+                status: !data.status,
+                stateId: data.state.id,
+            },
+            {
+                onSuccess: () => {
+                    handleClose();
+                },
+            }
+        );
     };
     return (
         <Dialog
@@ -92,6 +119,15 @@ const ChangeStatusHandler = ({
                     الغاء
                 </Button>
             </DialogActions>
+            <Backdrop
+                sx={{
+                    color: "#fff",
+                    zIndex: (theme) => theme.zIndex.drawer + 1,
+                }}
+                open={isLoading}
+            >
+                <CircularProgress color="inherit" />
+            </Backdrop>
         </Dialog>
     );
 };

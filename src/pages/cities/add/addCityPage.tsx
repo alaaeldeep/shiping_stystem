@@ -36,7 +36,17 @@ import InputField from "../../../components/inputFields/textInputField/inputfiel
 import { useState } from "react";
 import NumericInputField from "../../../components/inputFields/numericInputField";
 
+/* store */
+import { useOwnStore } from "../../../store";
+
 const AddCityPage = () => {
+    const canActivateCitiesAdd = useOwnStore(
+        (store) => store.user.permissions?.Cities?.[0]
+    );
+    const canActivateCitiesView = useOwnStore(
+        (store) => store.user.permissions?.Cities?.[1]
+    );
+
     const navigate = useNavigate();
     const { data: availableStates } = UseQuery("/states/active");
     const { mutate, isLoading } = UseMutate();
@@ -91,6 +101,7 @@ const AddCityPage = () => {
                 btnTitle="العودة للمدن"
                 destination="/cities  "
                 addIcon={false}
+                addBtn={!!canActivateCitiesView && !!canActivateCitiesAdd}
             />{" "}
             <form
                 onSubmit={handleSubmit(onSubmit, onError)}

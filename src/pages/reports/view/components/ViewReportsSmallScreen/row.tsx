@@ -9,37 +9,29 @@ import {
     IconButton,
     Typography,
 } from "@mui/material";
-import EditIcon from "@mui/icons-material/Edit";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import ZoomOutMapIcon from "@mui/icons-material/ZoomOutMap";
-import PrintIcon from "@mui/icons-material/Print";
-import PublishedWithChangesIcon from "@mui/icons-material/PublishedWithChanges";
+
+/* date formatter */
+import moment from "moment";
+import "moment/dist/locale/ar";
 
 /* components */
-import EditOrderDetails from "../../../components/editOrderDetails";
+
 import ViewOrderDetails from "../../../components/viewOrderDetail";
-import ChangeOrderStatus from "../../../components/changeOrderStatus";
 
 /* types */
-import { OrderRow } from "../../../../../components/types";
+import { ReportRow } from "../../../../../components/types";
 
 /* store */
 import { useOwnStore } from "../../../../../store";
 
 type ViewOrderSmallScreenProps = {
     index: number;
-    data: OrderRow;
+    data: ReportRow;
 };
 const RowInSmallScreen = ({ index, data }: ViewOrderSmallScreenProps) => {
     const [expanded, setExpanded] = useState<string | false>(false);
-    /* edit order */
-    const [openEditOrderDetails, setOpenEditOrderDetails] = useState(false);
-    const handleClickOpenEditOrderDetails = () => {
-        setOpenEditOrderDetails(true);
-    };
-    const handleCloseEditOrderDetails = () => {
-        setOpenEditOrderDetails(false);
-    };
 
     /* view order details*/
     const [openViewOrderDetails, setOpenViewOrderDetails] = useState(false);
@@ -50,14 +42,6 @@ const RowInSmallScreen = ({ index, data }: ViewOrderSmallScreenProps) => {
         setOpenViewOrderDetails(false);
     };
 
-    /* change order status */
-    const [openChangeOrderStatus, setOpenChangeOrderStatus] = useState(false);
-    const handleClickChangeOrderStatus = () => {
-        setOpenChangeOrderStatus(true);
-    };
-    const handleCloseChangeOrderStatus = () => {
-        setOpenChangeOrderStatus(false);
-    };
     const mode = useOwnStore((store) => store.mode);
 
     const handleChange =
@@ -68,24 +52,13 @@ const RowInSmallScreen = ({ index, data }: ViewOrderSmallScreenProps) => {
 
     return (
         <>
-            {/* edit details */}
-            <EditOrderDetails
-                data={data}
-                handleClose={handleCloseEditOrderDetails}
-                open={openEditOrderDetails}
-            />
             {/* view details */}
             <ViewOrderDetails
                 open={openViewOrderDetails}
                 data={data}
                 handleClose={handleCloseViewOrderDetails}
             />
-            {/* change order status */}
-            <ChangeOrderStatus
-                open={openChangeOrderStatus}
-                data={data}
-                handleClose={handleCloseChangeOrderStatus}
-            />
+
             <Accordion
                 sx={{ px: 5 }}
                 expanded={expanded === index.toString()}
@@ -102,35 +75,28 @@ const RowInSmallScreen = ({ index, data }: ViewOrderSmallScreenProps) => {
                     </Typography>
                     {/*  added date */}
                     <Typography sx={{ color: "text.secondary" }}>
-                        {data.date}
+                        {moment(data.date).locale("ar").format("LLLL")}
                     </Typography>
                 </AccordionSummary>
                 <AccordionDetails>
-                    <Typography>المحافظة : {data.state.name}</Typography>
+                    <Typography sx={{ marginBottom: "5px" }}>
+                        المحافظة : {data.state.name}
+                    </Typography>
 
-                    <Typography>تكلفة الطلب : {data.OrderCost}</Typography>
+                    <Typography sx={{ marginBottom: "5px" }}>
+                        تكلفة الطلب : {data.orderCost} جنيه
+                    </Typography>
 
-                    <div>
-                        تغيير الحالة :{" "}
-                        {
-                            <IconButton onClick={handleClickChangeOrderStatus}>
-                                <PublishedWithChangesIcon
-                                    style={
-                                        mode === "dark"
-                                            ? {
-                                                  color: "#F9D00F",
-                                              }
-                                            : {
-                                                  color: "#DA2D2D",
-                                              }
-                                    }
-                                />
-                            </IconButton>
-                        }
-                    </div>
+                    <Typography sx={{ marginBottom: "5px" }}>
+                        تكلفة الشحن : {data.orderCost} جنيه
+                    </Typography>
 
-                    <Typography>
-                        الاعدادات :{" "}
+                    <Typography sx={{ marginBottom: "5px" }}>
+                        قيمة الشركة : {data.companyOrderRatio} جنيه
+                    </Typography>
+
+                    <Typography sx={{ marginBottom: "5px" }}>
+                        عرض التفاصيل :{" "}
                         {
                             <>
                                 <IconButton
@@ -139,15 +105,6 @@ const RowInSmallScreen = ({ index, data }: ViewOrderSmallScreenProps) => {
                                     <ZoomOutMapIcon
                                         style={{
                                             color: "#E86A33",
-                                        }}
-                                    />
-                                </IconButton>
-                                <IconButton
-                                    onClick={handleClickOpenEditOrderDetails}
-                                >
-                                    <EditIcon
-                                        style={{
-                                            color: "#7AA874",
                                         }}
                                     />
                                 </IconButton>

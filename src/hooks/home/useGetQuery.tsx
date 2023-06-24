@@ -12,6 +12,7 @@ const fetch = (endpoint: string) => {
 };
 const UseOrderSummeryQuery = () => {
     const userType = useOwnStore((store) => store.user.userType);
+    const userId = useOwnStore((store) => store.user.userId);
     let type: string;
 
     switch (userType) {
@@ -19,13 +20,13 @@ const UseOrderSummeryQuery = () => {
             type = "GetAllByEmployeeGroupByStatusAsync";
             break;
         case "Trader":
-            type = "GetAllByTraderIDGroupByStatusAsync";
+            type = `GetAllByTraderIDGroupByStatusAsync?TraderID=${userId}`;
             break;
         case "Representative":
-            type = "GetAllByRepresentativeIDGroupByStatusAsync";
+            type = `GetAllByRepresentativeIDGroupByStatusAsync?RepresentativeID=${userId}`;
             break;
         default:
-            type = "GetAllByRepresentativeIDAsNoTrakingAsync";
+            type = `GetAllByRepresentativeIDAsNoTrakingAsync?RepresentativeID=${userId}`;
     }
     return useQuery([type], () => fetch(`/Orders/${type}`));
 };

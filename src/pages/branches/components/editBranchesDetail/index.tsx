@@ -9,6 +9,10 @@ import {
     Box,
     Backdrop,
     CircularProgress,
+    FormControl,
+    OutlinedInput,
+    InputLabel,
+    FormHelperText,
 } from "@mui/material"; /* rect-form */
 import CloseIcon from "@mui/icons-material/Close";
 
@@ -54,9 +58,9 @@ const EditBranchesDetails = ({
     });
     type FormValue = z.infer<typeof schema>;
     const { register, control, handleSubmit, formState } = useForm<FormValue>({
-        defaultValues: {
+        /* defaultValues: {
             name: branch,
-        },
+        }, */
         mode: "onTouched",
         resolver: zodResolver(schema),
     });
@@ -130,14 +134,36 @@ const EditBranchesDetails = ({
                     >
                         <Box sx={{ marginX: "auto", width: "90%" }}>
                             <div style={{ margin: "20px 0" }}>
-                                <InputField
-                                    register={register}
-                                    errors={errors.name}
-                                    fieldName="name"
-                                    label="اسم الفرع"
-                                    largeWidth="90%"
-                                    smallWidth="90%"
-                                />
+                                <FormControl
+                                    error={!!errors.name}
+                                    fullWidth
+                                    sx={{ width: { xs: "90%", md: "90%" } }}
+                                    variant="outlined"
+                                >
+                                    <InputLabel
+                                        color="info"
+                                        htmlFor="outlined-adornment-password"
+                                    >
+                                        اسم الفرع
+                                    </InputLabel>
+                                    <OutlinedInput
+                                        defaultValue={branch}
+                                        {...register("name")}
+                                        color="info"
+                                        id={`outlined-adornment-name`}
+                                        type={"text"}
+                                        label={"اسم الفرع"}
+                                    />
+                                    <FormHelperText
+                                        sx={{
+                                            fontWeight: "bold",
+                                            letterSpacing: "0.1rem",
+                                        }}
+                                        id="component-helper-text"
+                                    >
+                                        {errors.name?.message}
+                                    </FormHelperText>
+                                </FormControl>
                             </div>
                         </Box>
 

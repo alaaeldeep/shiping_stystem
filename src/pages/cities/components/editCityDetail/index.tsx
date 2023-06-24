@@ -88,6 +88,7 @@ const EditCityDetails = ({ open, handleClose, data }: EditCityProps) => {
                 shippingCost: Math.abs(+requestDate.shippingCost),
                 stateId: +state,
                 id: data.id,
+                status: data.status,
             },
             {
                 onSuccess: () => {

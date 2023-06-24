@@ -18,6 +18,10 @@ import {
     Typography,
     CircularProgress,
     Backdrop,
+    FormHelperText,
+    FormControl,
+    InputLabel,
+    OutlinedInput,
 } from "@mui/material"; /* rect-form */
 import CloseIcon from "@mui/icons-material/Close";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
@@ -80,7 +84,7 @@ const EditPermissionDetailsSmallScreen = ({
     /* hooks form */
     const { register, control, formState, getValues, getFieldState, setError } =
         useForm<FormValue>({
-            defaultValues: { roleName: roleName },
+            /*   defaultValues: { roleName: roleName }, */
             mode: "onTouched",
             resolver: zodResolver(schema),
         });
@@ -239,14 +243,36 @@ const EditPermissionDetailsSmallScreen = ({
                         >
                             {/* role name with default value */}
                             <Box sx={{ marginX: "auto", width: "90%" }}>
-                                <InputField
-                                    register={register}
-                                    errors={errors.roleName}
-                                    fieldName="roleName"
-                                    label=" اسم الصلاحية "
-                                    largeWidth="90%"
-                                    smallWidth="90%"
-                                />
+                                <FormControl
+                                    error={!!errors.roleName}
+                                    fullWidth
+                                    sx={{ width: { xs: "90%", md: "90%" } }}
+                                    variant="outlined"
+                                >
+                                    <InputLabel
+                                        color="info"
+                                        htmlFor="outlined-adornment-password"
+                                    >
+                                        اسم الصلاحية
+                                    </InputLabel>
+                                    <OutlinedInput
+                                        defaultValue={roleName}
+                                        {...register("roleName")}
+                                        color="info"
+                                        id={`outlined-adornment-roleName`}
+                                        type={"text"}
+                                        label={"اسم الصلاحية "}
+                                    />
+                                    <FormHelperText
+                                        sx={{
+                                            fontWeight: "bold",
+                                            letterSpacing: "0.1rem",
+                                        }}
+                                        id="component-helper-text"
+                                    >
+                                        {errors.roleName?.message}
+                                    </FormHelperText>
+                                </FormControl>
                             </Box>
 
                             <Box>

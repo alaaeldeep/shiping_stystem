@@ -63,7 +63,9 @@ const ViewEmployees = () => {
         setPageNumber(value);
     };
     const navigate = useNavigate();
-    const { data, isLoading, isError } = UseQuery("/Employees");
+    const { data, isLoading, isError } = UseQuery(
+        `/Employees/paginate?pageNumber=${pageNumber}`
+    );
 
     const canActivateEmployeeAdd = useOwnStore(
         (store) => store.user.permissions?.Employees?.[0]
@@ -95,12 +97,13 @@ const ViewEmployees = () => {
                 </Stack>
             ) : matches ? (
                 <ViewEmployeeLargeScreen
-                    rows={data?.data}
+                    rows={data?.data.data}
                     headCell={headCells}
                 />
             ) : (
-                <ViewEmployeeSmallScreen rows={data?.data} />
+                <ViewEmployeeSmallScreen rows={data?.data.data} />
             )}
+            {/* pagination */}
             <Box
                 sx={{
                     display: "flex",
@@ -108,14 +111,14 @@ const ViewEmployees = () => {
                     padding: " 20px",
                 }}
             >
-                {/* **CHECK FIRST IF TOTAL_PAGES > 1 SHOW THE PAGINATIOn */}
-                <Pagination
-                    /*   count={data?.data.totalPages} */
-                    count={10}
-                    size={matches ? "large" : "small"}
-                    page={pageNumber}
-                    onChange={(_e, value) => handlePageNumber(value)}
-                />
+                {data?.data.totalPages > 1 && (
+                    <Pagination
+                        count={data?.data.totalPages}
+                        size={matches ? "large" : "small"}
+                        page={pageNumber}
+                        onChange={(_e, value) => handlePageNumber(value)}
+                    />
+                )}
             </Box>
             {data?.data.length === 0 && (
                 <Typography

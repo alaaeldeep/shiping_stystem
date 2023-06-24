@@ -1,5 +1,11 @@
 const CACHE_NAME = "version-1";
-const urlsToCache = ["../index.html", "offline.html"];
+const urlsToCache = [
+    "../index.html",
+    "offline.html",
+    "./wifi.png",
+    "./iti-logo.png",
+    "./logo.light.webp",
+];
 
 // eslint-disable-next-line @typescript-eslint/no-this-alias
 const self = this;

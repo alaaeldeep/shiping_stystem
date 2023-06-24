@@ -169,11 +169,68 @@ export type OrderRow = {
     trader: { id: string; fullName: string; phoneNumber: string };
     representative?: { id: string; fullName: string };
 };
+export type ReportRow = {
+    orderStatus: number;
+    companyOrderRatio: number;
+    paymentType: number;
+    date: string;
+    state: {
+        id: number;
+        name: string;
+    };
+    city: {
+        id: number;
+        name: string;
+        stateId: number;
+    };
+    adressDetails: string;
+    isVillage: boolean;
+    branch: {
+        id: number;
+        name: string;
+    };
+
+    orderCost: number;
+    totalCost: number;
+    totalWeight: number;
+    orderShipingCost: number;
+    receivedCost: number;
+    receivedShipingCost: number;
+    comments: string;
+    orderItems: [
+        {
+            id: number;
+            productName: string;
+            productWeight: number;
+            productQuantity: number;
+        },
+        {
+            id: 1;
+            productName: string;
+            productWeight: number;
+            productQuantity: number;
+            productPrice: number;
+        }
+    ];
+    trader: { id: string; fullName: string; phoneNumber: string };
+    clientName: string;
+    representative?: { id: string; fullName: string };
+    phone1: string;
+    phone2: string;
+    email: string;
+    shippingType: {
+        id: number;
+        name: string;
+        cost: number;
+    };
+    orderType: number;
+    id: number;
+};
 export type Product = {
     productName: string;
     productQuantity: number;
     productWeight: number;
-    productPrice: number;
+
     id?: number | string;
 };
 export type TraderRow = {

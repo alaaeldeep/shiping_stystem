@@ -87,7 +87,7 @@ import OrdersPage from "./pages/orders";
 import ViewWeightSettings from "./pages/weightSetting";
 
 /* reports */
-import Reports from "./pages/reports";
+import ReportPage from "./pages/reports";
 import ViewReports from "./pages/reports/view/viewReports";
 
 /* Shipping Type Settings */
@@ -104,7 +104,7 @@ const queryClient = new QueryClient();
 function App() {
     const mode = useOwnStore((store) => store.mode);
     const logged = useOwnStore((store) => store.user.token);
-
+    const userType = useOwnStore((store) => store.user.userType);
     /* employees Activations */
     const canActivateEmployeeAdd = useOwnStore(
         (store) => store.user.permissions?.Employees?.[0]
@@ -139,6 +139,20 @@ function App() {
     );
     const canActivateSettingsView = useOwnStore(
         (store) => store.user.permissions?.Settings?.[1]
+    );
+    /* order Activations */
+    const canActivateOrdersAdd = useOwnStore(
+        (store) => store.user.permissions?.Orders?.[0]
+    );
+    const canActivateOrdersView = useOwnStore(
+        (store) => store.user.permissions?.Orders?.[1]
+    );
+    /* cities Activations */
+    const canActivateCitiesAdd = useOwnStore(
+        (store) => store.user.permissions?.Cities?.[0]
+    );
+    const canActivateCitiesView = useOwnStore(
+        (store) => store.user.permissions?.Cities?.[1]
     );
 
     const theme = useMemo(
@@ -290,8 +304,22 @@ function App() {
                     path: "cities",
                     element: <Cities />,
                     children: [
-                        { path: "", element: <ViewCities /> },
-                        { path: "add", element: <AddCityPage /> },
+                        {
+                            path: "",
+                            element: canActivateCitiesView ? (
+                                <ViewCities />
+                            ) : (
+                                <Navigate to="/" />
+                            ),
+                        },
+                        {
+                            path: "add",
+                            element: canActivateCitiesAdd ? (
+                                <AddCityPage />
+                            ) : (
+                                <Navigate to="/" />
+                            ),
+                        },
                     ],
                 },
                 /* orders */
@@ -301,19 +329,38 @@ function App() {
                     children: [
                         {
                             path: "",
-                            element: <ViewOrders />,
+                            element:
+                                userType === ("Trader" || "Representative") ||
+                                canActivateOrdersView ? (
+                                    <ViewOrders />
+                                ) : (
+                                    <Navigate to="/" />
+                                ),
                         },
                         {
                             path: ":orderStatus",
-                            element: <ViewOrders />,
+                            element:
+                                userType === ("Trader" || "Representative") ||
+                                canActivateOrdersView ? (
+                                    <ViewOrders />
+                                ) : (
+                                    <Navigate to="/" />
+                                ),
                         },
-                        { path: "add", element: <AddOrderPage /> },
+                        {
+                            path: "add",
+                            element: canActivateOrdersAdd ? (
+                                <AddOrderPage />
+                            ) : (
+                                <Navigate to="/" />
+                            ),
+                        },
                     ],
                 },
                 /* reports */
                 {
                     path: "reports",
-                    element: <Reports />,
+                    element: <ReportPage />,
                     children: [{ path: "", element: <ViewReports /> }],
                 },
                 /* weightSettings 👍 */

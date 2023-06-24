@@ -70,18 +70,12 @@ const ViewRepresentatives = () => {
         setPageNumber(value);
     };
 
-    const { data, isLoading, isError } = UseQuery("/Representatives");
+    const { data, isLoading, isError } = UseQuery(
+        `/Representatives/paginate?pageNumber=${pageNumber}`
+    );
 
     const matches = useMediaQuery("(min-width:1070px)");
     const navigate = useNavigate();
-
-    /*  if (isLoading) {
-        return (
-            <Stack spacing={1}>
-                <Skeleton variant="rounded" width={"100%"} height={500} />
-            </Stack>
-        );
-    } */
 
     if (isError) {
         setTimeout(() => navigate("/home"), 2000);
@@ -105,11 +99,11 @@ const ViewRepresentatives = () => {
                 </Stack>
             ) : matches ? (
                 <ViewRepresentativesLargeScreen
-                    rows={data?.data}
+                    rows={data?.data.data}
                     headCell={headCells}
                 />
             ) : (
-                <ViewRepresentativesSmallScreen rows={data?.data} />
+                <ViewRepresentativesSmallScreen rows={data?.data.data} />
             )}
             {data?.data.length === 0 && (
                 <Typography
@@ -124,6 +118,7 @@ const ViewRepresentatives = () => {
                     لم يتم اضافة مناديب حتي الان
                 </Typography>
             )}{" "}
+            {/* pagination */}
             <Box
                 sx={{
                     display: "flex",
@@ -131,14 +126,14 @@ const ViewRepresentatives = () => {
                     padding: " 20px",
                 }}
             >
-                {/* **CHECK FIRST IF TOTAL_PAGES > 1 SHOW THE PAGINATIOn */}
-                <Pagination
-                    /*   count={data?.data.totalPages} */
-                    count={5}
-                    size={matches ? "large" : "small"}
-                    page={pageNumber}
-                    onChange={(_e, value) => handlePageNumber(value)}
-                />
+                {data?.data.totalPages > 1 && (
+                    <Pagination
+                        count={data?.data.totalPages}
+                        size={matches ? "large" : "small"}
+                        page={pageNumber}
+                        onChange={(_e, value) => handlePageNumber(value)}
+                    />
+                )}
             </Box>
         </>
     );

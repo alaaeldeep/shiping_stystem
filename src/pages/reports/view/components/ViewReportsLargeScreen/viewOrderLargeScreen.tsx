@@ -5,11 +5,11 @@ import { Table, TableBody, TableContainer } from "@mui/material";
 import CustomTableHead from "../../../../../components/table/tableHead";
 
 /* types */
-import { OrderRow } from "../../../../../components/types";
+import { ReportRow } from "../../../../../components/types";
 
 import RowInLargeScreen from "./row";
 type ViewEmployeeLargeScreenProps = {
-    rows: OrderRow[];
+    rows: ReportRow[];
     headCell: any;
 };
 
@@ -28,7 +28,7 @@ export const ViewReportsLargeScreen = ({
                 >
                     <CustomTableHead headCell={headCell} />
                     <TableBody>
-                        {rows.map((row, index) => {
+                        {rows?.map((row, index) => {
                             return (
                                 <RowInLargeScreen
                                     data={row}

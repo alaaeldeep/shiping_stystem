@@ -3,35 +3,27 @@ import { useState } from "react";
 
 /* MUI */
 import { TableCell, TableRow, IconButton } from "@mui/material";
-import EditIcon from "@mui/icons-material/Edit";
 import ZoomOutMapIcon from "@mui/icons-material/ZoomOutMap";
-import PublishedWithChangesIcon from "@mui/icons-material/PublishedWithChanges";
+
+/* date formatter */
+import moment from "moment";
+import "moment/dist/locale/ar";
 
 /* components */
-import EditOrderDetails from "../../../components/editOrderDetails";
+
 import ViewOrderDetails from "../../../components/viewOrderDetail";
 
 /* types */
-import { OrderRow } from "../../../../../components/types";
+import { ReportRow } from "../../../../../components/types";
 
 /* myStore */
 import { useOwnStore } from "../../../../../store";
-import ChangeOrderStatus from "../../../components/changeOrderStatus";
 
 type props = {
     index: number;
-    data: OrderRow;
+    data: ReportRow;
 };
 const RowInLargeScreen = ({ index, data }: props) => {
-    /* edit order */
-    const [openEditOrderDetails, setOpenEditOrderDetails] = useState(false);
-    const handleClickOpenEditOrderDetails = () => {
-        setOpenEditOrderDetails(true);
-    };
-    const handleCloseEditOrderDetails = () => {
-        setOpenEditOrderDetails(false);
-    };
-
     /* view order details*/
     const [openViewOrderDetails, setOpenViewOrderDetails] = useState(false);
     const handleClickOpenViewOrderDetails = () => {
@@ -41,14 +33,7 @@ const RowInLargeScreen = ({ index, data }: props) => {
         setOpenViewOrderDetails(false);
     };
 
-    /* change order status */
-    const [openChangeOrderStatus, setOpenChangeOrderStatus] = useState(false);
-    const handleClickChangeOrderStatus = () => {
-        setOpenChangeOrderStatus(true);
-    };
-    const handleCloseChangeOrderStatus = () => {
-        setOpenChangeOrderStatus(false);
-    };
+    /* store */
     const mode = useOwnStore((store) => store.mode);
 
     return (
@@ -57,24 +42,13 @@ const RowInLargeScreen = ({ index, data }: props) => {
             tabIndex={-1}
             sx={{ cursor: "pointer", position: "relative" }}
         >
-            {/* edit details */}
-            <EditOrderDetails
-                data={data}
-                handleClose={handleCloseEditOrderDetails}
-                open={openEditOrderDetails}
-            />
             {/* view details */}
             <ViewOrderDetails
                 open={openViewOrderDetails}
                 data={data}
                 handleClose={handleCloseViewOrderDetails}
             />
-            {/* change order status */}
-            <ChangeOrderStatus
-                open={openChangeOrderStatus}
-                data={data}
-                handleClose={handleCloseChangeOrderStatus}
-            />{" "}
+
             {/* view all employees */}
             {
                 <>
@@ -90,41 +64,28 @@ const RowInLargeScreen = ({ index, data }: props) => {
                     </TableCell>
 
                     {/* addedDate name */}
-                    <TableCell align="center">{data.date}</TableCell>
+                    <TableCell align="center">
+                        {moment(data.date).locale("ar").format("LLLL")}
+                    </TableCell>
 
                     {/* state */}
                     <TableCell align="center">{data.state.name}</TableCell>
                     {/* cost  */}
-                    <TableCell align="center">{data.OrderCost}</TableCell>
-                    {/* status */}
+                    <TableCell align="center">{data.orderCost} جنيه</TableCell>
+                    {/* sipping cost */}
                     <TableCell align="center">
-                        <IconButton onClick={handleClickChangeOrderStatus}>
-                            <PublishedWithChangesIcon
-                                style={
-                                    mode === "dark"
-                                        ? {
-                                              color: "#F9D00F",
-                                          }
-                                        : {
-                                              color: "#DA2D2D",
-                                          }
-                                }
-                            />
-                        </IconButton>
+                        {data.orderShipingCost} جنيه
                     </TableCell>
-                    {/* settings */}
+                    {/* assign to representative */}
+                    <TableCell align="center">
+                        {data.companyOrderRatio} جنيه
+                    </TableCell>
+                    {/* view */}
                     <TableCell align="center">
                         <IconButton onClick={handleClickOpenViewOrderDetails}>
                             <ZoomOutMapIcon
                                 style={{
                                     color: "#E86A33",
-                                }}
-                            />
-                        </IconButton>
-                        <IconButton onClick={handleClickOpenEditOrderDetails}>
-                            <EditIcon
-                                style={{
-                                    color: "#7AA874",
                                 }}
                             />
                         </IconButton>

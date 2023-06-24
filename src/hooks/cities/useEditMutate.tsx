@@ -9,6 +9,7 @@ type cityType = {
     name: string;
     shippingCost: number;
     id: number;
+    status: boolean;
 };
 const updateCity = (data: cityType) => {
     return request({

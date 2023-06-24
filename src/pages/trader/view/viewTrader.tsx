@@ -62,7 +62,9 @@ const ViewTraders = () => {
     const handlePageNumber = (value: number) => {
         setPageNumber(value);
     };
-    const { data, isLoading, isError } = UseQuery("/Traders");
+    const { data, isLoading, isError } = UseQuery(
+        `/Traders/paginate?pageNumber=${pageNumber}`
+    );
 
     const canActivateTradersAdd = useOwnStore(
         (store) => store.user.permissions?.Traders?.[0]
@@ -99,11 +101,11 @@ const ViewTraders = () => {
                     </Stack>
                 ) : matches ? (
                     <ViewTraderLargeScreen
-                        rows={data?.data}
+                        rows={data?.data.data}
                         headCell={headCells}
                     />
                 ) : (
-                    <ViewTraderSmallScreen rows={data?.data} />
+                    <ViewTraderSmallScreen rows={data?.data.data} />
                 )}
                 {data?.data.length === 0 && (
                     <Typography
@@ -118,6 +120,7 @@ const ViewTraders = () => {
                         لم يتم اضافة تجار حتي الان
                     </Typography>
                 )}
+                {/* pagination */}
                 <Box
                     sx={{
                         display: "flex",
@@ -125,14 +128,14 @@ const ViewTraders = () => {
                         padding: " 20px",
                     }}
                 >
-                    {/* **CHECK FIRST IF TOTAL_PAGES > 1 SHOW THE PAGINATIOn */}
-                    <Pagination
-                        /*   count={data?.data.totalPages} */
-                        count={1}
-                        size={matches ? "large" : "small"}
-                        page={pageNumber}
-                        onChange={(_e, value) => handlePageNumber(value)}
-                    />
+                    {data?.data.totalPages > 1 && (
+                        <Pagination
+                            count={data?.data.totalPages}
+                            size={matches ? "large" : "small"}
+                            page={pageNumber}
+                            onChange={(_e, value) => handlePageNumber(value)}
+                        />
+                    )}
                 </Box>
             </>
         </>

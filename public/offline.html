@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html dir="rtl" lang="ar">
+<html lang="en">
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -12,11 +12,12 @@
         <link rel="icon" type="image/svg+xml" href="iconLogo.png" />
         <title>Team_4</title>
     </head>
-    <body>
+    <body style="padding: 0; margin: 0">
         <div
             style="
                 display: flex;
                 flex-direction: column;
+                gap: 2rem;
                 justify-content: center;
                 align-items: center;
             "
@@ -26,21 +27,52 @@
                     display: flex;
                     justify-content: space-between;
                     width: 100%;
-                    margin: 10px 40px;
+
+                    background-color: antiquewhite;
                 "
             >
-                <img src="./logo.light.webp" height="100" />
-                <img src="./iti-logo.png" alt="" height="100" />
+                <img
+                    src="./logo.light.webp"
+                    height="65"
+                    style="padding: 5px 10px"
+                />
+                <img
+                    src="./iti-logo.png"
+                    alt=""
+                    height="65"
+                    style="padding: 0px 10px"
+                />
             </div>
 
-            <img src="./wifi.png" width="200" />
-            <p style="font-size: 2rem">
-                قد يكون هناك مشكله بالانترنت او الاتصال ضعيف حاول مره اخري او
-                برجاء الاتصال بنا علي الارقام التالية
-            </p>
-            <span style="font-size: 1.5rem"
-                >+20 101-15-152 +20 101-15-152 +20 101-15-152</span
-            >
+            <img src="./wifi.png" width="175" />
+            <div style="padding: 10px; text-align: center">
+                <p style="font-size: 2rem; min-width: 300px">
+                    قد يكون هناك مشكله بالانترنت او الاتصال ضعيف حاول مره اخري
+                    او برجاء الاتصال بنا علي الارقام التالية
+                </p>
+
+                <span style="font-size: 1.5rem; border-bottom: 1px solid" ;>
+                    <a
+                        style="text-decoration: none; color: black"
+                        href="tel:+4733378901"
+                        >(+20) 105-090-9070</a
+                    >
+                </span>
+
+                <span
+                    style="
+                        font-size: 1.5rem;
+                        border-bottom: 1px solid;
+                        margin: 0 20px;
+                    "
+                >
+                    <a
+                        style="text-decoration: none; color: black"
+                        href="tel:+4733378901"
+                        >(+20) 105-090-9070</a
+                    >
+                </span>
+            </div>
         </div>
     </body>
 </html>

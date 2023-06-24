@@ -268,7 +268,7 @@ const EditOrderDetails = ({ open, handleClose, data }: props) => {
                 traderId: data.traderId,
                 id: data.id,
             };
-            console.log(requestData);
+
             mutate(requestData, {
                 onSuccess: () => {
                     handleClose();

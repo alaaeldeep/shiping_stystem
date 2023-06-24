@@ -63,6 +63,7 @@ const headCells: any = [
 
 const ViewOrders = () => {
     const { orderStatus } = useParams();
+
     /* pagination */
     const [pageNumber, setPageNumber] = useState(1);
     const handlePageNumber = (value: number) => {
@@ -72,8 +73,8 @@ const ViewOrders = () => {
     const navigate = useNavigate();
 
     /* fetch */
-    const { data, isLoading, isError } = UseOrderQuery(pageNumber);
-
+    const { data, isLoading, isError } = UseOrderQuery(pageNumber, orderStatus);
+    console.log(data?.data);
     /* store */
     const canActivateOrdersAdd = useOwnStore(
         (store) => store.user.permissions?.Orders?.[0]
@@ -127,7 +128,7 @@ const ViewOrders = () => {
                     />
                 )}
             </Box>
-            {data?.data.length === 0 && (
+            {data?.data.data.length === 0 && (
                 <Typography
                     height={"150px"}
                     sx={{

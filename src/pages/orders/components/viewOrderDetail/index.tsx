@@ -92,7 +92,7 @@ const ViewOrderDetails = ({ open, handleClose, data }: OrderDetailsProps) => {
             // code block
         }
     };
-    console.log(data);
+
     return (
         <>
             <Dialog

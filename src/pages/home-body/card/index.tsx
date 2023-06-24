@@ -16,52 +16,6 @@ export type CardProp = {
     numberOrder: number;
 };
 
-const statuses = [
-    {
-        orderStatus: "جديد",
-        id: 0,
-    },
-    {
-        orderStatus: "قيد الانتظار",
-        id: 1,
-    },
-    {
-        orderStatus: "تم التسليم للمندوب",
-        id: 2,
-    },
-    {
-        orderStatus: "تم التسليم",
-        id: 3,
-    },
-    {
-        orderStatus: "لا يمكن الوصول",
-        id: 4,
-    },
-    {
-        orderStatus: "تم التاجيل",
-        id: 5,
-    },
-    {
-        orderStatus: "تم التسليم جزئيا",
-        id: 6,
-    },
-    {
-        orderStatus: "تم الالغاء من قبل المستلم",
-        id: 7,
-    },
-    {
-        orderStatus: "تم الرفض مع الدفع",
-        id: 8,
-    },
-    {
-        orderStatus: "رفض مع سداد الجزاء",
-        id: 9,
-    },
-    {
-        orderStatus: "رفض ولم يتم الدفع",
-        id: 10,
-    },
-];
 const Card = ({ orderStatus, numberOrder }: CardProp) => {
     const navigate = useNavigate();
     return (

@@ -52,7 +52,9 @@ const ViewStates = () => {
     };
 
     /* fetch */
-    const { data, isLoading, isError } = UseQuery("/states");
+    const { data, isLoading, isError } = UseQuery(
+        `/states/paginate?pageNumber=${pageNumber}`
+    );
 
     /* mobile view */
     const matches = useMediaQuery("(min-width:1070px)");
@@ -77,11 +79,11 @@ const ViewStates = () => {
                 </Stack>
             ) : matches ? (
                 <ViewStatesLargeScreen
-                    rows={data?.data}
+                    rows={data?.data.data}
                     headCell={statesHeadCells}
                 />
             ) : (
-                <ViewStatesSmallScreen rows={data?.data} />
+                <ViewStatesSmallScreen rows={data?.data.data} />
             )}
             {data?.data.length === 0 && (
                 <Typography
@@ -96,6 +98,7 @@ const ViewStates = () => {
                     لم يتم اضافة محافظات حتي الان
                 </Typography>
             )}
+            {/* pagination */}
             <Box
                 sx={{
                     display: "flex",
@@ -103,14 +106,14 @@ const ViewStates = () => {
                     padding: " 20px",
                 }}
             >
-                {/* **CHECK FIRST IF TOTAL_PAGES > 1 SHOW THE PAGINATIOn */}
-                <Pagination
-                    /*   count={data?.data.totalPages} */
-                    count={1}
-                    size={matches ? "large" : "small"}
-                    page={pageNumber}
-                    onChange={(_e, value) => handlePageNumber(value)}
-                />
+                {data?.data.totalPages > 1 && (
+                    <Pagination
+                        count={data?.data.totalPages}
+                        size={matches ? "large" : "small"}
+                        page={pageNumber}
+                        onChange={(_e, value) => handlePageNumber(value)}
+                    />
+                )}
             </Box>
         </>
     );

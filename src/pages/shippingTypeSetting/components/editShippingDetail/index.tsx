@@ -9,6 +9,10 @@ import {
     Box,
     Backdrop,
     CircularProgress,
+    FormControl,
+    InputLabel,
+    OutlinedInput,
+    FormHelperText,
 } from "@mui/material"; /* rect-form */
 import CloseIcon from "@mui/icons-material/Close";
 
@@ -55,10 +59,6 @@ const EditShippingTypeDetails = ({
     });
     type FormValue = z.infer<typeof schema>;
     const { register, control, handleSubmit, formState } = useForm<FormValue>({
-        defaultValues: {
-            name: name,
-            cost: cost + "",
-        },
         mode: "onTouched",
         resolver: zodResolver(schema),
     });
@@ -129,30 +129,85 @@ const EditShippingTypeDetails = ({
                     >
                         <Box sx={{ marginX: "auto", width: "90%" }}>
                             {/* shipping type */}
-                            <div style={{ margin: "20px 0" }}>
-                                <InputField
-                                    register={register}
-                                    errors={errors.name}
-                                    fieldName="name"
-                                    label="نوع الشحن"
-                                    largeWidth="90%"
-                                    smallWidth="90%"
-                                />
-                            </div>{" "}
+
+                            <div
+                                style={{
+                                    margin: "20px 0",
+                                }}
+                            >
+                                <FormControl
+                                    error={!!errors.name}
+                                    fullWidth
+                                    sx={{ width: { xs: "90%", md: "90%" } }}
+                                    variant="outlined"
+                                >
+                                    <InputLabel
+                                        color="info"
+                                        htmlFor="outlined-adornment-password"
+                                    >
+                                        نوع الشحن
+                                    </InputLabel>
+                                    <OutlinedInput
+                                        defaultValue={name}
+                                        {...register("name")}
+                                        color="info"
+                                        id={`outlined-adornment-name`}
+                                        type={"text"}
+                                        label={"نوع الشحن"}
+                                    />
+                                    <FormHelperText
+                                        sx={{
+                                            fontWeight: "bold",
+                                            letterSpacing: "0.1rem",
+                                        }}
+                                        id="component-helper-text"
+                                    >
+                                        {errors.name?.message}
+                                    </FormHelperText>
+                                </FormControl>
+                            </div>
+
                             {/* shipping cost */}
                             <div
                                 style={{
                                     margin: "20px 0",
                                 }}
                             >
-                                <NumericInputField
-                                    register={register}
-                                    errors={errors.cost}
-                                    fieldName="cost"
-                                    label="تكلفة الشحن"
-                                    largeWidth="90%"
-                                    smallWidth="90%"
-                                />{" "}
+                                <FormControl
+                                    error={!!errors.cost}
+                                    fullWidth
+                                    sx={{
+                                        width: {
+                                            xs: "90%",
+                                            md: "90%",
+                                        },
+                                    }}
+                                    variant="outlined"
+                                >
+                                    <InputLabel
+                                        color="info"
+                                        htmlFor="outlined-adornment-password"
+                                    >
+                                        تكلفة الشحن
+                                    </InputLabel>
+                                    <OutlinedInput
+                                        defaultValue={cost}
+                                        {...register("cost")}
+                                        color="info"
+                                        id={`outlined-adornment-${"cost"}`}
+                                        type={"number"}
+                                        label="تكلفة الشحن"
+                                    />
+                                    <FormHelperText
+                                        sx={{
+                                            fontWeight: "bold",
+                                            letterSpacing: "0.1rem",
+                                        }}
+                                        id="component-helper-text"
+                                    >
+                                        {errors?.cost?.message}
+                                    </FormHelperText>
+                                </FormControl>
                             </div>
                         </Box>
 
