@@ -12,7 +12,7 @@ import { motion } from "framer-motion";
 import styles from "./styles.module.css";
 
 export type CardProp = {
-    orderStatus: string | undefined;
+    orderStatus: string;
     numberOrder: number;
 };
 

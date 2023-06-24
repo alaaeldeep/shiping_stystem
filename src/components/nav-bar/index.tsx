@@ -42,7 +42,7 @@ const NavBar = ({ drawerWidth, handleDrawerToggle }: props) => {
 
                 <div className={style.navContainer}>
                     {/* search field */}
-                    <Search />
+                    {/*  <Search /> */}
 
                     {/* left side */}
                     <Box
@@ -51,6 +51,7 @@ const NavBar = ({ drawerWidth, handleDrawerToggle }: props) => {
                             alignItems: "center",
                             justifyContent: "space-between",
                             gap: { xs: "10px", md: "16px" },
+                            width: "100%",
                         }}
                     >
                         {/* account */}

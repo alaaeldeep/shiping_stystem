@@ -177,6 +177,15 @@ function App() {
         () => createTheme(getDesignTokens(mode as PaletteMode)),
         [mode]
     );
+    const routeHandler: boolean = (canActivate: boolean, userType: string) => {
+        if (
+            canActivate ||
+            userType === "Trader" ||
+            userType === "Representative"
+        )
+            return true;
+        return false;
+    };
     const router = createBrowserRouter([
         {
             path: "/",
@@ -375,23 +384,41 @@ function App() {
                     children: [
                         {
                             path: "",
-                            element:
+                            element: canActivateOrdersView ? (
+                                <ViewOrders />
+                            ) : userType === "Trader" ? (
+                                <ViewOrders />
+                            ) : userType === "Representative" ? (
+                                <ViewOrders />
+                            ) : (
+                                <Navigate to="/" />
+                            ),
+                            /*  element:
                                 userType === ("Trader" || "Representative") ||
                                 canActivateOrdersView ? (
                                     <ViewOrders />
                                 ) : (
                                     <Navigate to="/" />
-                                ),
+                                ), */
                         },
                         {
                             path: ":orderStatus",
-                            element:
+                            element: canActivateOrdersView ? (
+                                <ViewOrders />
+                            ) : userType === "Trader" ? (
+                                <ViewOrders />
+                            ) : userType === "Representative" ? (
+                                <ViewOrders />
+                            ) : (
+                                <Navigate to="/" />
+                            ),
+                            /*  element:
                                 userType === ("Trader" || "Representative") ||
                                 canActivateOrdersView ? (
                                     <ViewOrders />
                                 ) : (
                                     <Navigate to="/" />
-                                ),
+                                ), */
                         },
                         {
                             path: "add",

@@ -4,6 +4,10 @@ import { useRef } from "react";
 /* react print */
 import { useReactToPrint } from "react-to-print";
 
+/* date formatter */
+import moment from "moment";
+import "moment/dist/locale/ar";
+
 /* MUI */
 import {
     DialogTitle,
@@ -174,7 +178,7 @@ const ViewOrderDetails = ({ open, handleClose, data }: OrderDetailsProps) => {
                             <span style={{ fontWeight: "600" }}>
                                 تاريخ اضافة الطلب :
                             </span>{" "}
-                            {data.date}
+                            {moment(data.date).locale("ar").format("LLLL")}
                         </Typography>
                         <Typography>
                             <span style={{ fontWeight: "600" }}>

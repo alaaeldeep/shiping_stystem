@@ -3,6 +3,9 @@ import { useRef } from "react";
 
 /* react print */
 import { useReactToPrint } from "react-to-print";
+/* date formatter */
+import moment from "moment";
+import "moment/dist/locale/ar";
 
 /* MUI */
 import {
@@ -145,13 +148,13 @@ const ViewOrderDetails = ({ open, handleClose, data }: OrderDetailsProps) => {
                             }}
                         >
                             <img
-                                src="./iti-logo.png"
+                                src="../../../../../public/iti-logo.png"
                                 height={55}
                                 alt="iti logo in print screen"
                             />
                             <h1>TEAM 4 </h1>
                             <img
-                                src="./iconLogo.png"
+                                src="../../../../../public/iconLogo.png"
                                 height={55}
                                 alt="iti logo in print screen"
                             />
@@ -174,7 +177,7 @@ const ViewOrderDetails = ({ open, handleClose, data }: OrderDetailsProps) => {
                             <span style={{ fontWeight: "600" }}>
                                 تاريخ اضافة الطلب :
                             </span>{" "}
-                            {data.date}
+                            {moment(data.date).locale("ar").format("LLLL")}
                         </Typography>
                         <Typography>
                             <span style={{ fontWeight: "600" }}>

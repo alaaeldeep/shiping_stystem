@@ -197,7 +197,7 @@ export const convertIdToOrderStatus = (id: number) => {
             return "تم التسليم جزئيا";
 
         case 7:
-            return "تم الاغاء من قبل المستلم";
+            return "تم الالغاء من قبل المستلم";
 
         case 8:
             return "تم الرفض مع الدفع";
@@ -232,7 +232,7 @@ export const convertOrderStatusToId = (status: string) => {
         case "تم التسليم جزئيا":
             return 6;
 
-        case "تم الاغاء من قبل المستلم":
+        case "تم الالغاء من قبل المستلم":
             return 7;
 
         case "تم الرفض مع الدفع":

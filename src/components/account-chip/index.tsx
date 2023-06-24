@@ -49,7 +49,7 @@ const AccountChip = () => {
                 variant="outlined"
                 sx={{
                     cursor: "pointer",
-                    width: { xs: "100px", md: "180px" },
+                    /*   width: { xs: "100px", md: "180px" }, */
                     fontWeight: "bold",
                 }}
             />
@@ -76,18 +76,18 @@ const AccountChip = () => {
                 transformOrigin={{ horizontal: "right", vertical: "top" }}
                 anchorOrigin={{ horizontal: "right", vertical: 25 }}
             >
-                <MenuItem onClick={handleClose}>
+                {/* <MenuItem onClick={handleClose}>
                     <Avatar /> الحساب الشخصي
-                </MenuItem>
+                </MenuItem> */}
 
-                <Divider />
+                {/* <Divider /> */}
 
-                <MenuItem onClick={handleClose}>
+                {/*  <MenuItem onClick={handleClose}>
                     <ListItemIcon>
                         <Settings fontSize="small" />
                     </ListItemIcon>
                     الاعدادات
-                </MenuItem>
+                </MenuItem> */}
                 <MenuItem
                     onClick={() => {
                         logout();

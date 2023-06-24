@@ -164,10 +164,45 @@ const DrawerComponent = ({
                         </ListItemButton>
                     </NavLink>
                 </div>
-
                 {/* orders */}
+                {canActivateOrdersView ? (
+                    <NavLink to="/orders" style={{ textDecoration: "none" }}>
+                        <ListItemButton sx={{ color: "text.primary" }}>
+                            <ListItemIcon>
+                                <LocalMallIcon />
+                            </ListItemIcon>
+                            <ListItemText primary="الطلـبات" />
+                        </ListItemButton>
+                    </NavLink>
+                ) : userType === "Trader" ? (
+                    <NavLink to="/orders" style={{ textDecoration: "none" }}>
+                        <ListItemButton sx={{ color: "text.primary" }}>
+                            <ListItemIcon>
+                                <LocalMallIcon />
+                            </ListItemIcon>
+                            <ListItemText primary="الطلـبات" />
+                        </ListItemButton>
+                    </NavLink>
+                ) : userType === "Representative" ? (
+                    <NavLink to="/orders" style={{ textDecoration: "none" }}>
+                        <ListItemButton sx={{ color: "text.primary" }}>
+                            <ListItemIcon>
+                                <LocalMallIcon />
+                            </ListItemIcon>
+                            <ListItemText primary="الطلـبات" />
+                        </ListItemButton>
+                    </NavLink>
+                ) : null}
 
-                {(userType === ("Trader" || "Representative") ||
+                {/* <NavLink to="/orders" style={{ textDecoration: "none" }}>
+                    <ListItemButton sx={{ color: "text.primary" }}>
+                        <ListItemIcon>
+                            <LocalMallIcon />
+                        </ListItemIcon>
+                        <ListItemText primary="الطلـبات" />
+                    </ListItemButton>
+                </NavLink> */}
+                {/*  {(userType === ("Trader" || "Representative") ||
                     canActivateOrdersView) && (
                     <NavLink to="/orders" style={{ textDecoration: "none" }}>
                         <ListItemButton sx={{ color: "text.primary" }}>
@@ -177,8 +212,7 @@ const DrawerComponent = ({
                             <ListItemText primary="الطلـبات" />
                         </ListItemButton>
                     </NavLink>
-                )}
-
+                )} */}
                 {/* reports */}
                 {canActivateOrdersReportsView && (
                     <NavLink to="/reports" style={{ textDecoration: "none" }}>
@@ -190,7 +224,6 @@ const DrawerComponent = ({
                         </ListItemButton>
                     </NavLink>
                 )}
-
                 {/* employees */}
                 {canActivateEmployeeView ? (
                     <NavLink to="/employees" style={{ textDecoration: "none" }}>
@@ -216,7 +249,6 @@ const DrawerComponent = ({
                         </NavLink>
                     )
                 )}
-
                 {/* traders */}
                 {canActivateTradersView ? (
                     <NavLink to="/traders" style={{ textDecoration: "none" }}>
@@ -242,7 +274,6 @@ const DrawerComponent = ({
                         </NavLink>
                     )
                 )}
-
                 {/* representative */}
                 {canActivateRepresentativesView ? (
                     <NavLink
@@ -271,9 +302,7 @@ const DrawerComponent = ({
                         </NavLink>
                     )
                 )}
-
                 <Divider />
-
                 {/* branches */}
                 {canActivateBranchesView ? (
                     <NavLink to="/branches" style={{ textDecoration: "none" }}>
@@ -299,7 +328,6 @@ const DrawerComponent = ({
                         </NavLink>
                     )
                 )}
-
                 {/* states */}
                 {canActivateStatesView ? (
                     <NavLink to="/states" style={{ textDecoration: "none" }}>
@@ -325,7 +353,6 @@ const DrawerComponent = ({
                         </NavLink>
                     )
                 )}
-
                 {/* cities */}
                 {canActivateCitiesView ? (
                     <NavLink to="/cities" style={{ textDecoration: "none" }}>
@@ -351,7 +378,6 @@ const DrawerComponent = ({
                         </NavLink>
                     )
                 )}
-
                 {/* users */}
                 {/* <NavLink to="/users" style={{ textDecoration: "none" }}>
                     <ListItemButton sx={{ color: "text.primary" }}>
@@ -362,7 +388,6 @@ const DrawerComponent = ({
                     </ListItemButton>
                 </NavLink>
                 <Divider /> */}
-
                 {/* permissions */}
                 {canActivatePrivilegesView ? (
                     <NavLink
@@ -391,7 +416,6 @@ const DrawerComponent = ({
                         </NavLink>
                     )
                 )}
-
                 {/* settings */}
                 {canActivateSettingsView ? (
                     <>

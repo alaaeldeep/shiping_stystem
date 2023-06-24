@@ -52,7 +52,7 @@ const statuses = [
         id: 8,
     },
     {
-        orderStatus: "رفض مع سداد الجزاء",
+        orderStatus: "رفض مع سداد جزء",
         id: 9,
     },
     {
