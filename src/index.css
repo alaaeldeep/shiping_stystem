@@ -32,9 +32,9 @@ body {
         .MuiChip-label {
             color: black !important;
         }
-        #printWhiteSpace {
+        /*  #printWhiteSpace {
             margin-bottom: 2rem !important;
-        }
+        } */
     }
 }
 
@@ -63,3 +63,17 @@ body {
         width: 50%;
     }
 }
+/* .MuiStack-root muirtl-17r3qeh-MuiStack-root-MuiMultiInputDateRangeField-root {
+    color: brown !important;
+} */
+/* .MuiFormLabel-colorPrimary {
+    color: white !important;
+} */
+
+/* .MuiInputBase-colorPrimary {
+    color: brown !important;
+} */
+/* .muirtl-1d3z3hw-MuiOutlinedInput-notchedOutlinee {
+    color: brown !important;
+}
+ */

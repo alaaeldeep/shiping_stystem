@@ -11,7 +11,6 @@ import {
     DialogActions,
     Dialog,
     IconButton,
-    useMediaQuery,
     Box,
     Paper,
     Typography,
@@ -190,18 +189,13 @@ const ViewOrderDetails = ({ open, handleClose, data }: OrderDetailsProps) => {
                                 </span>{" "}
                                 {data.representative.fullName}
                             </Typography>
-                        ) : (
-                            <div
-                                id="printWhiteSpace"
-                                style={{ marginBottom: "2rem" }}
-                            ></div>
-                        )}
+                        ) : null}
                         <Typography>
                             <span style={{ fontWeight: "600" }}>
                                 نوع الدفع :
                             </span>{" "}
                             {data.paymentType === 0 ? "واجبة التحصيل" : null}
-                            {data.paymentType === 1 ? "دقع مقدم" : null}
+                            {data.paymentType === 1 ? "دفع  مقدم" : null}
                             {data.paymentType === 2 ? "طرد مقابل طرد" : null}
                         </Typography>
                         <Typography>

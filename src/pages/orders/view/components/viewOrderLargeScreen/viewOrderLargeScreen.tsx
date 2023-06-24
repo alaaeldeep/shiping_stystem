@@ -8,15 +8,109 @@ import CustomTableHead from "../../../../../components/table/tableHead";
 import { OrderRow } from "../../../../../components/types";
 
 import RowInLargeScreen from "./row";
+import { useOwnStore } from "../../../../../store";
 type ViewEmployeeLargeScreenProps = {
     rows: OrderRow[];
-    headCell: any;
 };
 
+/* employee */
+const headCells1: any = [
+    {
+        id: "id",
+        label: "الرقم التسلسلي",
+    },
+    {
+        id: "addedDate",
+        label: "التاريخ",
+    },
+
+    {
+        id: "state",
+
+        label: "المحافظة",
+    },
+    {
+        id: "orderCost",
+
+        label: "تكلفة الطلب",
+    },
+    {
+        id: "changeStatus",
+        label: "تغيير الحالة",
+    },
+    {
+        id: "assignToRepresentative",
+        label: "اسناد لمندوب",
+    },
+    {
+        id: "settings",
+        label: "الاعدادات",
+    },
+];
+/* trader */
+const headCells3: any = [
+    {
+        id: "id",
+        label: "الرقم التسلسلي",
+    },
+    {
+        id: "addedDate",
+        label: "التاريخ",
+    },
+
+    {
+        id: "state",
+
+        label: "المحافظة",
+    },
+    {
+        id: "orderCost",
+
+        label: "تكلفة الطلب",
+    },
+    {
+        id: "settings",
+        label: "الاعدادات",
+    },
+];
+const headCells2: any = [
+    {
+        id: "id",
+        label: "الرقم التسلسلي",
+    },
+    {
+        id: "addedDate",
+        label: "التاريخ",
+    },
+
+    {
+        id: "state",
+
+        label: "المحافظة",
+    },
+    {
+        id: "orderCost",
+
+        label: "تكلفة الطلب",
+    },
+    {
+        id: "changeStatus",
+        label: "تغيير الحالة",
+    },
+
+    {
+        id: "settings",
+        label: "الاعدادات",
+    },
+];
 export const ViewOrderLargeScreen = ({
     rows,
-    headCell,
 }: ViewEmployeeLargeScreenProps) => {
+    const userType = useOwnStore.getState().user.userType;
+    const canActivateOrdersEdit = useOwnStore(
+        (store) => store.user.permissions?.Orders?.[2]
+    );
+
     return (
         <>
             {" "}
@@ -26,7 +120,15 @@ export const ViewOrderLargeScreen = ({
                     aria-labelledby="tableTitle"
                     size={"medium"}
                 >
-                    <CustomTableHead headCell={headCell} />
+                    <CustomTableHead
+                        headCell={
+                            canActivateOrdersEdit
+                                ? headCells1
+                                : userType === "Trader"
+                                ? headCells3
+                                : headCells2
+                        }
+                    />
                     <TableBody>
                         {rows.map((row, index) => {
                             return (

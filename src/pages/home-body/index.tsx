@@ -6,9 +6,13 @@ import UseOrderSummeryQuery from "../../hooks/home/useGetQuery";
 
 /* components */
 import Card from "./card";
-import { convertIdToOrderStatus } from "../../utils/converter";
-import { useState } from "react";
-import { number } from "zod";
+import {
+    RepresentativeHomeScreen,
+    convertIdToOrderStatus,
+} from "../../utils/converter";
+
+/* store */
+import { useOwnStore } from "../../store";
 
 const statuses = [
     {
@@ -59,7 +63,7 @@ const statuses = [
 
 const HomeMainContent = () => {
     const { data, isLoading, isError } = UseOrderSummeryQuery();
-
+    const userType = useOwnStore((store) => store.user.userType);
     return (
         <>
             <Grid container spacing={3}>
@@ -76,26 +80,46 @@ const HomeMainContent = () => {
                         );
                     }
                 )}
-
-                {statuses.map((card) => {
-                    if (
-                        data?.data
-                            .map(
-                                (card: {
-                                    orderStatus: number;
-                                    numberOrder: number;
-                                }) => card.orderStatus
-                            )
-                            .includes(card.id) === false
-                    )
-                        return (
-                            <Card
-                                orderStatus={card.orderStatus}
-                                numberOrder={0}
-                                key={card.orderStatus}
-                            />
-                        );
-                })}
+                {userType === "Representative"
+                    ? RepresentativeHomeScreen.map((card) => {
+                          if (
+                              data?.data
+                                  .map(
+                                      (card: {
+                                          orderStatus: number;
+                                          numberOrder: number;
+                                      }) => card.orderStatus
+                                  )
+                                  .includes(card.id) === false
+                          )
+                              return (
+                                  <Card
+                                      orderStatus={card.orderStatus}
+                                      numberOrder={0}
+                                      key={card.orderStatus}
+                                  />
+                              );
+                      })
+                    : statuses.map((card) => {
+                          if (
+                              data?.data
+                                  .map(
+                                      (card: {
+                                          orderStatus: number;
+                                          numberOrder: number;
+                                      }) => card.orderStatus
+                                  )
+                                  .includes(card.id) === false
+                          )
+                              return (
+                                  <Card
+                                      orderStatus={card.orderStatus}
+                                      numberOrder={0}
+                                      key={card.orderStatus}
+                                  />
+                              );
+                      })}
+                {}
             </Grid>
         </>
     );

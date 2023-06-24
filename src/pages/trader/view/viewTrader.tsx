@@ -1,5 +1,5 @@
 /* react staff */
-import { useState } from "react";
+import { useRef, useState } from "react";
 
 /* router */
 import { useNavigate } from "react-router-dom";
@@ -58,12 +58,20 @@ const headCells: any = [
 const ViewTraders = () => {
     /* pagination */
 
+    const changePageNumberTraders = useOwnStore(
+        (store) => store.changePageNumberTraders
+    );
+    const TradersBageNumber = useRef<number | undefined>();
+    /* pagination */
+
     const [pageNumber, setPageNumber] = useState(1);
     const handlePageNumber = (value: number) => {
         setPageNumber(value);
+        TradersBageNumber.current = value;
+        changePageNumberTraders(TradersBageNumber.current);
     };
     const { data, isLoading, isError } = UseQuery(
-        `/Traders/paginate?pageNumber=${pageNumber}`
+        `/Traders/paginate?pageNumber=${pageNumber}&pageSize=5`
     );
 
     const canActivateTradersAdd = useOwnStore(
@@ -107,7 +115,7 @@ const ViewTraders = () => {
                 ) : (
                     <ViewTraderSmallScreen rows={data?.data.data} />
                 )}
-                {data?.data.length === 0 && (
+                {data?.data.data.length === 0 && (
                     <Typography
                         height={"150px"}
                         sx={{

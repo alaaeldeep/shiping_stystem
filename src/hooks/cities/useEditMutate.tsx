@@ -3,6 +3,7 @@ import { request } from "../../lib/axios.utls";
 
 /* react query */
 import { useMutation, useQueryClient } from "react-query";
+import { useOwnStore } from "../../store";
 
 type cityType = {
     stateId: number;
@@ -20,10 +21,13 @@ const updateCity = (data: cityType) => {
 };
 
 const UseMutate = () => {
+    const CitiesPageNumber = useOwnStore((store) => store.CitiesPageNumber);
     const queryClient = useQueryClient();
     return useMutation(updateCity, {
         onSuccess: () => {
-            queryClient.invalidateQueries("/Cities/GetCitiesWithShippingCost");
+            queryClient.invalidateQueries(
+                `Cities/paginate?pageNumber=${CitiesPageNumber}&pageSize=5`
+            );
         },
     });
 };

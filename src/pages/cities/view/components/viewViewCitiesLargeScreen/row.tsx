@@ -14,6 +14,9 @@ import EditIcon from "@mui/icons-material/Edit";
 /* components */
 import EditCityDetails from "../../../components/editCityDetail";
 
+/* store */
+import { useOwnStore } from "../../../../../store";
+
 /* types */
 import { CityRow } from "../../../../../components/types";
 import { StatusSwitch } from "../../../../employes/view/components/viewEmployeeLargeScreen/row";
@@ -27,6 +30,10 @@ type props = {
 };
 
 const Row = ({ labelId, index, data }: props) => {
+    const canActivateCitiesEdit = useOwnStore(
+        (store) => store.user.permissions?.Cities?.[2]
+    );
+
     /* edit */
     const [openEditCityDetails, setOpenEditCityDetails] = useState(false);
     const handleClickOpenEditStateDetails = () => {
@@ -99,20 +106,24 @@ const Row = ({ labelId, index, data }: props) => {
                             }
                             checked={data.status}
                             onChange={handleChange}
-                            /*  checked={false} */
+                            disabled={!canActivateCitiesEdit}
                         />
                     </TableCell>
 
                     {/* settings */}
-                    <TableCell align="center">
-                        <IconButton onClick={handleClickOpenEditStateDetails}>
-                            <EditIcon
-                                style={{
-                                    color: "#7AA874",
-                                }}
-                            />
-                        </IconButton>
-                    </TableCell>
+                    {canActivateCitiesEdit && (
+                        <TableCell align="center">
+                            <IconButton
+                                onClick={handleClickOpenEditStateDetails}
+                            >
+                                <EditIcon
+                                    style={{
+                                        color: "#7AA874",
+                                    }}
+                                />
+                            </IconButton>
+                        </TableCell>
+                    )}
                     <EditCityDetails
                         open={openEditCityDetails}
                         handleClose={handleCloseEditStateDetails}

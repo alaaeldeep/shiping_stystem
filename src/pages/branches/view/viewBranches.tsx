@@ -35,7 +35,6 @@ const ViewBranches = () => {
     const handlePageNumber = (value: number) => {
         setPageNumber(value);
         BranchesBageNumber.current = value;
-
         changePageNumberBranch(BranchesBageNumber.current);
     };
 
@@ -102,7 +101,7 @@ const ViewBranches = () => {
                     />
                 )}
             </Box>
-            {data?.data.length === 0 && (
+            {data?.data.data.length === 0 && (
                 <Typography
                     height={"150px"}
                     sx={{

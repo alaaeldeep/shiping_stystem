@@ -52,31 +52,42 @@ const EditBranchesDetails = ({
     id,
     pageNumber,
 }: EditBrancheProps) => {
-    /*   const { mutate, isLoading } = UseMutate(pageNumber); */
+    const { mutate, isLoading } = UseMutate();
     const schema = z.object({
         name: z.string().nonempty(" برجاء كتابة اسم الفرع"),
     });
     type FormValue = z.infer<typeof schema>;
-    const { register, control, handleSubmit, formState } = useForm<FormValue>({
-        /* defaultValues: {
+    const { register, control, handleSubmit, formState, setError } =
+        useForm<FormValue>({
+            /* defaultValues: {
             name: branch,
         }, */
-        mode: "onTouched",
-        resolver: zodResolver(schema),
-    });
+            mode: "onTouched",
+            resolver: zodResolver(schema),
+        });
     const { errors } = formState;
 
     /*   🚀 make the request 🚀 */
     const onSubmit = (data: FormValue) => {
         const requestData = { name: data.name, status, id };
 
-        /*  mutate(requestData, {
+        mutate(requestData, {
             onSuccess: () => {
                 {
                     handleClose();
                 }
             },
-        }); */
+            onError: (err: any) => {
+                setError("name", {
+                    message: "  هذا الفرع موجود بالفعل",
+                });
+                toast.error("هذا الفرع موجود بالفعل", {
+                    position: toast.POSITION.BOTTOM_LEFT,
+                    autoClose: 2000,
+                    theme: "dark",
+                });
+            },
+        });
     };
     const onError = () => {
         toast.warn("برجاء اكمال الحقول الفارغة ", {
@@ -147,7 +158,7 @@ const EditBranchesDetails = ({
                                         اسم الفرع
                                     </InputLabel>
                                     <OutlinedInput
-                                        defaultValue={branch}
+                                        /*   defaultValue={branch} */
                                         {...register("name")}
                                         color="info"
                                         id={`outlined-adornment-name`}
@@ -182,7 +193,7 @@ const EditBranchesDetails = ({
                     </Box>
                     <DevTool control={control} />
                 </form>{" "}
-                {/* <Backdrop
+                <Backdrop
                     sx={{
                         color: "#fff",
                         zIndex: (theme) => theme.zIndex.drawer + 1,
@@ -190,7 +201,7 @@ const EditBranchesDetails = ({
                     open={isLoading}
                 >
                     <CircularProgress color="inherit" />
-                </Backdrop> */}
+                </Backdrop>
             </DialogContent>
         </Dialog>
     );

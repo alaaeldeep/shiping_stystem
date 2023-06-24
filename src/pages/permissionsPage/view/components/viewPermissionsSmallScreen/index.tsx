@@ -24,6 +24,9 @@ import ViewPermissionDetails from "../../../components/viewPermissionDetail";
 import EditPermissionDetails from "../../../components/editPermissionDetail";
 import DeleteHandler from "../../../components/deleteHandeler";
 
+/* store */
+import { useOwnStore } from "../../../../../store";
+
 /* types */
 import { PermissionGET } from "../../../../../components/types";
 
@@ -31,6 +34,13 @@ import { PermissionGET } from "../../../../../components/types";
 type props = { index: number; data: PermissionGET };
 
 const RowInMobile = ({ index, data }: props) => {
+    const canActivatePrivilegesEdit = useOwnStore(
+        (store) => store.user.permissions?.Privileges?.[2]
+    );
+    const canActivatePrivilegesDelete = useOwnStore(
+        (store) => store.user.permissions?.Privileges?.[3]
+    );
+
     const [expanded, setExpanded] = useState<string | false>(false);
     const handleChange =
         (panel: string) =>
@@ -143,22 +153,28 @@ const RowInMobile = ({ index, data }: props) => {
                                     }}
                                 />
                             </IconButton>
-                            <IconButton
-                                onClick={handleClickOpenEditPermissionDetails}
-                            >
-                                <EditIcon
-                                    style={{
-                                        color: "#7AA874",
-                                    }}
-                                />
-                            </IconButton>
-                            <IconButton onClick={handleDeleteHandlerOpen}>
-                                <DeleteForeverIcon
-                                    style={{
-                                        color: "#DF2E38",
-                                    }}
-                                />
-                            </IconButton>
+                            {canActivatePrivilegesEdit && (
+                                <IconButton
+                                    onClick={
+                                        handleClickOpenEditPermissionDetails
+                                    }
+                                >
+                                    <EditIcon
+                                        style={{
+                                            color: "#7AA874",
+                                        }}
+                                    />
+                                </IconButton>
+                            )}
+                            {canActivatePrivilegesDelete && (
+                                <IconButton onClick={handleDeleteHandlerOpen}>
+                                    <DeleteForeverIcon
+                                        style={{
+                                            color: "#DF2E38",
+                                        }}
+                                    />
+                                </IconButton>
+                            )}
                         </Box>
                     </Box>
                 </AccordionDetails>

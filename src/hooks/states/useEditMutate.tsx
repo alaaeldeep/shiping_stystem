@@ -3,6 +3,7 @@ import { request } from "../../lib/axios.utls";
 
 /* react query */
 import { useMutation, useQueryClient } from "react-query";
+import { useOwnStore } from "../../store";
 
 type stateType = {
     name: string;
@@ -19,9 +20,12 @@ const updatePermission = (data: stateType) => {
 
 const UseMutate = () => {
     const queryClient = useQueryClient();
+    const StatesPageNumber = useOwnStore((store) => store.StatesPageNumber);
     return useMutation(updatePermission, {
         onSuccess: () => {
-            queryClient.invalidateQueries("/states");
+            queryClient.invalidateQueries(
+                `/states/paginate?pageNumber=${StatesPageNumber}&pageSize=5`
+            );
         },
     });
 };

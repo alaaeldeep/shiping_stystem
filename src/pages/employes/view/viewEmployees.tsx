@@ -20,7 +20,7 @@ import { ViewEmployeeSmallScreen } from "./components/viewEmployeeSmallScreen/vi
 import { TableToolbar } from "../../../components/table/tableToolBar";
 
 /* react staff */
-import { useState } from "react";
+import { useRef, useState } from "react";
 
 /* store */
 import { useOwnStore } from "../../../store";
@@ -57,14 +57,21 @@ const headCells: any = [
 ];
 
 const ViewEmployees = () => {
+    const changePageNumberEmployees = useOwnStore(
+        (store) => store.changePageNumberEmployees
+    );
+    const EmployeesBageNumber = useRef<number | undefined>();
     /* pagination */
+
     const [pageNumber, setPageNumber] = useState(1);
     const handlePageNumber = (value: number) => {
         setPageNumber(value);
+        EmployeesBageNumber.current = value;
+        changePageNumberEmployees(EmployeesBageNumber.current);
     };
     const navigate = useNavigate();
     const { data, isLoading, isError } = UseQuery(
-        `/Employees/paginate?pageNumber=${pageNumber}`
+        `/Employees/paginate?pageNumber=${pageNumber}&pageSize=5`
     );
 
     const canActivateEmployeeAdd = useOwnStore(
@@ -120,7 +127,7 @@ const ViewEmployees = () => {
                     />
                 )}
             </Box>
-            {data?.data.length === 0 && (
+            {data?.data.data.length === 0 && (
                 <Typography
                     height={"150px"}
                     sx={{

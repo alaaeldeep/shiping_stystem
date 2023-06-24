@@ -98,8 +98,30 @@ const SpecialPackageForm = ({
     /* zod validation */
     const schema = z.object({
         /* step 3 */
-        cityIdSpecialPackage: z.string().nonempty("برجاء اختيار المحافظه"),
-        StateIdSpecialPackage: z.string().nonempty("برجاء اختيار المدينه"),
+
+        /*  cityIdSpecialPackage: z.string().nonempty("برجاء اختيار المحافظه"), */
+        /*  StateIdSpecialPackage: z.string().nonempty("برجاء اختيار المدينه"), */
+
+        StateIdSpecialPackage: z
+            .string({
+                errorMap: (issue, _ctx) => {
+                    switch (issue.code) {
+                        default:
+                            return { message: "برجاء اختيار المحافظه " };
+                    }
+                },
+            })
+            .nonempty("برجاء اختيار الفرع"),
+        cityIdSpecialPackage: z
+            .string({
+                errorMap: (issue, _ctx) => {
+                    switch (issue.code) {
+                        default:
+                            return { message: "برجاء اختيار المدينه " };
+                    }
+                },
+            })
+            .nonempty("برجاء اختيار الفرع"),
         shippingCostSpecialPackage: z
             .string()
             .nonempty("برجاء ادخال تكلفه الشحن"),
@@ -158,10 +180,15 @@ const SpecialPackageForm = ({
                 const indx = prev.findIndex(
                     (specialPackage: any) =>
                         specialPackage.city ===
-                        convertIDToCities(
-                            avalCities,
-                            getValues("cityIdSpecialPackage")
-                        )
+                            convertIDToCities(
+                                avalCities,
+                                getValues("cityIdSpecialPackage")
+                            ) &&
+                        specialPackage.state ===
+                            convertIDToStates(
+                                states,
+                                getValues("StateIdSpecialPackage")
+                            )
                 );
 
                 if (indx === -1) {

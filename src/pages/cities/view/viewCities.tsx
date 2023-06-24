@@ -1,5 +1,5 @@
 /* react staff */
-import { useState } from "react";
+import { useRef, useState } from "react";
 
 /* router */
 import { useNavigate } from "react-router";
@@ -25,46 +25,22 @@ import { ViewCitiesLargeScreen } from "./components/viewViewCitiesLargeScreen/vi
 import { ViewCitiesSmallScreen } from "./components/viewCitiesSmallScreen/viewCitiesSmallScreen";
 import { TableToolbar } from "../../../components/table/tableToolBar";
 
-/* types */
-import { HeadCell } from "../../../components/types";
-
-const citiesHeadCells: HeadCell[] = [
-    {
-        id: "id",
-        label: "الرقم",
-    },
-    {
-        id: "name",
-        label: "المدينة",
-    },
-    {
-        id: "name",
-        label: "المحافظه",
-    },
-    {
-        id: "name",
-        label: "تكلفة الشحن العادية",
-    },
-    {
-        id: "name",
-        label: "الحالة  ",
-    },
-
-    {
-        id: "settings",
-        label: "الاعدادات",
-    },
-];
 const ViewCities = () => {
+    const changePageNumberCities = useOwnStore(
+        (store) => store.changePageNumberCities
+    );
+    const CitiesBageNumber = useRef<number | undefined>();
     /* pagination */
     const [pageNumber, setPageNumber] = useState(1);
     const handlePageNumber = (value: number) => {
         setPageNumber(value);
+        CitiesBageNumber.current = value;
+        changePageNumberCities(CitiesBageNumber.current);
     };
 
     /* fetch */
     const { data, isLoading, isError } = UseQuery(
-        `Cities/paginate?pageNumber=${pageNumber}`
+        `Cities/paginate?pageNumber=${pageNumber}&pageSize=5`
     );
     /* store */
     const canActivateCitiesAdd = useOwnStore(
@@ -97,14 +73,11 @@ const ViewCities = () => {
                     <Skeleton variant="rounded" width={"100%"} height={500} />
                 </Stack>
             ) : matches ? (
-                <ViewCitiesLargeScreen
-                    rows={data?.data.data}
-                    headCell={citiesHeadCells}
-                />
+                <ViewCitiesLargeScreen rows={data?.data.data} />
             ) : (
                 <ViewCitiesSmallScreen rows={data?.data.data} />
             )}
-            {data?.data.length === 0 && (
+            {data?.data.data.length === 0 && (
                 <Typography
                     height={"150px"}
                     sx={{

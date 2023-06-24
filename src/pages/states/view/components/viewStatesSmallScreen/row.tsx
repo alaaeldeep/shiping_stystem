@@ -22,12 +22,19 @@ import { StatusSwitch } from "../../../../employes/view/components/viewEmployeeL
 /* types */
 import { StateRow } from "../../../../../components/types";
 
+/* store */
+import { useOwnStore } from "../../../../../store";
+
 /* types */
 type props = {
     index: number;
     data: StateRow;
 };
 const RowInMobile = ({ index, data }: props) => {
+    const canActivateStatesEdit = useOwnStore(
+        (store) => store.user.permissions?.States?.[2]
+    );
+
     const [expanded, setExpanded] = useState<string | false>(false);
     const handleChange =
         (panel: string) =>
@@ -111,7 +118,7 @@ const RowInMobile = ({ index, data }: props) => {
                                 <StatusSwitch sx={{ m: 1 }} defaultChecked />
                             }
                             label={
-                                status ? (
+                                data.status ? (
                                     <Typography sx={{ color: "#65C466" }}>
                                         نشط
                                     </Typography>
@@ -123,29 +130,32 @@ const RowInMobile = ({ index, data }: props) => {
                             }
                             checked={data.status}
                             onChange={handleChangeStatus}
+                            disabled={!canActivateStatesEdit}
                         />
                     </Typography>
 
                     {/* settings */}
-                    <Box
-                        sx={{
-                            display: "flex",
-                            alignItems: "center",
-                        }}
-                    >
-                        <Typography>الاعدادات : </Typography>
-                        <Box>
-                            <IconButton
-                                onClick={handleClickOpenEditStatesDetails}
-                            >
-                                <EditIcon
-                                    style={{
-                                        color: "#7AA874",
-                                    }}
-                                />
-                            </IconButton>
+                    {canActivateStatesEdit && (
+                        <Box
+                            sx={{
+                                display: "flex",
+                                alignItems: "center",
+                            }}
+                        >
+                            <Typography>الاعدادات : </Typography>
+                            <Box>
+                                <IconButton
+                                    onClick={handleClickOpenEditStatesDetails}
+                                >
+                                    <EditIcon
+                                        style={{
+                                            color: "#7AA874",
+                                        }}
+                                    />
+                                </IconButton>
+                            </Box>
                         </Box>
-                    </Box>
+                    )}
                 </AccordionDetails>
             </Accordion>{" "}
         </>

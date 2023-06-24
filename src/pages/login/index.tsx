@@ -51,10 +51,8 @@ const Login = () => {
                 " برجاء كتابة بريد الكتروني صالح او اسم المستخدم صالح"
             ),
 
-        password: z
-            .string()
-            .nonempty("برجاء كتابة كلمة السر")
-            .min(8, "برجاء كتابه كلمه سر 8 احرف علي الاقل"),
+        password: z.string().nonempty("برجاء كتابة كلمة السر"),
+        /*  .min(8, "برجاء كتابه كلمه سر 8 احرف علي الاقل"), */
     });
 
     type FormValue = z.infer<typeof schema>;

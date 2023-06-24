@@ -84,7 +84,6 @@ const EditPermissionDetailsSmallScreen = ({
     /* hooks form */
     const { register, control, formState, getValues, getFieldState, setError } =
         useForm<FormValue>({
-            /*   defaultValues: { roleName: roleName }, */
             mode: "onTouched",
             resolver: zodResolver(schema),
         });
@@ -177,6 +176,20 @@ const EditPermissionDetailsSmallScreen = ({
                                     }
                                 );
                             }
+                            if (err.message.includes("SuperAdmin")) {
+                                setError("roleName", {
+                                    message:
+                                        "لا يمكن التعديل علي هذه الصلاحية ",
+                                });
+                                toast.error(
+                                    "لا يمكن التعديل علي هذه الصلاحية ",
+                                    {
+                                        position: toast.POSITION.BOTTOM_LEFT,
+                                        autoClose: 2000,
+                                        theme: "dark",
+                                    }
+                                );
+                            }
                         },
                     }
                 );
@@ -256,7 +269,6 @@ const EditPermissionDetailsSmallScreen = ({
                                         اسم الصلاحية
                                     </InputLabel>
                                     <OutlinedInput
-                                        defaultValue={roleName}
                                         {...register("roleName")}
                                         color="info"
                                         id={`outlined-adornment-roleName`}

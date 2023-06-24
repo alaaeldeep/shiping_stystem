@@ -18,6 +18,7 @@ import { StatusSwitch } from "../../../../employes/view/components/viewEmployeeL
 
 /* types */
 import { StateRow } from "../../../../../components/types";
+import { useOwnStore } from "../../../../../store";
 
 /* types */
 type props = {
@@ -27,6 +28,9 @@ type props = {
 };
 
 const Row = ({ labelId, index, data }: props) => {
+    const canActivateStatesEdit = useOwnStore(
+        (store) => store.user.permissions?.States?.[2]
+    );
     /* edit */
     const [openEditStateDetails, setOpenEditStateDetails] = useState(false);
     const handleClickOpenEditStateDetails = () => {
@@ -102,19 +106,23 @@ const Row = ({ labelId, index, data }: props) => {
                             }
                             checked={data.status}
                             onChange={handleChange}
-                            /*  checked={false} */
+                            disabled={!canActivateStatesEdit}
                         />
                     </TableCell>
                     {/* settings */}
-                    <TableCell align="center">
-                        <IconButton onClick={handleClickOpenEditStateDetails}>
-                            <EditIcon
-                                style={{
-                                    color: "#7AA874",
-                                }}
-                            />
-                        </IconButton>
-                    </TableCell>
+                    {canActivateStatesEdit && (
+                        <TableCell align="center">
+                            <IconButton
+                                onClick={handleClickOpenEditStateDetails}
+                            >
+                                <EditIcon
+                                    style={{
+                                        color: "#7AA874",
+                                    }}
+                                />
+                            </IconButton>
+                        </TableCell>
+                    )}
                 </>
             }
         </TableRow>

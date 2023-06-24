@@ -6,6 +6,7 @@ import { motion } from "framer-motion";
 
 /* react query */
 import UseMutate from "../../../../hooks/permissions/useDeleteMutate";
+import { toast } from "react-toastify";
 
 type props = {
     id: string;
@@ -19,8 +20,18 @@ const DeleteHandler = ({
 }: props) => {
     const { mutate } = UseMutate();
     const handelDeleteSubmit = () => {
-        mutate(id);
-        handleDeleteHandlerClose();
+        mutate(id, {
+            onSuccess: () => {
+                handleDeleteHandlerClose();
+            },
+            onError: () => {
+                toast.warn("لا يمكن حذف هذه الصلاحية", {
+                    position: toast.POSITION.BOTTOM_LEFT,
+                    autoClose: 2000,
+                    theme: "dark",
+                });
+            },
+        });
     };
     return (
         <motion.div

@@ -185,12 +185,11 @@ const ViewReports = () => {
             >
                 <Box
                     sx={{
-                        /*   margin: "20px 0", */
                         width: {
-                            xs: "90%",
+                            xs: "30%",
                             md: "22%",
                         },
-                        margin: "0 0 10px 10px",
+                        margin: "0 0 0px 10px",
                     }}
                 >
                     <FormControl
@@ -233,12 +232,15 @@ const ViewReports = () => {
                 </Box>
 
                 <LocalizationProvider dateAdapter={AdapterDayjs}>
-                    <DemoContainer components={["DateRangePicker"]}>
+                    <DemoContainer
+                        components={["DateRangePicker"]}
+                        /*   sx={{ color: "red" }} */
+                    >
                         <DateRangePicker
                             sx={{
                                 width: {
-                                    xs: "80%",
-                                    md: "90%",
+                                    xs: "90%",
+                                    md: "95%",
                                 },
                                 margin: "0 0 10px 10px",
                             }}
@@ -253,7 +255,7 @@ const ViewReports = () => {
                     variant="contained"
                     sx={{
                         width: {
-                            xs: "90%",
+                            xs: "25%",
                             md: "22%",
                         },
                         margin: "0 0 10px 10px",

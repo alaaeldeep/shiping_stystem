@@ -49,7 +49,11 @@ const DrawerComponent = ({
     const handleClickTraderCollapse = () => {
         setOpenTraderCollapse(!openTraderCollapse);
     };
-
+    /* orders */
+    const userType = useOwnStore.getState().user.userType;
+    const canActivateOrdersView = useOwnStore(
+        (store) => store.user.permissions?.Orders?.[1]
+    );
     /* trader */
     const canActivateTradersAdd = useOwnStore(
         (store) => store.user.permissions?.Traders?.[0]
@@ -86,6 +90,31 @@ const DrawerComponent = ({
     );
     const canActivateSettingsAdd = useOwnStore(
         (store) => store.user.permissions?.Settings?.[0]
+    );
+    /* cities */
+    const canActivateCitiesAdd = useOwnStore(
+        (store) => store.user.permissions?.Cities?.[0]
+    );
+    const canActivateCitiesView = useOwnStore(
+        (store) => store.user.permissions?.Cities?.[1]
+    );
+    /* states */
+    const canActivateStatesAdd = useOwnStore(
+        (store) => store.user.permissions?.States?.[0]
+    );
+    const canActivateStatesView = useOwnStore(
+        (store) => store.user.permissions?.States?.[1]
+    );
+    /* Privileges */
+    const canActivatePrivilegesAdd = useOwnStore(
+        (store) => store.user.permissions?.Privileges?.[0]
+    );
+    const canActivatePrivilegesView = useOwnStore(
+        (store) => store.user.permissions?.Privileges?.[1]
+    );
+    /* Reports */
+    const canActivateOrdersReportsView = useOwnStore(
+        (store) => store.user.permissions?.OrdersReports?.[1]
     );
 
     /* mode */
@@ -137,23 +166,30 @@ const DrawerComponent = ({
                 </div>
 
                 {/* orders */}
-                <NavLink to="/orders" style={{ textDecoration: "none" }}>
-                    <ListItemButton sx={{ color: "text.primary" }}>
-                        <ListItemIcon>
-                            <LocalMallIcon />
-                        </ListItemIcon>
-                        <ListItemText primary="الطلـبات" />
-                    </ListItemButton>
-                </NavLink>
+
+                {(userType === ("Trader" || "Representative") ||
+                    canActivateOrdersView) && (
+                    <NavLink to="/orders" style={{ textDecoration: "none" }}>
+                        <ListItemButton sx={{ color: "text.primary" }}>
+                            <ListItemIcon>
+                                <LocalMallIcon />
+                            </ListItemIcon>
+                            <ListItemText primary="الطلـبات" />
+                        </ListItemButton>
+                    </NavLink>
+                )}
+
                 {/* reports */}
-                <NavLink to="/reports" style={{ textDecoration: "none" }}>
-                    <ListItemButton sx={{ color: "text.primary" }}>
-                        <ListItemIcon>
-                            <LocalMallIcon />
-                        </ListItemIcon>
-                        <ListItemText primary="التقارير" />
-                    </ListItemButton>
-                </NavLink>
+                {canActivateOrdersReportsView && (
+                    <NavLink to="/reports" style={{ textDecoration: "none" }}>
+                        <ListItemButton sx={{ color: "text.primary" }}>
+                            <ListItemIcon>
+                                <LocalMallIcon />
+                            </ListItemIcon>
+                            <ListItemText primary="التقارير" />
+                        </ListItemButton>
+                    </NavLink>
+                )}
 
                 {/* employees */}
                 {canActivateEmployeeView ? (
@@ -265,26 +301,59 @@ const DrawerComponent = ({
                 )}
 
                 {/* states */}
-                <NavLink to="/states" style={{ textDecoration: "none" }}>
-                    <ListItemButton sx={{ color: "text.primary" }}>
-                        <ListItemIcon>
-                            <LocalMallIcon />
-                        </ListItemIcon>
-                        <ListItemText primary="المحافظات" />
-                    </ListItemButton>
-                </NavLink>
+                {canActivateStatesView ? (
+                    <NavLink to="/states" style={{ textDecoration: "none" }}>
+                        <ListItemButton sx={{ color: "text.primary" }}>
+                            <ListItemIcon>
+                                <LocalMallIcon />
+                            </ListItemIcon>
+                            <ListItemText primary="المحافظات" />
+                        </ListItemButton>
+                    </NavLink>
+                ) : (
+                    canActivateStatesAdd && (
+                        <NavLink
+                            to="/states/add"
+                            style={{ textDecoration: "none" }}
+                        >
+                            <ListItemButton sx={{ color: "text.primary" }}>
+                                <ListItemIcon>
+                                    <LocalMallIcon />
+                                </ListItemIcon>
+                                <ListItemText primary="اضف محافظة" />
+                            </ListItemButton>
+                        </NavLink>
+                    )
+                )}
 
                 {/* cities */}
-                <NavLink to="/cities" style={{ textDecoration: "none" }}>
-                    <ListItemButton sx={{ color: "text.primary" }}>
-                        <ListItemIcon>
-                            <LocalMallIcon />
-                        </ListItemIcon>
-                        <ListItemText primary="الـمــدن" />
-                    </ListItemButton>
-                </NavLink>
+                {canActivateCitiesView ? (
+                    <NavLink to="/cities" style={{ textDecoration: "none" }}>
+                        <ListItemButton sx={{ color: "text.primary" }}>
+                            <ListItemIcon>
+                                <LocalMallIcon />
+                            </ListItemIcon>
+                            <ListItemText primary="الـمــدن" />
+                        </ListItemButton>
+                    </NavLink>
+                ) : (
+                    canActivateCitiesAdd && (
+                        <NavLink
+                            to="/cities/add"
+                            style={{ textDecoration: "none" }}
+                        >
+                            <ListItemButton sx={{ color: "text.primary" }}>
+                                <ListItemIcon>
+                                    <LocalMallIcon />
+                                </ListItemIcon>
+                                <ListItemText primary="اضف مدينة" />
+                            </ListItemButton>
+                        </NavLink>
+                    )
+                )}
+
                 {/* users */}
-                <NavLink to="/users" style={{ textDecoration: "none" }}>
+                {/* <NavLink to="/users" style={{ textDecoration: "none" }}>
                     <ListItemButton sx={{ color: "text.primary" }}>
                         <ListItemIcon>
                             <LocalMallIcon />
@@ -292,16 +361,36 @@ const DrawerComponent = ({
                         <ListItemText primary="المستخدمين" />
                     </ListItemButton>
                 </NavLink>
-                <Divider />
+                <Divider /> */}
+
                 {/* permissions */}
-                <NavLink to="/Permissions" style={{ textDecoration: "none" }}>
-                    <ListItemButton sx={{ color: "text.primary" }}>
-                        <ListItemIcon>
-                            <LocalMallIcon />
-                        </ListItemIcon>
-                        <ListItemText primary="الصلاحيات" />
-                    </ListItemButton>
-                </NavLink>
+                {canActivatePrivilegesView ? (
+                    <NavLink
+                        to="/Permissions"
+                        style={{ textDecoration: "none" }}
+                    >
+                        <ListItemButton sx={{ color: "text.primary" }}>
+                            <ListItemIcon>
+                                <LocalMallIcon />
+                            </ListItemIcon>
+                            <ListItemText primary="الصلاحيات" />
+                        </ListItemButton>
+                    </NavLink>
+                ) : (
+                    canActivatePrivilegesAdd && (
+                        <NavLink
+                            to="/Permissions/add"
+                            style={{ textDecoration: "none" }}
+                        >
+                            <ListItemButton sx={{ color: "text.primary" }}>
+                                <ListItemIcon>
+                                    <LocalMallIcon />
+                                </ListItemIcon>
+                                <ListItemText primary="اضف صلاحية" />
+                            </ListItemButton>
+                        </NavLink>
+                    )
+                )}
 
                 {/* settings */}
                 {canActivateSettingsView ? (

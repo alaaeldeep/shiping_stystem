@@ -32,7 +32,17 @@ import { TableToolbar } from "../../../components/table/tableToolBar";
 /* utils */
 import { states } from "../../../utils/converter";
 
+/* store */
+import { useOwnStore } from "../../../store";
+
 const AddStatesPage = () => {
+    const canActivateStatesAdd = useOwnStore(
+        (store) => store.user.permissions?.States?.[0]
+    );
+    const canActivateStatesView = useOwnStore(
+        (store) => store.user.permissions?.States?.[1]
+    );
+
     const navigate = useNavigate();
     const { mutate, isLoading } = UseMutate();
     const schema = z.object({
@@ -78,7 +88,7 @@ const AddStatesPage = () => {
         ),
     });
     type FormValue = z.infer<typeof schema>;
-    const { register, control, handleSubmit, formState, getValues } =
+    const { register, control, handleSubmit, formState, getValues, setError } =
         useForm<FormValue>({
             mode: "onChange",
             resolver: zodResolver(schema),
@@ -91,6 +101,18 @@ const AddStatesPage = () => {
             onSuccess: () => {
                 {
                     navigate("/states");
+                }
+            },
+            onError: (err: any) => {
+                if (err.message.includes("duplicate")) {
+                    setError("name", {
+                        message: "  هذه المحافظة موجوده بالفعل",
+                    });
+                    toast.error("هذه المحافظة موجوده بالفعل", {
+                        position: toast.POSITION.BOTTOM_LEFT,
+                        autoClose: 2000,
+                        theme: "dark",
+                    });
                 }
             },
         });
@@ -110,6 +132,7 @@ const AddStatesPage = () => {
                 btnTitle="العودة للمحافظات"
                 destination="/states  "
                 addIcon={false}
+                addBtn={!!canActivateStatesAdd && !!canActivateStatesView}
             />{" "}
             <form
                 onSubmit={handleSubmit(onSubmit, onError)}

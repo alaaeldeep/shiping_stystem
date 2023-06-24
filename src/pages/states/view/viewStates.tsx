@@ -1,5 +1,5 @@
 /* REACT STAFF */
-import { useState } from "react";
+import { useRef, useState } from "react";
 
 /* router */
 import { useNavigate } from "react-router";
@@ -22,38 +22,32 @@ import { ViewStatesLargeScreen } from "./components/viewStatesLargeScreen/viewSt
 import { ViewStatesSmallScreen } from "./components/viewStatesSmallScreen/viewStatesSmallScreen";
 import { TableToolbar } from "../../../components/table/tableToolBar";
 
-/* types */
-import { HeadCell } from "../../../components/types";
+/* store */
+import { useOwnStore } from "../../../store";
 
-const statesHeadCells: HeadCell[] = [
-    {
-        id: "id",
-        label: "الرقم",
-    },
-    {
-        id: "name",
-        label: "المحافظه",
-    },
-
-    {
-        id: "status",
-        label: "الحاله",
-    },
-    {
-        id: "settings",
-        label: "الاعدادات",
-    },
-];
 const ViewStates = () => {
+    const canActivateStatesAdd = useOwnStore(
+        (store) => store.user.permissions?.States?.[0]
+    );
+    const canActivateStatesView = useOwnStore(
+        (store) => store.user.permissions?.States?.[1]
+    );
+    const changePageNumberStates = useOwnStore(
+        (store) => store.changePageNumberStates
+    );
+    const StatesBageNumber = useRef<number | undefined>();
     /* pagination */
+
     const [pageNumber, setPageNumber] = useState(1);
     const handlePageNumber = (value: number) => {
         setPageNumber(value);
+        StatesBageNumber.current = value;
+        changePageNumberStates(StatesBageNumber.current);
     };
 
     /* fetch */
     const { data, isLoading, isError } = UseQuery(
-        `/states/paginate?pageNumber=${pageNumber}`
+        `/states/paginate?pageNumber=${pageNumber}&pageSize=5`
     );
 
     /* mobile view */
@@ -72,20 +66,18 @@ const ViewStates = () => {
                 btnTitle="اضف محافظه"
                 destination="/states/add"
                 addIcon={true}
+                addBtn={!!canActivateStatesAdd && !!canActivateStatesView}
             />
             {isLoading ? (
                 <Stack spacing={1}>
                     <Skeleton variant="rounded" width={"100%"} height={500} />
                 </Stack>
             ) : matches ? (
-                <ViewStatesLargeScreen
-                    rows={data?.data.data}
-                    headCell={statesHeadCells}
-                />
+                <ViewStatesLargeScreen rows={data?.data.data} />
             ) : (
                 <ViewStatesSmallScreen rows={data?.data.data} />
             )}
-            {data?.data.length === 0 && (
+            {data?.data.data.length === 0 && (
                 <Typography
                     height={"150px"}
                     sx={{

@@ -23,11 +23,17 @@ import { StatusSwitch } from "../../../../employes/view/components/viewEmployeeL
 
 /* types */
 import { CityRow } from "../../../../../components/types";
+/* store */
+import { useOwnStore } from "../../../../../store";
 type props = {
     index: number;
     data: CityRow;
 };
 const RowInMobile = ({ index, data }: props) => {
+    const canActivateCitiesEdit = useOwnStore(
+        (store) => store.user.permissions?.Cities?.[2]
+    );
+
     const [expanded, setExpanded] = useState<string | false>(false);
     const handleChange =
         (panel: string) =>
@@ -132,30 +138,32 @@ const RowInMobile = ({ index, data }: props) => {
                             }
                             checked={data.status}
                             onChange={handleChangeStatus}
-                            /*  checked={false} */
+                            disabled={!canActivateCitiesEdit}
                         />
                     </Typography>
 
                     {/* settings */}
-                    <Box
-                        sx={{
-                            display: "flex",
-                            alignItems: "center",
-                        }}
-                    >
-                        <Typography>الاعدادات : </Typography>
-                        <Box>
-                            <IconButton
-                                onClick={handleClickOpenEditStatesDetails}
-                            >
-                                <EditIcon
-                                    style={{
-                                        color: "#7AA874",
-                                    }}
-                                />
-                            </IconButton>
+                    {canActivateCitiesEdit && (
+                        <Box
+                            sx={{
+                                display: "flex",
+                                alignItems: "center",
+                            }}
+                        >
+                            <Typography>الاعدادات : </Typography>
+                            <Box>
+                                <IconButton
+                                    onClick={handleClickOpenEditStatesDetails}
+                                >
+                                    <EditIcon
+                                        style={{
+                                            color: "#7AA874",
+                                        }}
+                                    />
+                                </IconButton>
+                            </Box>
                         </Box>
-                    </Box>
+                    )}
                 </AccordionDetails>
             </Accordion>{" "}
         </>

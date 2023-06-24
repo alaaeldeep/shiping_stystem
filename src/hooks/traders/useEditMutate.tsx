@@ -6,6 +6,7 @@ import { useMutation, useQueryClient } from "react-query";
 
 /* types */
 import { TraderPostType } from "../../components/types";
+import { useOwnStore } from "../../store";
 
 type TraderID = {
     id: string;
@@ -19,10 +20,13 @@ const updateTrader = (data: TraderPostType & TraderID) => {
 };
 
 const UseMutate = () => {
+    const TradersPageNumber = useOwnStore((store) => store.TradersPageNumber);
     const queryClient = useQueryClient();
     return useMutation(updateTrader, {
         onSuccess: () => {
-            queryClient.invalidateQueries("/Traders");
+            queryClient.invalidateQueries(
+                `/Traders/paginate?pageNumber=${TradersPageNumber}&pageSize=5`
+            );
         },
     });
 };
@@ -39,9 +43,12 @@ const updateStatusTrader = (data: TraderStatus) => {
 };
 export const UseMutateStatus = () => {
     const queryClient = useQueryClient();
+    const TradersPageNumber = useOwnStore((store) => store.TradersPageNumber);
     return useMutation(updateStatusTrader, {
         onSuccess: () => {
-            queryClient.invalidateQueries("/Traders");
+            queryClient.invalidateQueries(
+                `/Traders/paginate?pageNumber=${TradersPageNumber}&pageSize=5`
+            );
         },
     });
 };

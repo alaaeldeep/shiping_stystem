@@ -92,10 +92,11 @@ const EditStatesDetails = ({
         ),
     });
     type FormValue = z.infer<typeof schema>;
-    const { register, control, handleSubmit, formState } = useForm<FormValue>({
-        mode: "onTouched",
-        resolver: zodResolver(schema),
-    });
+    const { register, control, handleSubmit, formState, setError } =
+        useForm<FormValue>({
+            mode: "onTouched",
+            resolver: zodResolver(schema),
+        });
     const { errors } = formState;
 
     /* 🚀 make the request 🚀  */
@@ -109,6 +110,16 @@ const EditStatesDetails = ({
                     {
                         handleClose();
                     }
+                },
+                onError: (err: any) => {
+                    setError("name", {
+                        message: "  هذه المحافظة موجوده بالفعل",
+                    });
+                    toast.error("هذه المحافظة موجوده بالفعل", {
+                        position: toast.POSITION.BOTTOM_LEFT,
+                        autoClose: 2000,
+                        theme: "dark",
+                    });
                 },
             }
         );

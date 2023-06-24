@@ -8,15 +8,66 @@ import Row from "./row";
 /* types */
 import { HeadCell, CityRow } from "../../../../../components/types";
 
+/* store */
+import { useOwnStore } from "../../../../../store";
+import { headCells } from "../../../../permissionsPage/components/editPermissionDetail/largeScreen";
+
 type ViewCitiesLargeScreenProps = {
     rows: CityRow[];
-    headCell: HeadCell[];
 };
+const headCells1 = [
+    {
+        id: "id",
+        label: "الرقم",
+    },
+    {
+        id: "name",
+        label: "المدينة",
+    },
+    {
+        id: "name",
+        label: "المحافظه",
+    },
+    {
+        id: "name",
+        label: "تكلفة الشحن العادية",
+    },
+    {
+        id: "name",
+        label: "الحالة  ",
+    },
 
-export const ViewCitiesLargeScreen = ({
-    rows,
-    headCell,
-}: ViewCitiesLargeScreenProps) => {
+    {
+        id: "settings",
+        label: "الاعدادات",
+    },
+];
+const headCells2 = [
+    {
+        id: "id",
+        label: "الرقم",
+    },
+    {
+        id: "name",
+        label: "المدينة",
+    },
+    {
+        id: "name",
+        label: "المحافظه",
+    },
+    {
+        id: "name",
+        label: "تكلفة الشحن العادية",
+    },
+    {
+        id: "name",
+        label: "الحالة  ",
+    },
+];
+export const ViewCitiesLargeScreen = ({ rows }: ViewCitiesLargeScreenProps) => {
+    const canActivateCitiesEdit = useOwnStore(
+        (store) => store.user.permissions?.Cities?.[2]
+    );
     return (
         <TableContainer>
             <Table
@@ -24,7 +75,9 @@ export const ViewCitiesLargeScreen = ({
                 aria-labelledby="tableTitle"
                 size={"medium"}
             >
-                <CustomTableHead headCell={headCell} />
+                <CustomTableHead
+                    headCell={canActivateCitiesEdit ? headCells1 : headCells2}
+                />
                 <TableBody>
                     {rows.map((row, index) => {
                         const labelId = `enhanced-table-checkbox-${index}`;

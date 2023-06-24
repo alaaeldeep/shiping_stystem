@@ -11,7 +11,6 @@ import { useOwnStore } from "../../../../../store";
 
 type ViewPermissionsLargeScreenProps = {
     rows: ShippingTypeRow[];
-    headCell: HeadCell[];
 };
 
 const headCells1: any = [
@@ -50,7 +49,6 @@ const headCells2: any = [
 
 export const ViewBranchesLargeScreen = ({
     rows,
-    headCell,
 }: ViewPermissionsLargeScreenProps) => {
     const canActivateSettingsEdit = useOwnStore(
         (store) => store.user.permissions?.Settings?.[2]
@@ -75,7 +73,7 @@ export const ViewBranchesLargeScreen = ({
                         }
                     />
                     <TableBody>
-                        {rows.map((row, index) => {
+                        {rows?.map((row, index) => {
                             const labelId = `enhanced-table-checkbox-${index}`;
 
                             return (

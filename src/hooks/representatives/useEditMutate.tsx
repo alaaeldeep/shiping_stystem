@@ -6,6 +6,7 @@ import { useMutation, useQueryClient } from "react-query";
 
 /* types */
 import { RepresentativeUpdate } from "../../components/types";
+import { useOwnStore } from "../../store";
 
 const updateRepresentative = (data: RepresentativeUpdate) => {
     return request({
@@ -16,9 +17,14 @@ const updateRepresentative = (data: RepresentativeUpdate) => {
 };
 const UseMutate = () => {
     const queryClient = useQueryClient();
+    const RepresentativesPageNumber = useOwnStore(
+        (store) => store.RepresentativesPageNumber
+    );
     return useMutation(updateRepresentative, {
         onSuccess: () => {
-            queryClient.invalidateQueries("/Representatives");
+            queryClient.invalidateQueries(
+                `/Representatives/paginate?pageNumber=${RepresentativesPageNumber}&pageSize=5`
+            );
         },
     });
 };
@@ -34,10 +40,15 @@ const updateStatusRepresentative = (data: RepresentativeStatus) => {
     });
 };
 export const UseMutateStatus = () => {
+    const RepresentativesPageNumber = useOwnStore(
+        (store) => store.RepresentativesPageNumber
+    );
     const queryClient = useQueryClient();
     return useMutation(updateStatusRepresentative, {
         onSuccess: () => {
-            queryClient.invalidateQueries("/Representatives");
+            queryClient.invalidateQueries(
+                `/Representatives/paginate?pageNumber=${RepresentativesPageNumber}&pageSize=5`
+            );
         },
     });
 };

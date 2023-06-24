@@ -1,5 +1,5 @@
 /* react staff */
-import { useState } from "react";
+import { useRef, useState } from "react";
 
 /* router */
 import { useNavigate, useParams } from "react-router-dom";
@@ -27,54 +27,29 @@ import { TableToolbar } from "../../../components/table/tableToolBar";
 
 /* types */
 
-const headCells: any = [
-    {
-        id: "id",
-        label: "الرقم التسلسلي",
-    },
-    {
-        id: "addedDate",
-        label: "التاريخ",
-    },
-
-    {
-        id: "state",
-
-        label: "المحافظة",
-    },
-    {
-        id: "orderCost",
-
-        label: "تكلفة الطلب",
-    },
-    {
-        id: "changeStatus",
-        label: "تغيير الحالة",
-    },
-    {
-        id: "assignToRepresentative",
-        label: "اسناد لمندوب",
-    },
-    {
-        id: "settings",
-        label: "الاعدادات",
-    },
-];
-
 const ViewOrders = () => {
     const { orderStatus } = useParams();
+
+    const userType = useOwnStore((store) => store.user.userType);
+
+    const changePageNumberOrders = useOwnStore(
+        (store) => store.changePageNumberOrders
+    );
+    const OrdersBageNumber = useRef<number | undefined>();
 
     /* pagination */
     const [pageNumber, setPageNumber] = useState(1);
     const handlePageNumber = (value: number) => {
         setPageNumber(value);
+        OrdersBageNumber.current = value;
+        changePageNumberOrders(OrdersBageNumber.current);
     };
     const mode = useOwnStore((store) => store.mode);
     const navigate = useNavigate();
 
     /* fetch */
     const { data, isLoading, isError } = UseOrderQuery(pageNumber, orderStatus);
-    console.log(data?.data);
+
     /* store */
     const canActivateOrdersAdd = useOwnStore(
         (store) => store.user.permissions?.Orders?.[0]
@@ -97,17 +72,14 @@ const ViewOrders = () => {
                 btnTitle="اضف طلب"
                 destination="/orders/add"
                 addIcon={true}
-                addBtn={!!canActivateOrdersAdd && !!canActivateOrdersView}
+                addBtn={userType === "Trader"}
             />
             {isLoading ? (
                 <Stack spacing={1}>
                     <Skeleton variant="rounded" width={"100%"} height={500} />
                 </Stack>
             ) : matches ? (
-                <ViewOrderLargeScreen
-                    rows={data?.data.data}
-                    headCell={headCells}
-                />
+                <ViewOrderLargeScreen rows={data?.data.data} />
             ) : (
                 <ViewOrderSmallScreen rows={data?.data.data} />
             )}{" "}

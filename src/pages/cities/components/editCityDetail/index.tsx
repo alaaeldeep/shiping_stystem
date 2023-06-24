@@ -96,6 +96,18 @@ const EditCityDetails = ({ open, handleClose, data }: EditCityProps) => {
                         handleClose();
                     }
                 },
+                onError: (err: any) => {
+                    if (err.message.includes("already existed")) {
+                        setError("name", {
+                            message: "  هذه المدينة موجوده بالفعل",
+                        });
+                        toast.error("هذه المدينة موجوده بالفعل", {
+                            position: toast.POSITION.BOTTOM_LEFT,
+                            autoClose: 2000,
+                            theme: "dark",
+                        });
+                    }
+                },
             }
         );
     };
@@ -236,7 +248,7 @@ const EditCityDetails = ({ open, handleClose, data }: EditCityProps) => {
                                 }}
                                 variant="contained"
                             >
-                                اضافة
+                                تحديث
                             </Button>
                         </Box>
                         <DevTool control={control} />

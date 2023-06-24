@@ -3,6 +3,7 @@ import { request } from "../../lib/axios.utls";
 
 /* react query */
 import { useMutation, useQueryClient } from "react-query";
+import { useOwnStore } from "../../store";
 
 type NewEmployee = {
     roleId: string;
@@ -25,10 +26,15 @@ const updatePermission = (data: NewEmployee) => {
 };
 
 const UseMutate = () => {
+    const EmployeesPageNumber = useOwnStore(
+        (store) => store.EmployeesPageNumber
+    );
     const queryClient = useQueryClient();
     return useMutation(updatePermission, {
         onSuccess: () => {
-            queryClient.invalidateQueries("/Employees");
+            queryClient.invalidateQueries(
+                `/Employees/paginate?pageNumber=${EmployeesPageNumber}&pageSize=5`
+            );
         },
     });
 };
@@ -45,10 +51,15 @@ const updateStatusEmployee = (data: EmployeeStatus) => {
     });
 };
 export const UseMutateStatus = () => {
+    const EmployeesPageNumber = useOwnStore(
+        (store) => store.EmployeesPageNumber
+    );
     const queryClient = useQueryClient();
     return useMutation(updateStatusEmployee, {
         onSuccess: () => {
-            queryClient.invalidateQueries("/Employees");
+            queryClient.invalidateQueries(
+                `/Employees/paginate?pageNumber=${EmployeesPageNumber}&pageSize=5`
+            );
         },
     });
 };

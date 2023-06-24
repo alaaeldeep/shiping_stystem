@@ -36,6 +36,10 @@ type ViewOrderSmallScreenProps = {
     data: OrderRow;
 };
 const RowInSmallScreen = ({ index, data }: ViewOrderSmallScreenProps) => {
+    const userType = useOwnStore.getState().user.userType;
+    const canActivateOrdersEdit = useOwnStore(
+        (store) => store.user.permissions?.Orders?.[2]
+    );
     const [expanded, setExpanded] = useState<string | false>(false);
     /* edit order */
     const [openEditOrderDetails, setOpenEditOrderDetails] = useState(false);
@@ -135,44 +139,51 @@ const RowInSmallScreen = ({ index, data }: ViewOrderSmallScreenProps) => {
                         تكلفة الطلب : {data.orderCost} جنيه
                     </Typography>
 
-                    <div>
-                        تغيير الحالة :{" "}
-                        {
-                            <IconButton onClick={handleClickChangeOrderStatus}>
-                                <PublishedWithChangesIcon
-                                    style={
-                                        mode === "dark"
-                                            ? {
-                                                  color: "#F9D00F",
-                                              }
-                                            : {
-                                                  color: "#DA2D2D",
-                                              }
-                                    }
-                                />
-                            </IconButton>
-                        }
-                    </div>
-                    <div>
-                        اسناد الي مندوب :{" "}
-                        {
-                            <IconButton
-                                onClick={handleClickAssignToRepresentative}
-                            >
-                                <AssignmentIndIcon
-                                    style={
-                                        mode === "dark"
-                                            ? {
-                                                  color: "#99DBF5",
-                                              }
-                                            : {
-                                                  color: "#2B2A4C",
-                                              }
-                                    }
-                                />
-                            </IconButton>
-                        }
-                    </div>
+                    {(userType === "Representative" ||
+                        canActivateOrdersEdit) && (
+                        <div>
+                            تغيير الحالة :{" "}
+                            {
+                                <IconButton
+                                    onClick={handleClickChangeOrderStatus}
+                                >
+                                    <PublishedWithChangesIcon
+                                        style={
+                                            mode === "dark"
+                                                ? {
+                                                      color: "#F9D00F",
+                                                  }
+                                                : {
+                                                      color: "#DA2D2D",
+                                                  }
+                                        }
+                                    />
+                                </IconButton>
+                            }
+                        </div>
+                    )}
+                    {canActivateOrdersEdit && (
+                        <div>
+                            اسناد الي مندوب :{" "}
+                            {
+                                <IconButton
+                                    onClick={handleClickAssignToRepresentative}
+                                >
+                                    <AssignmentIndIcon
+                                        style={
+                                            mode === "dark"
+                                                ? {
+                                                      color: "#99DBF5",
+                                                  }
+                                                : {
+                                                      color: "#2B2A4C",
+                                                  }
+                                        }
+                                    />
+                                </IconButton>
+                            }
+                        </div>
+                    )}
 
                     <Typography sx={{ marginBottom: "5px" }}>
                         الاعدادات :{" "}
@@ -187,15 +198,19 @@ const RowInSmallScreen = ({ index, data }: ViewOrderSmallScreenProps) => {
                                         }}
                                     />
                                 </IconButton>
-                                <IconButton
-                                    onClick={handleClickOpenEditOrderDetails}
-                                >
-                                    <EditIcon
-                                        style={{
-                                            color: "#7AA874",
-                                        }}
-                                    />
-                                </IconButton>
+                                {canActivateOrdersEdit && (
+                                    <IconButton
+                                        onClick={
+                                            handleClickOpenEditOrderDetails
+                                        }
+                                    >
+                                        <EditIcon
+                                            style={{
+                                                color: "#7AA874",
+                                            }}
+                                        />
+                                    </IconButton>
+                                )}
                             </>
                         }
                     </Typography>

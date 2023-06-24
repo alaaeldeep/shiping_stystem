@@ -53,7 +53,7 @@ export const statuses = [
         id: 8,
     },
     {
-        orderStatus: "رفض مع سداد الجزاء",
+        orderStatus: "رفض مع سداد جزء",
         id: 9,
     },
     {
@@ -61,6 +61,89 @@ export const statuses = [
         id: 10,
     },
 ];
+export const RepresentativeHomeScreen = [
+    {
+        orderStatus: "تم التسليم للمندوب",
+        id: 2,
+    },
+    {
+        orderStatus: "تم التسليم",
+        id: 3,
+    },
+    {
+        orderStatus: "لا يمكن الوصول",
+        id: 4,
+    },
+    {
+        orderStatus: "تم التاجيل",
+        id: 5,
+    },
+    {
+        orderStatus: "تم التسليم جزئيا",
+        id: 6,
+    },
+    {
+        orderStatus: "تم الالغاء من قبل المستلم",
+        id: 7,
+    },
+    {
+        orderStatus: "تم الرفض مع الدفع",
+        id: 8,
+    },
+    {
+        orderStatus: "رفض مع سداد جزء",
+        id: 9,
+    },
+    {
+        orderStatus: "رفض ولم يتم الدفع",
+        id: 10,
+    },
+];
+export const RepresentativeStatusesOptions = [
+    {
+        orderStatus: "تم التسليم",
+        id: 3,
+    },
+    {
+        orderStatus: "لا يمكن الوصول",
+        id: 4,
+    },
+    {
+        orderStatus: "تم التاجيل",
+        id: 5,
+    },
+    {
+        orderStatus: "تم التسليم جزئيا",
+        id: 6,
+    },
+    {
+        orderStatus: "تم الالغاء من قبل المستلم",
+        id: 7,
+    },
+    {
+        orderStatus: "تم الرفض مع الدفع",
+        id: 8,
+    },
+    {
+        orderStatus: "رفض مع سداد جزء",
+        id: 9,
+    },
+    {
+        orderStatus: "رفض ولم يتم الدفع",
+        id: 10,
+    },
+];
+export const AdminStatusesOptions = [
+    {
+        orderStatus: "قيد الانتظار",
+        id: 1,
+    },
+    {
+        orderStatus: "تم الالغاء من قبل المستلم",
+        id: 7,
+    },
+];
+
 export const states: string[] = [
     "أسوان",
     "أسيوط",
@@ -120,7 +203,7 @@ export const convertIdToOrderStatus = (id: number) => {
             return "تم الرفض مع الدفع";
 
         case 9:
-            return "رفض مع سداد الجزاء";
+            return "رفض مع سداد جزء";
 
         case 10:
             return "رفض ولم يتم الدفع";
@@ -155,7 +238,7 @@ export const convertOrderStatusToId = (status: string) => {
         case "تم الرفض مع الدفع":
             return 8;
 
-        case "رفض مع سداد الجزاء":
+        case "رفض مع سداد جزء":
             return 9;
 
         case "رفض ولم يتم الدفع":

@@ -67,7 +67,7 @@ const EditEmployeeDetails = ({
         setBranch(event.target.value as string);
     };
     /* role state */
-    const [role, setRole] = useState<string>(data.role.id.toString());
+    const [role, setRole] = useState<string>(data.role.id);
     const handelRoleChange = (event: SelectChangeEvent) => {
         setRole(event.target.value as string);
     };
@@ -134,7 +134,7 @@ const EditEmployeeDetails = ({
                 email: data.email,
                 phoneNumber: data.phoneNumber,
                 address: data.address,
-                roleId: data.role.id.toString(),
+                roleId: data.role.id,
                 branchId: data.branch.id.toString(),
             },
             mode: "onTouched",
@@ -190,6 +190,13 @@ const EditEmployeeDetails = ({
                         message: "كلمة السر يجب ان تحتوي علي ارقام ",
                     });
                     toast.error("كلمة السر يجب ان تحتوي علي ارقام ", {
+                        position: toast.POSITION.BOTTOM_LEFT,
+                        autoClose: 2000,
+                        theme: "dark",
+                    });
+                }
+                if (err.message.includes("SuperAdmin")) {
+                    toast.error("لا يمكن التعديل ال superAdmin", {
                         position: toast.POSITION.BOTTOM_LEFT,
                         autoClose: 2000,
                         theme: "dark",
@@ -389,7 +396,7 @@ const EditEmployeeDetails = ({
                                             }) => (
                                                 <MenuItem
                                                     key={role.id}
-                                                    value={role.id.toString()}
+                                                    value={role.id}
                                                 >
                                                     {role.name}
                                                 </MenuItem>

@@ -44,10 +44,11 @@ const AddBranchesPage = () => {
         name: z.string().nonempty(" برجاء كتابة اسم الفرع"),
     });
     type FormValue = z.infer<typeof schema>;
-    const { register, control, handleSubmit, formState } = useForm<FormValue>({
-        mode: "onTouched",
-        resolver: zodResolver(schema),
-    });
+    const { register, control, handleSubmit, formState, setError } =
+        useForm<FormValue>({
+            mode: "onTouched",
+            resolver: zodResolver(schema),
+        });
     const { errors } = formState;
 
     /*  🚀 make the request 🚀  */
@@ -57,6 +58,16 @@ const AddBranchesPage = () => {
                 {
                     navigate("/branches");
                 }
+            },
+            onError: (err: any) => {
+                setError("name", {
+                    message: "  هذا الفرع موجود بالفعل",
+                });
+                toast.error("هذا الفرع موجود بالفعل", {
+                    position: toast.POSITION.BOTTOM_LEFT,
+                    autoClose: 2000,
+                    theme: "dark",
+                });
             },
         });
     };

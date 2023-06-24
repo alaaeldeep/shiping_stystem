@@ -1,5 +1,5 @@
 /* react staff */
-import { useState } from "react";
+import { useRef, useState } from "react";
 
 /* router */
 import { useNavigate } from "react-router-dom";
@@ -64,14 +64,22 @@ const ViewRepresentatives = () => {
     const canActivateRepresentativesView = useOwnStore(
         (store) => store.user.permissions?.Representatives?.[1]
     );
+
+    const changePageNumberRepresentatives = useOwnStore(
+        (store) => store.changePageNumberRepresentatives
+    );
+    const RepresentativesPageNumber = useRef<number | undefined>();
+
     /* pagination */
     const [pageNumber, setPageNumber] = useState(1);
     const handlePageNumber = (value: number) => {
         setPageNumber(value);
+        RepresentativesPageNumber.current = value;
+        changePageNumberRepresentatives(RepresentativesPageNumber.current);
     };
 
     const { data, isLoading, isError } = UseQuery(
-        `/Representatives/paginate?pageNumber=${pageNumber}`
+        `/Representatives/paginate?pageNumber=${pageNumber}&pageSize=5`
     );
 
     const matches = useMediaQuery("(min-width:1070px)");
@@ -105,7 +113,7 @@ const ViewRepresentatives = () => {
             ) : (
                 <ViewRepresentativesSmallScreen rows={data?.data.data} />
             )}
-            {data?.data.length === 0 && (
+            {data?.data.data.length === 0 && (
                 <Typography
                     height={"150px"}
                     sx={{

@@ -1,5 +1,5 @@
 /* react staff */
-import { useState } from "react";
+import { useRef, useState } from "react";
 
 /* router */
 import { useNavigate } from "react-router";
@@ -21,6 +21,9 @@ import UseQuery from "../../../hooks/serverState/useQuery";
 import { ViewPermissionsLargeScreen } from "./components/viewPermissionsLargeScreen/viewPermissionsLargeScreen";
 import { ViewPermissionsSmallScreen } from "./components/viewPermissionsSmallScreen/viewPermissionsSmallScreen";
 import { TableToolbar } from "../../../components/table/tableToolBar";
+
+/* store */
+import { useOwnStore } from "../../../store";
 
 const headCells: any = [
     {
@@ -45,15 +48,28 @@ const headCells: any = [
     },
 ];
 const ViewPermissions = () => {
+    const canActivatePrivilegesAdd = useOwnStore(
+        (store) => store.user.permissions?.Privileges?.[0]
+    );
+    const canActivatePrivilegesView = useOwnStore(
+        (store) => store.user.permissions?.Privileges?.[1]
+    );
+    const changePageNumberPreveliges = useOwnStore(
+        (store) => store.changePageNumberPreveliges
+    );
+    const PreveligesPageNumber = useRef<number | undefined>();
     /* pagination */
+
     const [pageNumber, setPageNumber] = useState(1);
     const handlePageNumber = (value: number) => {
         setPageNumber(value);
+        PreveligesPageNumber.current = value;
+        changePageNumberPreveliges(PreveligesPageNumber.current);
     };
 
     /* fetch */
     const { data, isLoading, isError } = UseQuery(
-        `/RolesPrivileges/paginate?pageNumber=${pageNumber}`
+        `/RolesPrivileges/paginate?pageNumber=${pageNumber}&pageSize=5`
     );
 
     /* mobile view */
@@ -72,6 +88,9 @@ const ViewPermissions = () => {
                 btnTitle="اضف صلاحية"
                 destination="/Permissions/add"
                 addIcon={true}
+                addBtn={
+                    !!canActivatePrivilegesAdd && !!canActivatePrivilegesView
+                }
             />
             {isLoading ? (
                 <Skeleton variant="rounded" width={"100%"} height={500} />
@@ -100,7 +119,7 @@ const ViewPermissions = () => {
                     />
                 )}
             </Box>
-            {data?.data.length === 0 && (
+            {data?.data.data.length === 0 && (
                 <Typography
                     height={"150px"}
                     sx={{

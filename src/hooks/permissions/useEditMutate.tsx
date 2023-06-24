@@ -3,6 +3,7 @@ import { request } from "../../lib/axios.utls";
 
 /* react query */
 import { useMutation, useQueryClient } from "react-query";
+import { useOwnStore } from "../../store";
 
 type permissionType = {
     roleName: string;
@@ -19,9 +20,14 @@ const updatePermission = (data: permissionType) => {
 
 const UseMutate = () => {
     const queryClient = useQueryClient();
+    const PreveligesPageNumber = useOwnStore(
+        (store) => store.PreveligesPageNumber
+    );
     return useMutation(updatePermission, {
         onSuccess: () => {
-            queryClient.invalidateQueries("/RolesPrivileges");
+            queryClient.invalidateQueries(
+                `/RolesPrivileges/paginate?pageNumber=${PreveligesPageNumber}&pageSize=5`
+            );
         },
     });
 };

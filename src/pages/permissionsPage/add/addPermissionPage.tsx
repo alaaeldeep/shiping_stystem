@@ -37,6 +37,9 @@ import { TableToolbar } from "../../../components/table/tableToolBar";
 /* utils */
 import { convertPermissionToID } from "../../../utils/converter";
 
+/* store */
+import { useOwnStore } from "../../../store";
+
 export const headCells: any = [
     {
         id: "id",
@@ -77,6 +80,13 @@ type permissionType = {
     permissions: any;
 };
 const AddPermissionPage = () => {
+    const canActivatePrivilegesAdd = useOwnStore(
+        (store) => store.user.permissions?.Privileges?.[0]
+    );
+    const canActivatePrivilegesView = useOwnStore(
+        (store) => store.user.permissions?.Privileges?.[1]
+    );
+
     const navigate = useNavigate();
     /* controll mobile view */
     const matches = useMediaQuery("(min-width:1070px)");
@@ -211,6 +221,9 @@ const AddPermissionPage = () => {
                 btnTitle="العودة للصلاحيات"
                 destination="/Permissions"
                 addIcon={false}
+                addBtn={
+                    !!canActivatePrivilegesAdd && !!canActivatePrivilegesView
+                }
             />{" "}
             <form
                 onSubmit={(e) => onSubmit(e)}

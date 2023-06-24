@@ -16,12 +16,22 @@ import DeleteHandler from "../../../components/deleteHandeler";
 /* react staff */
 import { useState } from "react";
 
+/* store */
+import { useOwnStore } from "../../../../../store";
+
 /* types */
 import { PermissionGET } from "../../../../../components/types";
 
 type props = { index: number; data: PermissionGET };
 
 const Row = ({ index, data }: props) => {
+    const canActivatePrivilegesEdit = useOwnStore(
+        (store) => store.user.permissions?.Privileges?.[2]
+    );
+    const canActivatePrivilegesDelete = useOwnStore(
+        (store) => store.user.permissions?.Privileges?.[3]
+    );
+
     /* delete permissions */
     const [openDeleteHandler, setOpenDeleteHandler] = useState(false);
     const handleDeleteHandlerOpen = () => {
@@ -102,22 +112,26 @@ const Row = ({ index, data }: props) => {
                                 }}
                             />
                         </IconButton>
-                        <IconButton
-                            onClick={handleClickOpenEditPermissionDetails}
-                        >
-                            <EditIcon
-                                style={{
-                                    color: "#7AA874",
-                                }}
-                            />
-                        </IconButton>
-                        <IconButton onClick={handleDeleteHandlerOpen}>
-                            <DeleteForeverIcon
-                                style={{
-                                    color: "#DF2E38",
-                                }}
-                            />
-                        </IconButton>
+                        {canActivatePrivilegesEdit && (
+                            <IconButton
+                                onClick={handleClickOpenEditPermissionDetails}
+                            >
+                                <EditIcon
+                                    style={{
+                                        color: "#7AA874",
+                                    }}
+                                />
+                            </IconButton>
+                        )}
+                        {canActivatePrivilegesDelete && (
+                            <IconButton onClick={handleDeleteHandlerOpen}>
+                                <DeleteForeverIcon
+                                    style={{
+                                        color: "#DF2E38",
+                                    }}
+                                />
+                            </IconButton>
+                        )}
                     </TableCell>
                     <DeleteHandler
                         id={data.id}

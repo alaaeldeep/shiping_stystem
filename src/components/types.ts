@@ -66,7 +66,7 @@ export type EmployeeGET = {
     phoneNumber: string;
     branch: { id: number; name: string };
     email: string;
-    role: { id: number; name: string };
+    role: { id: string; name: string };
     address: string;
     status: boolean;
 };

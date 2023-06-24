@@ -154,6 +154,24 @@ function App() {
     const canActivateCitiesView = useOwnStore(
         (store) => store.user.permissions?.Cities?.[1]
     );
+    /* states Activations */
+    const canActivateStatesAdd = useOwnStore(
+        (store) => store.user.permissions?.States?.[0]
+    );
+    const canActivateStatesView = useOwnStore(
+        (store) => store.user.permissions?.States?.[1]
+    );
+    /* Privileges Activations */
+    const canActivatePrivilegesAdd = useOwnStore(
+        (store) => store.user.permissions?.Privileges?.[0]
+    );
+    const canActivatePrivilegesView = useOwnStore(
+        (store) => store.user.permissions?.Privileges?.[1]
+    );
+    /* reports Activations */
+    const canActivateOrdersReportsView = useOwnStore(
+        (store) => store.user.permissions?.OrdersReports?.[1]
+    );
 
     const theme = useMemo(
         () => createTheme(getDesignTokens(mode as PaletteMode)),
@@ -166,13 +184,27 @@ function App() {
             element: logged ? <Layout /> : <Navigate to="/login" />,
             children: [
                 { path: "", element: <HomeMainContent /> },
-                /* Permissions */
+                /* Permissions 👍*/
                 {
                     path: "Permissions",
                     element: <PermissionsPage />,
                     children: [
-                        { path: "", element: <ViewPermissions /> },
-                        { path: "add", element: <AddPermissionPage /> },
+                        {
+                            path: "",
+                            element: canActivatePrivilegesView ? (
+                                <ViewPermissions />
+                            ) : (
+                                <Navigate to="/" />
+                            ),
+                        },
+                        {
+                            path: "add",
+                            element: canActivatePrivilegesAdd ? (
+                                <AddPermissionPage />
+                            ) : (
+                                <Navigate to="/" />
+                            ),
+                        },
                     ],
                 },
                 /* employees 👍*/
@@ -290,16 +322,30 @@ function App() {
                         },
                     ],
                 },
-                /* states */
+                /* states 👍*/
                 {
                     path: "states",
                     element: <States />,
                     children: [
-                        { path: "", element: <ViewStates /> },
-                        { path: "add", element: <AddStatesPage /> },
+                        {
+                            path: "",
+                            element: canActivateStatesView ? (
+                                <ViewStates />
+                            ) : (
+                                <Navigate to="/" />
+                            ),
+                        },
+                        {
+                            path: "add",
+                            element: canActivateStatesAdd ? (
+                                <AddStatesPage />
+                            ) : (
+                                <Navigate to="/" />
+                            ),
+                        },
                     ],
                 },
-                /* cities */
+                /* cities 👍*/
                 {
                     path: "cities",
                     element: <Cities />,
@@ -322,7 +368,7 @@ function App() {
                         },
                     ],
                 },
-                /* orders */
+                /* orders 👍*/
                 {
                     path: "orders",
                     element: <OrdersPage />,
@@ -349,21 +395,31 @@ function App() {
                         },
                         {
                             path: "add",
-                            element: canActivateOrdersAdd ? (
-                                <AddOrderPage />
+                            element:
+                                userType === "Trader" ? (
+                                    <AddOrderPage />
+                                ) : (
+                                    <Navigate to="/" />
+                                ),
+                        },
+                    ],
+                },
+                /* reports 👍*/
+                {
+                    path: "reports",
+                    element: <ReportPage />,
+                    children: [
+                        {
+                            path: "",
+                            element: canActivateOrdersReportsView ? (
+                                <ViewReports />
                             ) : (
                                 <Navigate to="/" />
                             ),
                         },
                     ],
                 },
-                /* reports */
-                {
-                    path: "reports",
-                    element: <ReportPage />,
-                    children: [{ path: "", element: <ViewReports /> }],
-                },
-                /* weightSettings 👍 */
+                /* weightSettings 👍*/
                 {
                     path: "weightSettings",
                     element: canActivateSettingsView ? (
@@ -372,7 +428,7 @@ function App() {
                         <Navigate to="/" />
                     ),
                 },
-                /* not Found */
+                /* not Found 👍*/
                 {
                     path: "*",
                     element: <PageNotFound />,

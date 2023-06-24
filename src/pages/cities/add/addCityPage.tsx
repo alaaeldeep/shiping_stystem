@@ -63,11 +63,12 @@ const AddCityPage = () => {
         shippingCost: z.string().nonempty("برجاء ادخال قيمة الشحن "),
     });
     type FormValue = z.infer<typeof schema>;
-    const { register, control, handleSubmit, formState } = useForm<FormValue>({
-        defaultValues: {},
-        mode: "onTouched",
-        resolver: zodResolver(schema),
-    });
+    const { register, control, handleSubmit, formState, setError } =
+        useForm<FormValue>({
+            defaultValues: {},
+            mode: "onTouched",
+            resolver: zodResolver(schema),
+        });
     const { errors } = formState;
 
     /* 🚀 make the request 🚀  */
@@ -82,6 +83,18 @@ const AddCityPage = () => {
                 onSuccess: () => {
                     {
                         navigate("/cities");
+                    }
+                },
+                onError: (err: any) => {
+                    if (err.message.includes("already existed")) {
+                        setError("city", {
+                            message: "  هذه المدينة موجوده بالفعل",
+                        });
+                        toast.error("هذه المدينة موجوده بالفعل", {
+                            position: toast.POSITION.BOTTOM_LEFT,
+                            autoClose: 2000,
+                            theme: "dark",
+                        });
                     }
                 },
             }
@@ -108,14 +121,12 @@ const AddCityPage = () => {
                 style={{
                     display: "flex",
                     justifyContent: "center",
-                    /*  padding: "50px", */
                 }}
                 noValidate
             >
                 <Box
                     sx={{
                         width: "100%",
-                        /*    backgroundColor: "secondary.main", */
                         padding: "10px 0px",
                         borderRadius: "25px",
                         display: "flex",

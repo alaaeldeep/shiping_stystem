@@ -79,6 +79,7 @@ const AddOrderPage = () => {
     const canActivateOrdersView = useOwnStore(
         (store) => store.user.permissions?.Orders?.[1]
     );
+    const userType = useOwnStore((store) => store.user.userType);
     const traderId = useOwnStore((store) => store.user.userId);
 
     const navigate = useNavigate();
@@ -251,7 +252,7 @@ const AddOrderPage = () => {
                 isVillage: requestData.isVillage === "0" ? true : false,
                 orderItems: products.map((product) => ({
                     productName: product.productName,
-                    productPrice: product.productPrice,
+                    productWeight: product.productWeight,
                     productQuantity: product.productQuantity,
                 })),
                 traderId,
@@ -262,16 +263,19 @@ const AddOrderPage = () => {
                     navigate("/orders");
                 },
                 onError: () => {
-                    toast.warn("برجاء   اختيار مدينة ", {
-                        position: toast.POSITION.BOTTOM_LEFT,
-                        autoClose: 2000,
-                        theme: "dark",
-                    });
+                    toast.warn(
+                        "برجاء   التاكد  من صحه البيانات والمحاوله مره اخري ",
+                        {
+                            position: toast.POSITION.BOTTOM_LEFT,
+                            autoClose: 2000,
+                            theme: "dark",
+                        }
+                    );
                 },
             });
         } else {
-            setError("cityId", { message: "برجاء اختيار مدينة" });
-            toast.warn("برجاء   اختيار مدينة ", {
+            /*  setError("cityId", { message: "برجاء اختيار مدينة" }); */
+            toast.warn("برجاء اكمال الحقول الفارغة ", {
                 position: toast.POSITION.BOTTOM_LEFT,
                 autoClose: 2000,
                 theme: "dark",
@@ -293,7 +297,7 @@ const AddOrderPage = () => {
                 btnTitle="العودة للطلبات"
                 destination="/orders"
                 addIcon={false}
-                addBtn={!!canActivateOrdersAdd && !!canActivateOrdersView}
+                addBtn={userType === "Trader"}
             />{" "}
             <Stepper activeStep={activeStep}>
                 {/* label names */}

@@ -1,15 +1,19 @@
 import axios from "axios";
+import { useOwnStore } from "../store";
 
 const instance = axios.create({
     /*  baseURL: "http://localhost:3000", */
     baseURL: "https://localhost:7157/api",
 });
-
-// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-const token: any = JSON.parse(localStorage.getItem("store")!)?.state.user.token;
+instance.interceptors.request.use((config) => {
+    const token = useOwnStore.getState().user.token;
+    // config.headers = { Authorization: `Bearer ${token}` };
+    config.headers["Authorization"] = "Bearer " + token;
+    return config;
+});
 
 export const request = async ({ ...options }) => {
-    instance.defaults.headers.common.Authorization = `Bearer ${token}`;
+    //  instance.defaults.headers.common.Authorization = `Bearer ${token}`;
 
     const onSuccess = (response: any) => response;
 

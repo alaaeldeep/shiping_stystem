@@ -29,6 +29,11 @@ type props = {
     data: OrderRow;
 };
 const RowInLargeScreen = ({ index, data }: props) => {
+    const userType = useOwnStore.getState().user.userType;
+    const canActivateOrdersEdit = useOwnStore(
+        (store) => store.user.permissions?.Orders?.[2]
+    );
+
     /* edit order */
     const [openEditOrderDetails, setOpenEditOrderDetails] = useState(false);
     const handleClickOpenEditOrderDetails = () => {
@@ -123,37 +128,46 @@ const RowInLargeScreen = ({ index, data }: props) => {
                     {/* cost  */}
                     <TableCell align="center">{data.orderCost} جنيه</TableCell>
                     {/* status */}
-                    <TableCell align="center">
-                        <IconButton onClick={handleClickChangeOrderStatus}>
-                            <PublishedWithChangesIcon
-                                style={
-                                    mode === "dark"
-                                        ? {
-                                              color: "#F9D00F",
-                                          }
-                                        : {
-                                              color: "#DA2D2D",
-                                          }
-                                }
-                            />
-                        </IconButton>
-                    </TableCell>
+
+                    {(userType === "Representative" ||
+                        canActivateOrdersEdit) && (
+                        <TableCell align="center">
+                            <IconButton onClick={handleClickChangeOrderStatus}>
+                                <PublishedWithChangesIcon
+                                    style={
+                                        mode === "dark"
+                                            ? {
+                                                  color: "#F9D00F",
+                                              }
+                                            : {
+                                                  color: "#DA2D2D",
+                                              }
+                                    }
+                                />
+                            </IconButton>
+                        </TableCell>
+                    )}
+
                     {/* assign to representative */}
-                    <TableCell align="center">
-                        <IconButton onClick={handleClickAssignToRepresentative}>
-                            <AssignmentIndIcon
-                                style={
-                                    mode === "dark"
-                                        ? {
-                                              color: "#99DBF5",
-                                          }
-                                        : {
-                                              color: "#2B2A4C",
-                                          }
-                                }
-                            />
-                        </IconButton>
-                    </TableCell>
+                    {canActivateOrdersEdit && (
+                        <TableCell align="center">
+                            <IconButton
+                                onClick={handleClickAssignToRepresentative}
+                            >
+                                <AssignmentIndIcon
+                                    style={
+                                        mode === "dark"
+                                            ? {
+                                                  color: "#99DBF5",
+                                              }
+                                            : {
+                                                  color: "#2B2A4C",
+                                              }
+                                    }
+                                />
+                            </IconButton>
+                        </TableCell>
+                    )}
                     {/* settings */}
                     <TableCell align="center">
                         <IconButton onClick={handleClickOpenViewOrderDetails}>
@@ -163,13 +177,17 @@ const RowInLargeScreen = ({ index, data }: props) => {
                                 }}
                             />
                         </IconButton>
-                        <IconButton onClick={handleClickOpenEditOrderDetails}>
-                            <EditIcon
-                                style={{
-                                    color: "#7AA874",
-                                }}
-                            />
-                        </IconButton>
+                        {canActivateOrdersEdit && (
+                            <IconButton
+                                onClick={handleClickOpenEditOrderDetails}
+                            >
+                                <EditIcon
+                                    style={{
+                                        color: "#7AA874",
+                                    }}
+                                />
+                            </IconButton>
+                        )}
                     </TableCell>
                 </>
             }

@@ -110,7 +110,6 @@ const EditPermissionDetailsLargeScreen = ({
     /* hooks form */
     const { register, control, formState, getValues, getFieldState, setError } =
         useForm<FormValue>({
-            /*   defaultValues: { roleName }, */
             mode: "onTouched",
             resolver: zodResolver(schema),
         });
@@ -195,6 +194,20 @@ const EditPermissionDetailsLargeScreen = ({
                                     }
                                 );
                             }
+                            if (err.message.includes("SuperAdmin")) {
+                                setError("roleName", {
+                                    message:
+                                        "لا يمكن التعديل علي هذه الصلاحية ",
+                                });
+                                toast.error(
+                                    "لا يمكن التعديل علي هذه الصلاحية ",
+                                    {
+                                        position: toast.POSITION.BOTTOM_LEFT,
+                                        autoClose: 2000,
+                                        theme: "dark",
+                                    }
+                                );
+                            }
                         },
                     }
                 );
@@ -272,7 +285,6 @@ const EditPermissionDetailsLargeScreen = ({
                                     اسم الصلاحية
                                 </InputLabel>
                                 <OutlinedInput
-                                    defaultValue={roleName}
                                     {...register("roleName")}
                                     color="info"
                                     id={`outlined-adornment-roleName`}

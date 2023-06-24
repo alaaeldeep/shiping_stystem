@@ -16,6 +16,7 @@ import { UseMutateStatus } from "../../../../hooks/empoyees/useEditMutate";
 
 /*  */
 import { EmployeeGET } from "../../../../components/types";
+import { toast } from "react-toastify";
 
 type props = {
     data: EmployeeGET;
@@ -35,6 +36,15 @@ const ChangeStatusHandler = ({
             {
                 onSuccess: () => {
                     handleClose();
+                },
+                onError: (err: any) => {
+                    if (err.message.includes("SuperAdmin")) {
+                        toast.error("لا يمكن التعديل علي ال superAdmin", {
+                            position: toast.POSITION.BOTTOM_LEFT,
+                            autoClose: 2000,
+                            theme: "dark",
+                        });
+                    }
                 },
             }
         );

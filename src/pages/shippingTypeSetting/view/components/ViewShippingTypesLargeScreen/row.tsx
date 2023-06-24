@@ -42,18 +42,6 @@ const Row = ({ index, labelId, data }: props) => {
     const handleCloseEditPermissionDetails = () => {
         setOpenEditPermissionDetails(false);
     };
-    /* status */
-    const handleChange = () => {
-        handleClickOpenChangeStatus();
-    };
-    /* change status representative */
-    const [openChangeStatus, setOpenChangeStatus] = useState(false);
-    const handleClickOpenChangeStatus = () => {
-        setOpenChangeStatus(true);
-    };
-    const handleCloseOpenChangeStatus = () => {
-        setOpenChangeStatus(false);
-    };
 
     return (
         <TableRow hover tabIndex={-1} sx={{ cursor: "pointer" }}>
@@ -84,27 +72,7 @@ const Row = ({ index, labelId, data }: props) => {
 
                     {/* shipping cost  */}
                     <TableCell align="center">{data.cost} جنيه</TableCell>
-                    {/* status */}
-                    {/*  <TableCell align="center">
-                        <FormControlLabel
-                            control={
-                                <StatusSwitch sx={{ m: 1 }} defaultChecked />
-                            }
-                            label={
-                                data.status ? (
-                                    <Typography sx={{ color: "#65C466" }}>
-                                        نشط
-                                    </Typography>
-                                ) : (
-                                    <Typography sx={{ color: "#FEA1A1" }}>
-                                        غير نشط
-                                    </Typography>
-                                )
-                            }
-                            checked={data.status}
-                            onChange={handleChange}
-                        />
-                    </TableCell> */}
+
                     {/* settings */}
                     {canActivateSettingsEdit || canActivateSettingsDelete ? (
                         <TableCell align="center">

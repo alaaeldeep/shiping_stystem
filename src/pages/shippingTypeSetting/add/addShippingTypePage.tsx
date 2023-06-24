@@ -59,6 +59,13 @@ const AddShippingType = () => {
                     navigate("/shippingType");
                 }
             },
+            onError: () => {
+                toast.warn("هذا النوع موجود بالفعل", {
+                    position: toast.POSITION.BOTTOM_LEFT,
+                    autoClose: 2000,
+                    theme: "dark",
+                });
+            },
         });
     };
     const onError = () => {

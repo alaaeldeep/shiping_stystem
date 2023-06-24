@@ -130,10 +130,15 @@ const EditOrderDetails = ({ open, handleClose, data }: props) => {
         setCity(event.target.value as string);
     };
 
-    /* select delivery input */
+    /* select shipping type input */
     const [delivery, setDelivery] = useState(data.shippingType.id.toString());
     const handleDeliveryChange = (event: SelectChangeEvent) => {
         setDelivery(event.target.value as string);
+    };
+    /* select delivery input */
+    const [orderType, setOrderType] = useState(data.orderType.toString());
+    const handleOrderTypeChange = (event: SelectChangeEvent) => {
+        setOrderType(event.target.value as string);
     };
     /* isVillage  input */
     const [isVillage, setIsVillage] = useState(
@@ -219,7 +224,7 @@ const EditOrderDetails = ({ open, handleClose, data }: props) => {
                 },
             })
             .nonempty("برجاء اختيار طريقة الشحن"),
-
+        orderCost: z.string().nonempty("برجاء كتابة تكلفة الطلب"),
         comments: z.string().optional(),
     });
     type FormValue = z.infer<typeof schema>;
@@ -239,6 +244,7 @@ const EditOrderDetails = ({ open, handleClose, data }: props) => {
                 branchId: data.branch.id.toString(),
                 shippingTypeId: data.shippingType.id.toString(),
                 comments: data?.comments,
+                orderCost: data.orderCost + "",
             },
             mode: "onTouched",
             resolver: zodResolver(schema),
@@ -264,11 +270,18 @@ const EditOrderDetails = ({ open, handleClose, data }: props) => {
                 branchId: +fieldData.branchId,
                 orderStatus: 0,
                 isVillage: fieldData.isVillage === "0" ? true : false,
-                orderItems: products,
-                traderId: data.traderId,
+                orderItems: products.map((product) => ({
+                    productName: product.productName,
+                    productWeight: product.productWeight,
+                    productQuantity: product.productQuantity,
+                })),
+                traderId: data.trader.id,
                 id: data.id,
+                orderCost: Math.abs(+fieldData.orderCost),
             };
-
+            /*    ...requestData,
+            
+                traderId, */
             mutate(requestData, {
                 onSuccess: () => {
                     handleClose();
@@ -451,10 +464,10 @@ const EditOrderDetails = ({ open, handleClose, data }: props) => {
                                                 {...register("orderType")}
                                                 labelId="demo-simple-select-helper-label"
                                                 id="demo-simple-select-helper"
-                                                value={delivery}
+                                                value={orderType}
                                                 label="نوع التسليم"
                                                 color="info"
-                                                onChange={handleDeliveryChange}
+                                                onChange={handleOrderTypeChange}
                                             >
                                                 {/*  <MenuItem value=""></MenuItem> */}
                                                 <MenuItem
@@ -862,6 +875,21 @@ const EditOrderDetails = ({ open, handleClose, data }: props) => {
                                 }}
                             >
                                 <Box sx={{ marginX: "auto", width: "90%" }}>
+                                    {/* orderCost */}
+                                    <div
+                                        style={{
+                                            margin: "20px 0",
+                                        }}
+                                    >
+                                        <NumericInputField
+                                            register={register}
+                                            errors={errors.orderCost}
+                                            fieldName="orderCost"
+                                            label="تكلفة الطلب"
+                                            largeWidth="90%"
+                                            smallWidth="90%"
+                                        />{" "}
+                                    </div>
                                     {/* comments */}
                                     <div style={{ margin: "20px 0" }}>
                                         <FormControl

@@ -8,7 +8,10 @@ const fetch = (endpoint: string) => {
     return request({ url: endpoint });
 };
 const UseQuery = (endpoint: string) => {
-    return useQuery(endpoint, () => fetch(endpoint));
+    return useQuery(
+        endpoint,
+        () => fetch(endpoint) /* { staleTime: Infinity } */
+    );
 };
 
 export default UseQuery;

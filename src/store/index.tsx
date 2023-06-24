@@ -21,21 +21,3 @@ export const useOwnStore = create<ThemeSlice & AuthState & PageSlice>()(
         )
     )
 );
-/* 
-export const useOwnStore = create<ThemeSlice & CartSlice>()(
-    devtools(
-        persist(
-            (...a) => ({
-                ...createThemeSlice(...a),
-                ...createCartSlice(...a),
-            }),
-            {
-                name: "store",
-            }
-        )
-    )
-);
-
-
-
-*/

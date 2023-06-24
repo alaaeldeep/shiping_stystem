@@ -32,10 +32,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 
 /* react query */
 import UseMutate from "../../../../hooks/shippingSetting/useEditMutate";
-
-/* components */
-import InputField from "../../../../components/inputFields/textInputField/inputfield";
-import NumericInputField from "../../../../components/inputFields/numericInputField";
+import { useEffect, useState } from "react";
+import { useQuery } from "react-query";
 
 type EditShippingTypeProps = {
     open: boolean;
@@ -49,19 +47,23 @@ const EditShippingTypeDetails = ({
     open,
     handleClose,
     name,
-    id,
     cost,
+    id,
 }: EditShippingTypeProps) => {
+    const [test, useTest] = useState(name);
     const { mutate, isLoading } = UseMutate();
     const schema = z.object({
         name: z.string().nonempty(" برجاء كتابة نوع الشحن"),
         cost: z.string().nonempty(" برجاء كتابة تكلفة الشحن"),
     });
+    useEffect(() => console.log, [test]);
     type FormValue = z.infer<typeof schema>;
-    const { register, control, handleSubmit, formState } = useForm<FormValue>({
-        mode: "onTouched",
-        resolver: zodResolver(schema),
-    });
+    const { register, control, handleSubmit, formState, reset } =
+        useForm<FormValue>({
+            /*   defaultValues: async () => ({ name: test, cost: cost + "" }), */
+            mode: "onTouched",
+            resolver: zodResolver(schema),
+        });
     const { errors } = formState;
     /*   🚀 make the request 🚀 */
     const onSubmit = (data: FormValue) => {
@@ -73,8 +75,18 @@ const EditShippingTypeDetails = ({
                     handleClose();
                 }
             },
+            onError: () => {
+                toast.warn("هذا النوع موجود بالفعل", {
+                    position: toast.POSITION.BOTTOM_LEFT,
+                    autoClose: 2000,
+                    theme: "dark",
+                });
+            },
         });
     };
+    useEffect(() => {
+        reset({ name: name });
+    }, []);
     const onError = () => {
         toast.warn("برجاء اكمال الحقول الفارغة ", {
             position: toast.POSITION.BOTTOM_LEFT,
@@ -82,6 +94,7 @@ const EditShippingTypeDetails = ({
             theme: "dark",
         });
     };
+
     return (
         <Dialog
             fullWidth={true}
@@ -148,7 +161,6 @@ const EditShippingTypeDetails = ({
                                         نوع الشحن
                                     </InputLabel>
                                     <OutlinedInput
-                                        defaultValue={name}
                                         {...register("name")}
                                         color="info"
                                         id={`outlined-adornment-name`}
@@ -191,7 +203,7 @@ const EditShippingTypeDetails = ({
                                         تكلفة الشحن
                                     </InputLabel>
                                     <OutlinedInput
-                                        defaultValue={cost}
+                                        /*    defaultValue={cost} */
                                         {...register("cost")}
                                         color="info"
                                         id={`outlined-adornment-${"cost"}`}

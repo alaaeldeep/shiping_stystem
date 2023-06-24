@@ -20,7 +20,7 @@ import { ViewBranchesSmallScreen } from "./components/ViewShippingTypesSmallScre
 import { TableToolbar } from "../../../components/table/tableToolBar";
 
 /* react staff */
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 /* store */
 import { useOwnStore } from "../../../store";
@@ -66,10 +66,13 @@ const ViewShippingTypes = () => {
     /*  const { data, isLoading, isError } = UseQuery(
         `/branches?_page=${pageNumber}`
     ); */
+    const [asyncData, setAsyncData] = useState(data?.data);
 
     /* mobile view */
     const matches = useMediaQuery("(min-width:1070px)");
-
+    useEffect(() => setAsyncData(data?.data), [data?.data]);
+    console.log(asyncData);
+    //console.log(asyncData);
     const navigate = useNavigate();
 
     if (isError) {
@@ -91,10 +94,7 @@ const ViewShippingTypes = () => {
                     <Skeleton variant="rounded" width={"100%"} height={500} />
                 </Stack>
             ) : matches ? (
-                <ViewBranchesLargeScreen
-                    rows={data?.data}
-                    headCell={headCells}
-                />
+                <ViewBranchesLargeScreen rows={data?.data} />
             ) : (
                 <ViewBranchesSmallScreen rows={data?.data} />
             )}
@@ -105,16 +105,7 @@ const ViewShippingTypes = () => {
                     justifyContent: "center",
                     padding: " 20px",
                 }}
-            >
-                {/* **CHECK FIRST IF TOTAL_PAGES > 1 SHOW THE PAGINATIOn */}
-                <Pagination
-                    /*   count={data?.data.totalPages} */
-                    count={1}
-                    size={matches ? "large" : "small"}
-                    page={pageNumber}
-                    onChange={(_e, value) => handlePageNumber(value)}
-                />
-            </Box>
+            ></Box>
             {data?.data.length === 0 && (
                 <Typography
                     height={"150px"}

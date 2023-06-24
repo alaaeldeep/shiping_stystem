@@ -164,10 +164,33 @@ const AddTraderPage = () => {
         address: z.string().nonempty("برجاء كتابة العنوان"),
 
         /* step 2 */
-        branchId: z.string().nonempty("برجاء اختيار الفرع"),
+
+        branchId: z
+            .string({
+                errorMap: (issue, _ctx) => {
+                    switch (issue.code) {
+                        default:
+                            return { message: "برجاء اختيار الفرع " };
+                    }
+                },
+            })
+            .nonempty("برجاء اختيار الفرع"),
+        /*   branchId: z.string().nonempty("برجاء اختيار الفرع"), */
         storeName: z.string().nonempty("برجاء كتابه اسم المتجر"),
-        stateId: z.string().nonempty("برجاء اختيار المحافظه"),
+
+        stateId: z
+            .string({
+                errorMap: (issue, _ctx) => {
+                    switch (issue.code) {
+                        default:
+                            return { message: "برجاء اختيار المحافظه " };
+                    }
+                },
+            })
+            .nonempty("برجاء اختيار الفرع"),
+        /*  stateId: z.string().nonempty("برجاء اختيار المحافظه"), */
         cityId: z.string().nonempty("برجاء اختيار المدينه"),
+
         rejectedOrderlossRatio: z.string().nonempty("برجاء كتابه نسبه التحمل"),
     });
 
