@@ -35,6 +35,13 @@ const DeleteHandler = ({
             onSuccess: () => {
                 handleDeleteHandlerClose();
             },
+            onError: () => {
+                toast.warn("   لا يمكن حذف هذا النوع", {
+                    position: toast.POSITION.BOTTOM_LEFT,
+                    autoClose: 2000,
+                    theme: "dark",
+                });
+            },
         });
     };
     return (

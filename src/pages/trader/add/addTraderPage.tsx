@@ -187,7 +187,7 @@ const AddTraderPage = () => {
                     }
                 },
             })
-            .nonempty("برجاء اختيار الفرع"),
+            .nonempty("برجاء اختيار المحافظه"),
         /*  stateId: z.string().nonempty("برجاء اختيار المحافظه"), */
         cityId: z.string().nonempty("برجاء اختيار المدينه"),
 

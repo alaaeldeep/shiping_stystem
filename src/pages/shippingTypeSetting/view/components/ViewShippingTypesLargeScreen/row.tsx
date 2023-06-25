@@ -90,7 +90,7 @@ const Row = ({ index, labelId, data }: props) => {
                                 </IconButton>
                             )}
 
-                            {canActivateSettingsDelete && (
+                            {canActivateSettingsDelete && data.id !== 1 && (
                                 <IconButton onClick={handleDeleteHandlerOpen}>
                                     <DeleteForeverIcon
                                         style={{

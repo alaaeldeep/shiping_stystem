@@ -161,7 +161,7 @@ const RowInMobile = ({ index, data }: props) => {
                                         />
                                     </IconButton>
                                 )}
-                                {canActivateSettingsDelete && (
+                                {canActivateSettingsDelete && data.id !== 1 && (
                                     <IconButton
                                         onClick={handleDeleteHandlerOpen}
                                     >

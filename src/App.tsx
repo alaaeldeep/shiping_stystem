@@ -177,15 +177,7 @@ function App() {
         () => createTheme(getDesignTokens(mode as PaletteMode)),
         [mode]
     );
-    const routeHandler: boolean = (canActivate: boolean, userType: string) => {
-        if (
-            canActivate ||
-            userType === "Trader" ||
-            userType === "Representative"
-        )
-            return true;
-        return false;
-    };
+
     const router = createBrowserRouter([
         {
             path: "/",
@@ -469,7 +461,7 @@ function App() {
     ]);
     return (
         <QueryClientProvider client={queryClient}>
-            <ReactQueryDevtools initialIsOpen={false} />
+            {/* <ReactQueryDevtools initialIsOpen={false} /> */}
             <CacheProvider value={cacheRtl}>
                 <ThemeProvider theme={theme}>
                     <CssBaseline />

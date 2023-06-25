@@ -32,8 +32,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 
 /* react query */
 import UseMutate from "../../../../hooks/shippingSetting/useEditMutate";
-import { useEffect, useState } from "react";
-import { useQuery } from "react-query";
+import { useEffect } from "react";
 
 type EditShippingTypeProps = {
     open: boolean;
@@ -47,16 +46,15 @@ const EditShippingTypeDetails = ({
     open,
     handleClose,
     name,
-    cost,
+
     id,
 }: EditShippingTypeProps) => {
-    const [test, useTest] = useState(name);
     const { mutate, isLoading } = UseMutate();
     const schema = z.object({
         name: z.string().nonempty(" برجاء كتابة نوع الشحن"),
         cost: z.string().nonempty(" برجاء كتابة تكلفة الشحن"),
     });
-    useEffect(() => console.log, [test]);
+
     type FormValue = z.infer<typeof schema>;
     const { register, control, handleSubmit, formState, reset } =
         useForm<FormValue>({
@@ -84,9 +82,7 @@ const EditShippingTypeDetails = ({
             },
         });
     };
-    useEffect(() => {
-        reset({ name: name });
-    }, []);
+
     const onError = () => {
         toast.warn("برجاء اكمال الحقول الفارغة ", {
             position: toast.POSITION.BOTTOM_LEFT,

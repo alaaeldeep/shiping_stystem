@@ -49,8 +49,8 @@ const AccountChip = () => {
                 variant="outlined"
                 sx={{
                     cursor: "pointer",
-                    /*   width: { xs: "100px", md: "180px" }, */
-                    fontWeight: "bold",
+                    /*   width: { xs: "100px", md: "300px", height: "40px" }, */
+                    /*   fontSize: "18px", */
                 }}
             />
             {/* Menu */}

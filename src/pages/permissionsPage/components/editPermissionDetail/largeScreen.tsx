@@ -180,7 +180,7 @@ const EditPermissionDetailsLargeScreen = ({
                             handleClose();
                         },
                         onError: (err: any) => {
-                            if (err.message.includes("Role name")) {
+                            if (err.message.includes("already taken")) {
                                 setError("roleName", {
                                     message:
                                         "اسم الصلاحية موجود بالفعل, برجاء كتابه اسم جديد",
@@ -207,6 +207,16 @@ const EditPermissionDetailsLargeScreen = ({
                                         theme: "dark",
                                     }
                                 );
+                            }
+                            if (err.message.includes("invalid")) {
+                                setError("roleName", {
+                                    message: "برجاء كتابة اسم الصلاحية",
+                                });
+                                toast.error("برجاء كتابة اسم الصلاحية", {
+                                    position: toast.POSITION.BOTTOM_LEFT,
+                                    autoClose: 2000,
+                                    theme: "dark",
+                                });
                             }
                         },
                     }
