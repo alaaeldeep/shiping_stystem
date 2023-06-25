@@ -994,7 +994,7 @@ const EditOrderDetails = ({ open, handleClose, data }: props) => {
                                 </Button>
                             )}
                         </Box>
-                        <DevTool control={control} />
+                        {/* <DevTool control={control} /> */}
                         <Backdrop
                             sx={{
                                 color: "#fff",

@@ -684,7 +684,7 @@ const AddTraderPage = () => {
                             </Button>
                         )}
                     </Box>
-                    <DevTool control={control} />{" "}
+                    {/* <DevTool control={control} /> */}{" "}
                     <Backdrop
                         sx={{
                             color: "#fff",

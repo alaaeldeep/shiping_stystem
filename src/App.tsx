@@ -461,7 +461,7 @@ function App() {
     ]);
     return (
         <QueryClientProvider client={queryClient}>
-            {/* <ReactQueryDevtools initialIsOpen={false} /> */}
+            {/*  <ReactQueryDevtools initialIsOpen={false} /> */}
             <CacheProvider value={cacheRtl}>
                 <ThemeProvider theme={theme}>
                     <CssBaseline />

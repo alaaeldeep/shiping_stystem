@@ -128,7 +128,7 @@ export default function TransitionsModal({
                                     اضافة
                                 </Button>
                             </div>{" "}
-                            <DevTool control={control} />
+                            {/* <DevTool control={control} /> */}
                         </form>
                     </Box>
                 </Fade>

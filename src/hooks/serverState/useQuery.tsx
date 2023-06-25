@@ -10,7 +10,7 @@ const fetch = (endpoint: string) => {
 const UseQuery = (endpoint: string) => {
     return useQuery(
         endpoint,
-        () => fetch(endpoint) /* { staleTime: Infinity } */
+        () => fetch(endpoint) /* , { staleTime: Infinity } */
     );
 };
 

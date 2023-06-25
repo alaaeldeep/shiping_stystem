@@ -147,7 +147,7 @@ const AddShippingType = () => {
                         اضافة
                     </Button>
                 </Box>
-                <DevTool control={control} />
+              {/*   <DevTool control={control} /> */}
             </form>{" "}
             <Backdrop
                 sx={{

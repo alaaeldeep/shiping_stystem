@@ -65,8 +65,15 @@ const AssignToRepresentative = ({
     };
     const schema = z.object({
         representativeID: z
-            .string()
-            .nonempty({ message: "برجاء تحديد حالة الطلب" }),
+            .string({
+                errorMap: (issue, _ctx) => {
+                    switch (issue.code) {
+                        default:
+                            return { message: "برجاء تحديد حالة الطلب" };
+                    }
+                },
+            })
+            .nonempty("برجاء تحديد حالة الطلب"),
     });
     type FormValue = z.infer<typeof schema>;
     const { register, control, handleSubmit, formState } = useForm<FormValue>({
@@ -229,7 +236,7 @@ const AssignToRepresentative = ({
                                 تحديث
                             </Button>
                         </Box>
-                        <DevTool control={control} />
+                        {/* <DevTool control={control} /> */}
                         <Backdrop
                             sx={{
                                 color: "#fff",
