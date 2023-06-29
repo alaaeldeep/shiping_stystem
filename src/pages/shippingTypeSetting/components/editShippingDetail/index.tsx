@@ -32,7 +32,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 
 /* react query */
 import UseMutate from "../../../../hooks/shippingSetting/useEditMutate";
-import { useEffect } from "react";
 
 type EditShippingTypeProps = {
     open: boolean;
@@ -70,6 +69,7 @@ const EditShippingTypeDetails = ({
         mutate(requestData, {
             onSuccess: () => {
                 {
+                    reset();
                     handleClose();
                 }
             },

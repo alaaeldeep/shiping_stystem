@@ -346,7 +346,7 @@ const ViewOrderDetails = ({ open, handleClose, data }: OrderDetailsProps) => {
                         <Typography>
                             <span style={{ fontWeight: "600" }}>
                                 {" "}
-                                اسم المتجر :
+                                اسم التاجر :
                             </span>{" "}
                             {data.trader.fullName}
                         </Typography>

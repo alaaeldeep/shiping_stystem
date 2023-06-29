@@ -108,11 +108,18 @@ const EditPermissionDetailsLargeScreen = ({
     type FormValue = z.infer<typeof schema>;
 
     /* hooks form */
-    const { register, control, formState, getValues, getFieldState, setError } =
-        useForm<FormValue>({
-            mode: "onTouched",
-            resolver: zodResolver(schema),
-        });
+    const {
+        register,
+        control,
+        formState,
+        getValues,
+        getFieldState,
+        setError,
+        reset,
+    } = useForm<FormValue>({
+        mode: "onTouched",
+        resolver: zodResolver(schema),
+    });
     const { errors } = formState;
 
     /* container for old selected permissions */
@@ -178,6 +185,7 @@ const EditPermissionDetailsLargeScreen = ({
                     {
                         onSuccess() {
                             handleClose();
+                            reset();
                         },
                         onError: (err: any) => {
                             if (err.message.includes("already taken")) {

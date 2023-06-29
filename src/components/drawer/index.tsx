@@ -20,6 +20,12 @@ import HomeIcon from "@mui/icons-material/Home";
 import { ExpandLess, ExpandMore } from "@mui/icons-material";
 import LocalMallIcon from "@mui/icons-material/LocalMall";
 import SettingsIcon from "@mui/icons-material/Settings";
+import PersonIcon from "@mui/icons-material/Person";
+import AssessmentIcon from "@mui/icons-material/Assessment";
+import AddLocationAltIcon from "@mui/icons-material/AddLocationAlt";
+import LockPersonIcon from "@mui/icons-material/LockPerson";
+import ScaleIcon from "@mui/icons-material/Scale";
+import LocalShippingIcon from "@mui/icons-material/LocalShipping";
 
 /* store */
 import { useOwnStore } from "../../store";
@@ -218,7 +224,8 @@ const DrawerComponent = ({
                     <NavLink to="/reports" style={{ textDecoration: "none" }}>
                         <ListItemButton sx={{ color: "text.primary" }}>
                             <ListItemIcon>
-                                <LocalMallIcon />
+                                {/*      <LocalMallIcon /> */}
+                                <AssessmentIcon />
                             </ListItemIcon>
                             <ListItemText primary="التقارير" />
                         </ListItemButton>
@@ -229,7 +236,8 @@ const DrawerComponent = ({
                     <NavLink to="/employees" style={{ textDecoration: "none" }}>
                         <ListItemButton sx={{ color: "text.primary" }}>
                             <ListItemIcon>
-                                <LocalMallIcon />
+                                {/*  <LocalMallIcon /> */}
+                                <PersonIcon />
                             </ListItemIcon>
                             <ListItemText primary="الموظفين" />
                         </ListItemButton>
@@ -242,7 +250,8 @@ const DrawerComponent = ({
                         >
                             <ListItemButton sx={{ color: "text.primary" }}>
                                 <ListItemIcon>
-                                    <LocalMallIcon />
+                                    {/*  <LocalMallIcon /> */}
+                                    <PersonIcon />
                                 </ListItemIcon>
                                 <ListItemText primary="اضف موظف" />
                             </ListItemButton>
@@ -254,7 +263,8 @@ const DrawerComponent = ({
                     <NavLink to="/traders" style={{ textDecoration: "none" }}>
                         <ListItemButton sx={{ color: "text.primary" }}>
                             <ListItemIcon>
-                                <LocalMallIcon />
+                                {/* <LocalMallIcon /> */}
+                                <PersonIcon />
                             </ListItemIcon>
                             <ListItemText primary="التجــار" />
                         </ListItemButton>
@@ -267,7 +277,8 @@ const DrawerComponent = ({
                         >
                             <ListItemButton sx={{ color: "text.primary" }}>
                                 <ListItemIcon>
-                                    <LocalMallIcon />
+                                    {/* <LocalMallIcon /> */}
+                                    <PersonIcon />
                                 </ListItemIcon>
                                 <ListItemText primary="اضف تاجر" />
                             </ListItemButton>
@@ -282,7 +293,8 @@ const DrawerComponent = ({
                     >
                         <ListItemButton sx={{ color: "text.primary" }}>
                             <ListItemIcon>
-                                <LocalMallIcon />
+                                {/* <LocalMallIcon /> */}
+                                <PersonIcon />
                             </ListItemIcon>
                             <ListItemText primary="المناديب" />
                         </ListItemButton>
@@ -295,7 +307,8 @@ const DrawerComponent = ({
                         >
                             <ListItemButton sx={{ color: "text.primary" }}>
                                 <ListItemIcon>
-                                    <LocalMallIcon />
+                                    {/*  <LocalMallIcon /> */}
+                                    <PersonIcon />
                                 </ListItemIcon>
                                 <ListItemText primary="اضف مندوب" />
                             </ListItemButton>
@@ -308,7 +321,8 @@ const DrawerComponent = ({
                     <NavLink to="/branches" style={{ textDecoration: "none" }}>
                         <ListItemButton sx={{ color: "text.primary" }}>
                             <ListItemIcon>
-                                <LocalMallIcon />
+                                {/*  <LocalMallIcon /> */}
+                                <AddLocationAltIcon />
                             </ListItemIcon>
                             <ListItemText primary="الفروع" />
                         </ListItemButton>
@@ -321,7 +335,8 @@ const DrawerComponent = ({
                         >
                             <ListItemButton sx={{ color: "text.primary" }}>
                                 <ListItemIcon>
-                                    <LocalMallIcon />
+                                    {/*  <LocalMallIcon /> */}
+                                    <AddLocationAltIcon />
                                 </ListItemIcon>
                                 <ListItemText primary="اضف فرع" />
                             </ListItemButton>
@@ -333,7 +348,8 @@ const DrawerComponent = ({
                     <NavLink to="/states" style={{ textDecoration: "none" }}>
                         <ListItemButton sx={{ color: "text.primary" }}>
                             <ListItemIcon>
-                                <LocalMallIcon />
+                                {/*  <LocalMallIcon /> */}
+                                <AddLocationAltIcon />
                             </ListItemIcon>
                             <ListItemText primary="المحافظات" />
                         </ListItemButton>
@@ -346,7 +362,8 @@ const DrawerComponent = ({
                         >
                             <ListItemButton sx={{ color: "text.primary" }}>
                                 <ListItemIcon>
-                                    <LocalMallIcon />
+                                    {/*  <LocalMallIcon /> */}
+                                    <AddLocationAltIcon />
                                 </ListItemIcon>
                                 <ListItemText primary="اضف محافظة" />
                             </ListItemButton>
@@ -358,7 +375,8 @@ const DrawerComponent = ({
                     <NavLink to="/cities" style={{ textDecoration: "none" }}>
                         <ListItemButton sx={{ color: "text.primary" }}>
                             <ListItemIcon>
-                                <LocalMallIcon />
+                                {/*   <LocalMallIcon /> */}
+                                <AddLocationAltIcon />
                             </ListItemIcon>
                             <ListItemText primary="الـمــدن" />
                         </ListItemButton>
@@ -371,7 +389,8 @@ const DrawerComponent = ({
                         >
                             <ListItemButton sx={{ color: "text.primary" }}>
                                 <ListItemIcon>
-                                    <LocalMallIcon />
+                                    {/*   <LocalMallIcon /> */}
+                                    <AddLocationAltIcon />
                                 </ListItemIcon>
                                 <ListItemText primary="اضف مدينة" />
                             </ListItemButton>
@@ -396,7 +415,8 @@ const DrawerComponent = ({
                     >
                         <ListItemButton sx={{ color: "text.primary" }}>
                             <ListItemIcon>
-                                <LocalMallIcon />
+                                <LockPersonIcon />
+                                {/*  <LocalMallIcon /> */}
                             </ListItemIcon>
                             <ListItemText primary="الصلاحيات" />
                         </ListItemButton>
@@ -409,7 +429,7 @@ const DrawerComponent = ({
                         >
                             <ListItemButton sx={{ color: "text.primary" }}>
                                 <ListItemIcon>
-                                    <LocalMallIcon />
+                                    <LockPersonIcon />
                                 </ListItemIcon>
                                 <ListItemText primary="اضف صلاحية" />
                             </ListItemButton>
@@ -437,7 +457,8 @@ const DrawerComponent = ({
                                         sx={{ color: "text.primary", pl: 4 }}
                                     >
                                         <ListItemIcon>
-                                            <LocalMallIcon />
+                                            <ScaleIcon />
+                                            {/*  <LocalMallIcon /> */}
                                         </ListItemIcon>
                                         <ListItemText primary="الـوزن" />
                                     </ListItemButton>
@@ -452,7 +473,8 @@ const DrawerComponent = ({
                                         sx={{ color: "text.primary", pl: 4 }}
                                     >
                                         <ListItemIcon>
-                                            <LocalMallIcon />
+                                            <LocalShippingIcon />
+                                            {/* <LocalMallIcon /> */}
                                         </ListItemIcon>
                                         <ListItemText primary="نوع الشحن" />
                                     </ListItemButton>
@@ -468,7 +490,8 @@ const DrawerComponent = ({
                         >
                             <ListItemButton sx={{ color: "text.primary" }}>
                                 <ListItemIcon>
-                                    <LocalMallIcon />
+                                    {/* <LocalMallIcon /> */}
+                                    <LocalShippingIcon />
                                 </ListItemIcon>
                                 <ListItemText primary="اضف نوع شحن" />
                             </ListItemButton>
