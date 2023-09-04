@@ -24,6 +24,7 @@ const UseMutate = () => {
 
     return useMutation(updateBranches, {
         onSuccess: () => {
+            queryClient.invalidateQueries("/activities");
             queryClient.invalidateQueries(
                 `/Branches/paginate?pageNumber=${BranchPageNumber}&pageSize=5`
             );
